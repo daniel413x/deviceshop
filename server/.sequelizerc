@@ -1,0 +1,10 @@
+require('dotenv').config();
+const path = require('path');
+const seedersPath = process.env.NODE_ENV === 'test' ? 'lib/seeders_test' : 'lib/seeders)'
+
+module.exports = {
+  'config': path.resolve('lib/db/configs', 'index.js'),
+  'models-path': path.resolve('lib/db'),
+  'migrations-path': path.resolve('lib/migrations'),
+  'seeders-path': path.resolve(seedersPath),
+}
