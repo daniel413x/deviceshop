@@ -1,5 +1,4 @@
 import {
-  TypeAttributes,
   QueryReqFetchMultiple,
   QueryReqFetchOne,
   IType,
@@ -7,12 +6,12 @@ import {
 } from '../types/types';
 import { $host } from './index';
 
-export const fetchTypes = async (queryParams?: QueryReqFetchMultiple<TypeAttributes>): Promise<SequelizeFindAndCountAll<IType>> => {
+export const fetchTypes = async (queryParams?: QueryReqFetchMultiple<IType>): Promise<SequelizeFindAndCountAll<IType>> => {
   const { data } = await $host.get('api/type', { params: queryParams });
   return data;
 };
 
-export const fetchType = async (name: string, queryParams?: QueryReqFetchOne<TypeAttributes>) => {
+export const fetchType = async (name: string, queryParams?: QueryReqFetchOne<IType>) => {
   const { data } = await $host.get(`api/type/${name}`, {
     params: queryParams,
   });

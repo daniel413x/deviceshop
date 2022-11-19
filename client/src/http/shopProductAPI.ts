@@ -1,5 +1,4 @@
 import {
-  ShopProductAttributes,
   QueryReqFetchMultipleShopProducts,
   QueryReqFetchOne,
   IShopProduct,
@@ -12,7 +11,7 @@ export const fetchProducts = async (queryParams?: QueryReqFetchMultipleShopProdu
   return data;
 };
 
-export const fetchProject = async (title: string, queryParams?: QueryReqFetchOne<ShopProductAttributes>) => {
+export const fetchProduct = async (title: string, queryParams?: QueryReqFetchOne<IShopProduct>) => {
   const { data } = await $host.get(`api/shopproduct/${title}`, {
     params: queryParams,
   });

@@ -65,11 +65,13 @@ function Footer() {
         </div>
         <NavLink
           to="#"
-          className="button to-top-button"
+          className="button primary to-top-button"
           title="Return to top"
           onClick={() => window.scrollTo(0, 0)}
         >
-          <AngleUp />
+          <AngleUp
+            className="angle-up-icon"
+          />
         </NavLink>
       </div>
     </div>

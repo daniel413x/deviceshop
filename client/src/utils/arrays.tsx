@@ -73,7 +73,7 @@ export const shopNavButtons = [
     label: 'Accessories',
   },
   {
-    to: routes.SHOP_PHONES_ROUTE,
+    to: routes.SHOP_TABLETS_ROUTE,
     label: 'Tablets',
   },
   {
@@ -101,30 +101,36 @@ export const navbarButtons = [
   },
 ];
 
-export const shopSideColButtons = [
+export const shopFilterButtons = [
   {
-    to: routes.SHOP_PHONES_ROUTE,
-    label: 'Phones',
+    label: 'Category',
+    specificationKey: 'Type',
   },
   {
-    to: routes.SHOP_LAPTOPS_ROUTE,
-    label: 'Laptops',
+    specificationKey: 'Manufacturer',
   },
   {
-    to: routes.SHOP_ACCESSORIES_ROUTE,
-    label: 'Accessories',
+    specificationKey: 'Operating system',
   },
   {
-    to: routes.SHOP_TABLETS_ROUTE,
-    label: 'Tablets',
+    specificationKey: 'Memory',
   },
   {
-    to: routes.SHOP_REFRIGERATORS_ROUTE,
-    label: 'Tablets',
+    specificationKey: 'Storage capacity',
   },
   {
-    to: routes.SHOP_DESKTOPS_ROUTE,
-    label: 'Desktops',
+    specificationKey: 'Resolution',
+  },
+  {
+    specificationKey: 'Display size (in)',
+  },
+  {
+    label: 'Camera',
+    specificationKey: 'Rear',
+  },
+  {
+    label: 'Battery',
+    specificationKey: 'Capacity',
   },
 ];
 

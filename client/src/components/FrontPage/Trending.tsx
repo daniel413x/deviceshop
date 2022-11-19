@@ -11,7 +11,9 @@ function Trending() {
   if (smartphones) {
     smartphonesFetch = () => fetchProducts({
       limit: 3,
-      byMostSold: true,
+      order: {
+        byMostSold: true,
+      },
       where: {
         typeId: smartphones.id,
       },
@@ -22,7 +24,9 @@ function Trending() {
   if (laptops) {
     laptopsFetch = () => fetchProducts({
       limit: 3,
-      byMostSold: true,
+      order: {
+        byMostSold: true,
+      },
       where: {
         typeId: laptops.id,
       },
@@ -33,7 +37,9 @@ function Trending() {
   if (tablets) {
     tabletsFetch = () => fetchProducts({
       limit: 3,
-      byMostSold: true,
+      order: {
+        byMostSold: true,
+      },
       where: {
         typeId: tablets.id,
       },
@@ -44,7 +50,9 @@ function Trending() {
   if (accessories) {
     accessoriesFetch = () => fetchProducts({
       limit: 3,
-      byMostSold: true,
+      order: {
+        byMostSold: true,
+      },
       where: {
         typeId: accessories.id,
       },
@@ -52,7 +60,9 @@ function Trending() {
   }
   const mostSoldFetch = () => fetchProducts({
     limit: 5,
-    byMostSold: true,
+    order: {
+      byMostSold: true,
+    },
   });
   return (
     <div className="trending">

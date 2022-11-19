@@ -1,16 +1,27 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { IShopProduct } from '../types/types';
+import { IShopProduct, SpecificationColumn } from '../types/types';
 import { SHOP_ROUTE } from '../utils/consts';
-import { calcPriceAfterDiscounts, makeSlug } from '../utils/functions';
+import {
+  calcPriceAfterDiscounts,
+  formatPrice,
+  listProductAttributeInColumns,
+  listProductAttributes,
+  makeSlug,
+} from '../utils/functions';
+import List from './List';
 import RatingStars from './RatingStars';
 
 interface ShopProductCardProps {
   product: IShopProduct;
+  expanded?: boolean;
+  listView?: boolean;
 }
 
 function ShopProductCard({
   product,
+  expanded,
+  listView,
 }: ShopProductCardProps) {
   const {
     name: productName,
@@ -19,14 +30,27 @@ function ShopProductCard({
     brand: {
       name: brandName,
     },
-    rating,
+    type: {
+      name: typeName,
+    },
+    reviews,
+    specifications,
+    id,
   } = product;
-  const undiscountedPrice = calcPriceAfterDiscounts(price);
-  const discountedPrice = calcPriceAfterDiscounts(price, discount);
+  let rating = 0;
+  for (let r = 0; r < reviews.length; r += 1) {
+    rating += reviews[r].rating;
+  }
+  rating /= reviews.length;
+  const undiscountedPrice = formatPrice(calcPriceAfterDiscounts(price));
+  const discountedPrice = formatPrice(calcPriceAfterDiscounts(price, discount));
   const slug = makeSlug(productName);
+  const attributes = listView ? listProductAttributeInColumns(specifications) : listProductAttributes(specifications);
+  const showGridViewAttributes = expanded && !listView;
+  const showListViewAttributes = listView;
   return (
     <NavLink
-      className="shop-product-card"
+      className={`shop-product-card ${expanded && 'expanded'} ${listView && 'list-view'}`}
       to={`${SHOP_ROUTE}/${slug}`}
       title={productName}
     >
@@ -51,17 +75,67 @@ function ShopProductCard({
           {productName}
         </span>
         <div className="brand-rating-row">
+          {!expanded && (
           <span className="brand">
             {brandName}
           </span>
+          )}
           <RatingStars
-            rating={rating}
+            rating={Number(rating)}
             nameForKey={productName}
           />
+          {expanded && (
+          <span className="review-count">
+            {`(${reviews.length})`}
+          </span>
+          )}
         </div>
+        {showGridViewAttributes && (
+          <div className="attributes">
+            {attributes as string}
+          </div>
+        )}
+        {showListViewAttributes && (
+          <div className="attributes">
+            <List
+              items={attributes as SpecificationColumn[]}
+              className="attributes-column-ul"
+              renderAs={((column) => (
+                <li key={`${id}${column.category}`}>
+                  <div>
+                    <span className="label">
+                      {column.category}
+                    </span>
+                    <List
+                      items={column.values}
+                      className="values-ul"
+                      renderAs={((value) => (
+                        <li key={`${id}${column.category}${value}`}>
+                          <span>
+                            {value}
+                          </span>
+                        </li>
+                      ))}
+                    />
+                  </div>
+                </li>
+              ))}
+            />
+          </div>
+        )}
+        {expanded && (
+          <div className="type">
+            {typeName}
+          </div>
+        )}
       </div>
     </NavLink>
   );
 }
+
+ShopProductCard.defaultProps = {
+  expanded: false,
+  listView: false,
+};
 
 export default ShopProductCard;

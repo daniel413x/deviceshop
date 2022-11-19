@@ -43,6 +43,7 @@ for (let n = 0; n <= 12; n += 1) {
     images: ['test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png'],
     price: 100000,
     discount: 20,
+    discountedPrice: 80000,
     name: makeA53 ? `Samsung Galaxy numGB Android 11 5G Smartphone ${n + 1}` : `Apple iPhone numGB iOS 16 5G Smartphone ${n + 1}`,
     // name: `Smartphone ${n + 1}`,
     brandId: makeA53 ? samsung : apple,
@@ -54,11 +55,18 @@ for (let n = 0; n <= 12; n += 1) {
     updatedAt: new Date(),
     id: smartphoneId,
   };
+  if (n === 0) {
+    smartphone.rating = 5;
+  }
+  if (n === 3) {
+    smartphone.rating = 4;
+  }
   const laptop = {
     thumbnail: 'test-product-filler-thumbnail.png',
     images: ['test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png'],
     price: 100000,
     discount: 20,
+    discountedPrice: 80000,
     name: `Laptop ${n + 1}`,
     numberSold: 0,
     stock: 10,
@@ -74,6 +82,7 @@ for (let n = 0; n <= 12; n += 1) {
     images: ['test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png'],
     price: 1000,
     discount: 20,
+    discountedPrice: 800,
     name: `Accessory ${n + 1}`,
     numberSold: 0,
     stock: 10,
@@ -89,6 +98,7 @@ for (let n = 0; n <= 12; n += 1) {
     images: ['test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png'],
     price: 10000,
     discount: 20,
+    discountedPrice: 8000,
     name: `Tablet ${n + 1}`,
     numberSold: 0,
     stock: 10,

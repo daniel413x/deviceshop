@@ -1,11 +1,4 @@
-import { ISpecification } from '../types/types';
-import {
-  DISPLAY_SIZE,
-  MANUFACTURER,
-  MEMORY,
-  OPERATING_SYSTEM,
-  STANDARD,
-} from './consts';
+import { ISpecification, SpecificationColumn } from '../types/types';
 
 export function makeSlug(string: string): string {
   const id = string.toLowerCase().split(' ').filter(Boolean).join('-');
@@ -27,28 +20,8 @@ export function findSpecifications(keys: string[], specifications: ISpecificatio
   return returnedArr;
 }
 
-export function supplementProductName(productName: string, specifications: ISpecification[]): string {
-  const prefixedAttributes: string[] = [MANUFACTURER];
-  const attributesToGet: string[] = [MEMORY, DISPLAY_SIZE, OPERATING_SYSTEM, STANDARD];
-  const prefixes: string[] = [];
-  const suffixes: string[] = [];
-  prefixedAttributes.forEach((attributeKey) => {
-    const attribute = specifications.find((spec) => spec.key === attributeKey);
-    if (attribute) {
-      prefixes.push(attribute.value);
-    }
-  });
-  attributesToGet.forEach((attributeKey) => {
-    const attribute = specifications.find((spec) => spec.key === attributeKey);
-    if (attribute) {
-      suffixes.push(attribute.value);
-    }
-  });
-  return `${prefixes.join(' ')} ${productName} ${suffixes.join(' ')}`;
-}
-
 export function listProductAttributes(specifications: ISpecification[]): string {
-  const attributesToGet: string[] = ['Memory', 'Display size (in)', 'Operating system', 'Standard'];
+  const attributesToGet: string[] = ['Storage capacity', 'Display size (in)', 'Operating system', 'Standard', 'Memory'];
   const attributes: string[] = [];
   attributesToGet.forEach((attributeKey) => {
     const attribute = specifications.find((spec) => spec.key === attributeKey);
@@ -56,7 +29,25 @@ export function listProductAttributes(specifications: ISpecification[]): string 
       attributes.push(attribute.value);
     }
   });
-  return `${attributes.join(' ')}`;
+  return `${attributes.join(', ')}`;
+}
+
+export function listProductAttributeInColumns(specifications: ISpecification[]): SpecificationColumn[] {
+  const categoriesToColumnize: string[] = ['Key specifications', 'Display properties', 'Camera'];
+  const columnizedAttributes: SpecificationColumn[] = [];
+  categoriesToColumnize.forEach((columnizedCategory) => {
+    const values: string[] = [];
+    specifications.forEach((spec) => {
+      if (spec.category === columnizedCategory) {
+        values.push(spec.value);
+      }
+    });
+    columnizedAttributes.push({
+      category: columnizedCategory,
+      values,
+    });
+  });
+  return columnizedAttributes;
 }
 
 export function calcPriceAfterDiscounts(price: number, discount?: number): number {
@@ -65,4 +56,29 @@ export function calcPriceAfterDiscounts(price: number, discount?: number): numbe
     calculatedPrice -= (calculatedPrice * (discount * 0.01));
   }
   return calculatedPrice;
+}
+
+export function formatPrice(price: number): string {
+  const stringPrice = price.toString();
+  if (!/\./.test(stringPrice)) {
+    return `${stringPrice}.00`;
+  }
+  if (!/\d+\.\d{1}/.test(stringPrice)) {
+    return `${price.toFixed(2)}.0`;
+  }
+  return price.toFixed(2);
+}
+
+export function getMaxPage(itemsInDb: number, itemsPerPage: number) {
+  return Math.ceil(itemsInDb / itemsPerPage);
+}
+
+export const objectHasProp = (obj: any, prop: string) => Object.prototype.hasOwnProperty.call(obj, prop);
+
+export function toPlural(string: string): string {
+  const lastLetter = string.split('')[string.split('').length - 1];
+  if (lastLetter === 'y') {
+    return string.replace(/\D$/, 'ies');
+  }
+  return `${string}s`;
 }

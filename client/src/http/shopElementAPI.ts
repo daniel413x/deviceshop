@@ -1,5 +1,4 @@
 import {
-  ShopElementAttributes,
   QueryReqFetchOne,
   IShopElement,
 } from '../types/types';
@@ -16,7 +15,7 @@ export const fetchShopElementByReferences = async (arr: string[]): Promise<IShop
   return data.rows;
 };
 
-export const fetchShopElementByReference = async (reference: string, queryParams?: QueryReqFetchOne<ShopElementAttributes>): Promise<IShopElement> => {
+export const fetchShopElementByReference = async (reference: string, queryParams?: QueryReqFetchOne<IShopElement>): Promise<IShopElement> => {
   const { data } = await $host.get(`api/shopelement/${reference}`, {
     params: queryParams,
   });

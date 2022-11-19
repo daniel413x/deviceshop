@@ -1,0 +1,32 @@
+import Router from 'express';
+import SpecificationController from '../controllers/SpecificationController';
+import checkRoleMiddleware from '../middleware/checkRoleMiddleware';
+import { ADMIN } from '../utils/consts';
+
+const router = Router();
+
+router.get(
+  '/',
+  (req, res) => SpecificationController.get(req, res),
+);
+router.get(
+  '/filter',
+  (req, res) => SpecificationController.getFilteredSpecificationsWithCounts(req, res),
+);
+router.post(
+  '/',
+  checkRoleMiddleware(ADMIN),
+  (req, res) => SpecificationController.create(req, res),
+);
+router.put(
+  '/',
+  checkRoleMiddleware(ADMIN),
+  (req, res) => SpecificationController.edit(req, res),
+);
+router.delete(
+  '/:id',
+  checkRoleMiddleware(ADMIN),
+  (req, res) => SpecificationController.delete(req, res),
+);
+
+export default router;

@@ -4,15 +4,20 @@ import { INavButton } from '../types/types';
 
 interface NavButtonProps {
   to: string | INavButton[];
-  label: string;
+  children: string;
+  className?: string;
 }
 
-function NavButton({ to, label }: NavButtonProps) {
+function NavButton({ to, children, className }: NavButtonProps) {
   return (
-    <NavLink className="nav-button" to={to as string}>
-      {label}
+    <NavLink className={`nav-button ${className}`} to={to as string}>
+      {children}
     </NavLink>
   );
 }
+
+NavButton.defaultProps = {
+  className: '',
+};
 
 export default NavButton;

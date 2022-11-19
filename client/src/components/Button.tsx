@@ -5,6 +5,8 @@ interface ButtonProps {
   className?: string;
   onClick?: (...args: any[]) => void;
   children?: ReactElement | (ReactElement | string)[] | string;
+  buttonStyle?: 'primary' | 'secondary' | 'warn';
+  title?: string;
 }
 
 function Button({
@@ -12,10 +14,13 @@ function Button({
   className,
   onClick,
   children,
+  buttonStyle,
+  title,
 }: ButtonProps) {
   return (
     <button
-      className={`button ${className}`}
+      title={title}
+      className={`button ${buttonStyle} ${className}`}
     // eslint-disable-next-line react/button-has-type
       type={type}
       onClick={onClick}
@@ -27,9 +32,11 @@ function Button({
 
 Button.defaultProps = {
   type: 'button',
+  title: '',
   className: '',
   children: false,
-  onClick: false,
+  onClick: () => null,
+  buttonStyle: 'primary',
 };
 
 export default Button;

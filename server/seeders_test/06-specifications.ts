@@ -30,19 +30,33 @@ for (let smartphoneId = 0; smartphoneId < smartphonesIds.length; smartphoneId +=
     if (m < 4) {
       specification.category = 'Key specifications';
     } else if (m < 8) {
-      if (makeA53 && m === 5) {
-        specification.key = 'Model name';
-        specification.value = 'Galaxy A53';
-      } else if (makeiPhone && m === 5) {
-        specification.key = 'Model name';
-        specification.value = 'iPhone 14';
+      if (makeA53) {
+        if (m === 5) {
+          specification.key = 'Model name';
+          specification.value = 'Galaxy A53';
+        }
+        if (m === 6) {
+          specification.key = 'Manufacturer';
+          specification.value = 'Samsung';
+        }
+        if (m === 7) {
+          specification.key = 'Type';
+          specification.value = 'Smartphone';
+        }
       }
-      if (makeA53 && m === 6) {
-        specification.key = 'Manufacturer';
-        specification.value = 'Samsung';
-      } else if (makeiPhone && m === 6) {
-        specification.key = 'Manufacturer';
-        specification.value = 'Apple';
+      if (makeiPhone) {
+        if (m === 5) {
+          specification.key = 'Model name';
+          specification.value = 'iPhone 14';
+        }
+        if (m === 6) {
+          specification.key = 'Manufacturer';
+          specification.value = 'Apple';
+        }
+        if (m === 7) {
+          specification.key = 'Type';
+          specification.value = 'Smartphone';
+        }
       }
       specification.category = 'General information';
     } else if (m < 10) {
@@ -109,13 +123,19 @@ for (let smartphoneId = 0; smartphoneId < smartphonesIds.length; smartphoneId +=
     } else if (m < 22) {
       specification.category = 'Processor';
     } else if (m < 24) {
-      specification.category = 'Storage';
-      if (smartphoneId > 4 && m === 22) {
-        specification.key = 'Memory';
-        specification.value = '128GB';
-      } else if (m === 22) {
-        specification.key = 'Memory';
+      specification.category = 'Data storage';
+      if (smartphoneId > 4) {
+        if (m === 23) {
+          specification.key = 'Storage capacity';
+          specification.value = '128GB';
+        }
+      } else if (m === 23) {
+        specification.key = 'Storage capacity';
         specification.value = '256GB';
+      }
+      if (m === 22) {
+        specification.key = 'Memory';
+        specification.value = '6GB';
       }
     } else if (m < 27) {
       specification.category = 'SIM';

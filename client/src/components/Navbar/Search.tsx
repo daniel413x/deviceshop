@@ -3,7 +3,6 @@ import React, {
   useEffect,
   useRef,
   ChangeEvent,
-  ReactElement,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useKeyPress from '../../hooks/useKeyPress';
@@ -12,28 +11,9 @@ import { SHOP_ROUTE } from '../../utils/consts';
 import List from '../List';
 import { IShopProduct, QueryReqFetchMultiple, SequelizeFindAndCountAll } from '../../types/types';
 import { ReactComponent as MagnifyingGlass } from '../../assets/icons/MagnifyingGlass.svg';
+import LoadingAnimation from '../LoadingAnimation';
 
-interface HighlightableLiProps {
-  index: number;
-  highlight: number;
-  liKey: string | number;
-  children: ReactElement | (ReactElement | string)[] | string;
-}
-
-function HighlightableLi({
-  index,
-  highlight,
-  liKey,
-  children,
-}: HighlightableLiProps) {
-  return (
-    <li className={index === highlight ? 'highlight' : undefined} key={liKey}>
-      {children}
-    </li>
-  );
-}
-
-interface SearchbarProps<T> {
+interface SearchProps<T> {
   className?: string;
   searchHandler: (params: QueryReqFetchMultiple<T>) => Promise<SequelizeFindAndCountAll<IShopProduct>>;
   searchParams: QueryReqFetchMultiple<T>;
@@ -45,7 +25,7 @@ interface SearchbarProps<T> {
   dontRenderResults?: false;
 }
 
-function Searchbar<T>({
+function Search<T>({
   className,
   searchHandler,
   results,
@@ -55,8 +35,9 @@ function Searchbar<T>({
   EndItem,
   searchParams,
   dontRenderResults,
-}: SearchbarProps<T>) {
+}: SearchProps<T>) {
   const [highlight, setHighlight] = useState<number>(0);
+  const [idle, setIdle] = useState<boolean>(true);
   const [focused, setFocused] = useState<boolean>(false);
   const [input, setInput] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -73,35 +54,9 @@ function Searchbar<T>({
   });
   const highlightLimit = results.length + (endItemsInResults?.length || 0) - 1;
   const noResults = results.length === 0;
-  const noResultsAfterSearch = input && !loading && noResults;
-  const showResults = (input || loading || results.length > 0) && !hideResults;
+  const noResultsAfterSearch = !idle && input && !loading && noResults;
+  const showResults = !idle && (input || loading || results.length > 0) && !hideResults;
   const showLoading = noResults && loading;
-  const search = async (terms: string) => {
-    try {
-      setLoading(true);
-      const params = { ...searchParams };
-      params.search!.value = terms;
-      const res = await searchHandler(params);
-      setResults(res.rows);
-    } finally {
-      setLoading(false);
-    }
-  };
-  const changeInput = (e: ChangeEvent<HTMLInputElement> | null) => {
-    const { value } = e!.target;
-    if (value === '') {
-      setResults([]);
-      setInput('');
-      return;
-    }
-    setInput(value);
-    if (loading) {
-      return;
-    }
-    if (results.length === 0) {
-      search(value);
-    }
-  };
   const onFocus = () => {
     setFocused(true);
     if (!input) {
@@ -118,6 +73,26 @@ function Searchbar<T>({
       setHideResults(false);
     }
   };
+  const search = async (terms: string) => {
+    try {
+      setLoading(true);
+      const params = { ...searchParams };
+      params.searchbar!.value = terms;
+      const res = await searchHandler(params);
+      setResults(res.rows);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const changeInput = (e: ChangeEvent<HTMLInputElement> | null) => {
+    const { value } = e!.target;
+    if (value === '') {
+      setResults([]);
+      setInput('');
+      return;
+    }
+    setInput(value);
+  };
   useEffect(() => {
     if (input === '' && focused) {
       setHighlight(0);
@@ -131,10 +106,12 @@ function Searchbar<T>({
     }
     const timeout = setTimeout(() => {
       if (input === '') {
+        setIdle(true);
         return;
       }
+      setIdle(false);
       search(input);
-    }, 500);
+    }, 250);
     setSearchTimeout(timeout);
   }, [input]);
   useEffect(() => {
@@ -207,46 +184,31 @@ function Searchbar<T>({
         >
           <div className="divider" />
           {showLoading && (
-          <div className="results-item loading-icon">
-            <div className="lds-ring">
-              <div />
-              <div />
-              <div />
-              <div />
-            </div>
-          </div>
+            <LoadingAnimation
+              className="results-item pseudo"
+            />
           )}
           {noResultsAfterSearch && (
           <div className="results-item pseudo">
-            <div className="d-flex align-items-center m-auto">
-              <span>No results</span>
-            </div>
+            <span>No results</span>
           </div>
           )}
           <List
             items={results}
             renderAs={((result, index) => (
-              <HighlightableLi
-                highlight={highlight}
-                index={index!}
-                liKey={result.id}
-              >
+              <li className={index === highlight ? 'highlight' : undefined} key={result.id}>
                 <Result
                   result={result}
                 />
-              </HighlightableLi>
+              </li>
             ))}
             endItems={noResults ? [] : endItemsInResults}
             renderEndItemsAs={(endItem, index) => (
-              <HighlightableLi
-                highlight={highlight}
-                index={index! + results.length}
-                liKey={index! + results.length}
-              >
+              <li className={index! + results.length === highlight ? 'highlight' : undefined} key={index! + results.length}>
                 <EndItem
                   endItem={endItem}
                 />
-              </HighlightableLi>
+              </li>
             )}
           />
         </button>
@@ -256,11 +218,11 @@ function Searchbar<T>({
   );
 }
 
-Searchbar.defaultProps = {
+Search.defaultProps = {
   className: false,
   endItemsInResults: false,
   EndItem: false,
   dontRenderResults: false,
 };
 
-export default Searchbar;
+export default Search;

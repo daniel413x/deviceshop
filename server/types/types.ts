@@ -22,7 +22,6 @@ export interface IShopProduct {
   typeId: string;
   brandId: string;
   images: string[];
-  rating: number;
   numberSold: number;
   stock: number;
 }
@@ -123,6 +122,25 @@ export interface IAddressInAddressBook extends IBaseAddress {
   userId: string;
   isDefault: boolean;
 }
+
+export type SpecificationFinder = {
+  value: string[];
+  key: string;
+};
+
+export type UniquePrimarySpecification = Omit<ISpecification, 'category' | 'typeId' | 'shopProductId'> & { // intermediate objects for filtered fetching
+  shopProductIds: string[];
+};
+
+export type SpecificationWithDeviceCount = Omit<ISpecification, 'category' | 'typeId' | 'shopProductId'> & { // used in filter system
+  count: number;
+};
+
+export type Filter = Omit<ISpecification, 'id' | 'category' | 'typeId' | 'shopProductId'>;
+
+export type FilteredSearchParams = { specifications: { key: string, value: string }[]; };
+
+export type SearchViaSearchbarParams = { value: string };
 
 // eslint-disable-next-line no-unused-vars
 export type IterableAttributes<T> = { [ key in keyof T ]: any };

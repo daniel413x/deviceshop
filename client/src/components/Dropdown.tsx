@@ -1,28 +1,49 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink } from 'react-router-dom';
 import { ReactComponent as TriangleDown } from '../assets/icons/triangle-down.svg';
+import { ReactComponent as AngleIcon } from '../assets/icons/angleup.svg';
 import useKeyPress from '../hooks/useKeyPress';
 import useOnInsideClick from '../hooks/useOnInsideClick';
 import useOnOutsideClick from '../hooks/useOnOutsideClick';
 import { INavButton } from '../types/types';
 import List from './List';
+import NavButton from './NavButton';
 
-interface RecursivelyRenderedElementProps {
-  to: string | INavButton[];
+interface DropdownProps {
+  to?: string | INavButton[];
   label: string;
+  callback?: () => void;
+  dropdownIcon?: 'angle' | 'triangle';
+  colorStyle?: 'gray' | 'accent';
 }
 
-function RecursivelyRenderedElement({ to, label }: RecursivelyRenderedElementProps) {
+function Dropdown({
+  to,
+  label,
+  callback,
+  dropdownIcon,
+  colorStyle,
+}: DropdownProps) {
+  if (callback) {
+    return (
+      <button
+        className="callback-button"
+        onClick={callback}
+        key={label}
+        type="button"
+      >
+        {label}
+      </button>
+    );
+  }
   const embeddedDropdown = Array.isArray(to);
   if (!embeddedDropdown) {
     return (
-      <NavLink
-        className="nav-button"
+      <NavButton
         to={to as string}
         key={label}
       >
         {label}
-      </NavLink>
+      </NavButton>
     );
   }
   const [highlight, setHighlight] = useState<number>(-1);
@@ -108,7 +129,7 @@ function RecursivelyRenderedElement({ to, label }: RecursivelyRenderedElementPro
   }, [tabPress, document.activeElement]);
   return (
     <div
-      className={`dropdown ${shown && 'shown'}`}
+      className={`dropdown ${shown && 'shown'} ${colorStyle}`}
       ref={wrapperRef}
     >
       <button
@@ -116,21 +137,29 @@ function RecursivelyRenderedElement({ to, label }: RecursivelyRenderedElementPro
         onClick={() => setShown(!shown)}
         type="button"
       >
-        <TriangleDown />
-        {label}
+        {dropdownIcon === 'triangle' && <TriangleDown />}
+        <span>
+          {label}
+        </span>
+        {dropdownIcon === 'angle' && (
+          <AngleIcon
+            className="angle-icon"
+          />
+        )}
       </button>
       <List
         ref={ulRef}
         className={`items ${shown && 'shown'}`}
         items={to as []}
-        renderAs={({ to: embeddedTo, label: embeddedLabel }, index) => (
+        renderAs={({ to: embeddedTo, label: embeddedLabel, callback: embeddedCallback }, index) => (
           <li
             key={embeddedLabel}
             className={`${highlight === index && 'highlight'}`}
           >
-            <RecursivelyRenderedElement
+            <Dropdown
               to={embeddedTo}
               label={embeddedLabel}
+              callback={embeddedCallback}
             />
           </li>
         )}
@@ -139,30 +168,11 @@ function RecursivelyRenderedElement({ to, label }: RecursivelyRenderedElementPro
   );
 }
 
-interface NavButtonsAndDropdownsProps {
-  items: INavButton[];
-  className?: string;
-}
-
-function NavButtonsAndDropdowns({ items, className }: NavButtonsAndDropdownsProps) {
-  return (
-    <List
-      items={items}
-      className={className}
-      renderAs={({ to, label }) => (
-        <li key={label}>
-          <RecursivelyRenderedElement
-            to={to}
-            label={label}
-          />
-        </li>
-      )}
-    />
-  );
-}
-
-NavButtonsAndDropdowns.defaultProps = {
-  className: '',
+Dropdown.defaultProps = {
+  to: '#',
+  callback: false,
+  dropdownIcon: 'triangle',
+  colorStyle: 'accent',
 };
 
-export default NavButtonsAndDropdowns;
+export default Dropdown;

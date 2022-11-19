@@ -13,6 +13,10 @@ class ShopProduct extends BaseModel<ShopProduct> implements IShopProduct {
 
   discount!: number;
 
+  discountedPrice!: number;
+
+  rating!: number;
+
   thumbnail!: string;
 
   images!: string[];
@@ -20,8 +24,6 @@ class ShopProduct extends BaseModel<ShopProduct> implements IShopProduct {
   numberSold!: number;
 
   stock!: number;
-
-  rating!: number;
 
   typeId!: string;
 
@@ -76,6 +78,10 @@ export const shopProductAttributes: ModelAttributes<ShopProduct> = {
     type: DataTypes.STRING,
   },
   price: {
+    allowNull: false,
+    type: DataTypes.INTEGER,
+  },
+  discountedPrice: {
     allowNull: false,
     type: DataTypes.INTEGER,
   },

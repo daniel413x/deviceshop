@@ -12,17 +12,17 @@ import { fetchProducts } from '../../http/shopProductAPI';
 import { IShopProduct, QueryReqFetchMultipleShopProducts } from '../../types/types';
 import SearchResult from './SearchResult';
 import EndItem from './EndItem';
-import NavButtonsAndDropdowns from '../NavButtonsAndDropdowns';
 import useBreakpoints from '../../hooks/useBreakpoints';
+import Dropdown from '../Dropdown';
+import List from '../List';
 
 function Navbar() {
   const { lg } = useBreakpoints();
   const [searchResults, setSearchResults] = useState<IShopProduct[]>([]);
   const searchParams: QueryReqFetchMultipleShopProducts = {
     attributes: ['name', 'id', 'thumbnail'],
-    search: {
-      attribute: 'name',
-      value: '',
+    searchbar: {
+      value: '', // server controller method for ShopProducts is configured to to search model Specification according to these parameters and match associated ShopProducts
     },
     limit: 5,
   };
@@ -37,9 +37,17 @@ function Navbar() {
           alt="Stonetech logo"
         />
       </NavLink>
-      <NavButtonsAndDropdowns
+      <List
         items={navbarButtons}
         className="center-row"
+        renderAs={({ to, label }) => (
+          <li key={label}>
+            <Dropdown
+              to={to}
+              label={label}
+            />
+          </li>
+        )}
       />
       <div className="end-row">
         <NavLink className="account-link" to={FRONT_PAGE_ROUTE}>

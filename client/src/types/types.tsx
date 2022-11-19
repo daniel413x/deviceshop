@@ -10,6 +10,8 @@ export interface ISpecification {
   category: string;
   key: string;
   value: string;
+  shopProductId: string;
+  typeId: string;
 }
 
 export interface IType {
@@ -29,10 +31,13 @@ export interface IShopProduct {
   discount: number;
   thumbnail: string;
   type: IType;
+  typeId: string;
   brand: IBrand;
+  brandId: string;
   specifications: ISpecification[];
+  reviews: IReview[];
   images: string[];
-  rating: number;
+  rating: string;
   numberSold: number;
   stock: number;
 }
@@ -87,25 +92,28 @@ export interface IShopElement {
   id: string;
 }
 
+export type SpecificationWithDeviceCount = Omit<ISpecification, 'category' | 'shopProductId' | 'typeId'> & {
+  count: number;
+};
+
+export type SpecificationColumn = Omit<ISpecification, 'value' | 'key' | 'shopProductId' | 'typeId' | 'id'> & {
+  values: string[];
+};
+
 export type Link = {
   to: string;
   label: string;
 };
 
+export type Cache<T> = {
+  [number: number]: T[],
+};
+
 export interface INavButton {
-  to: string | INavButton[];
+  to?: string | INavButton[];
   label: string;
+  callback?: () => void;
 }
-
-export type ShopProductAttributes = ('stock' | 'numberSold' | 'rating' | 'images' | 'BrandId' | 'TypeId' | 'thumbnail' | 'discount' | 'price' | 'name' | 'id')[];
-
-export type ShopElementAttributes = ('reference' | 'image')[];
-
-export type TypeAttributes = ('name' | 'id')[];
-
-export type BrandAttributes = ('name' | 'id')[];
-
-export type BlogAttributes = ('title' | ['createdAt', string] | 'thumbnail' | 'id' | 'body' | 'snippet')[];
 
 export type IterableAttributes<T> = { [ key in keyof T ]: any };
 
@@ -113,21 +121,41 @@ export type QueryReqFetchOne<T> = {
   attributes?: T;
 };
 
-export type Search = {
-  attribute: string;
+export type SearchViaSearchbar = {
   value: string;
+};
+
+export type SearchViaFilteredSearch = {
+  specifications: Omit<ISpecification, 'category' | 'id' | 'typeId' | 'shopProductId'>[];
+};
+
+export type Filter = {
+  key: string;
+  value: string;
+};
+
+export type SearchParamsRecord = {
+  [param: string]: string;
+};
+
+export type QueryFilterSpecifications = {
+  primarySpecificationKey: string;
+  filters: Filter[]; // specification.value
 };
 
 export type QueryReqFetchMultiple<T> = {
   page?: number;
   limit?: number;
-  attributes?: T;
-  search?: Search;
-  where?: any;
+  attributes?: ((keyof T) | [keyof T, string])[];
+  searchbar?: SearchViaSearchbar;
+  filteredSearch?: SearchViaFilteredSearch;
+  where?: Partial<T>;
+  order?: any;
 };
 
-export type QueryReqFetchMultipleShopProducts = QueryReqFetchMultiple<ShopProductAttributes> & {
+export type QueryReqFetchMultipleShopProducts = QueryReqFetchMultiple<IShopProduct> & {
   byMostSold?: boolean;
+  byLowestPrice?: boolean;
 };
 
 export type SequelizeFindAndCountAll<T> = {
@@ -136,3 +164,11 @@ export type SequelizeFindAndCountAll<T> = {
 };
 
 export type RequireAll<T> = Required<T> | Partial<Record<keyof T, undefined>>;
+
+type Only<T, U> = {
+  [P in keyof T]: T[P];
+} & {
+  [P in keyof U]?: never;
+};
+
+export type Either<T, U> = Only<T, U> | Only<U, T>;

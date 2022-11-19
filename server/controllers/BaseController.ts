@@ -60,7 +60,6 @@ export default abstract class BaseController<M extends Model> {
     const limit = Number(req.query.limit) || 22;
     const offset = page * limit - limit;
     const byNewest = req.query.byNewest as string;
-    const byMostSold = req.query.byMostSold as string;
     const order: any[] = [];
     let attributes;
     if (req.query.attributes) {
@@ -80,9 +79,6 @@ export default abstract class BaseController<M extends Model> {
     };
     if (byNewest) {
       params.order = [[col('createdAt'), 'DESC']];
-    }
-    if (byMostSold) {
-      params.order = [[col('numberSold'), 'DESC']];
     }
     if (req.query.where) {
       params.where = JSON.parse(req.query.where as string);
