@@ -65,7 +65,7 @@ function Trending() {
     },
   });
   return (
-    <div className="trending">
+    <div id="trending" className="trending">
       <TrendingItems
         header="Trending now"
         className="top-row"

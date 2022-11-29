@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { fetchProducts } from '../http/shopProductAPI';
 import {
   IShopProduct,
   SearchParamsRecord,
@@ -9,6 +10,8 @@ import {
 import { objectHasProp } from '../utils/functions';
 
 export default class ShopPageStore {
+  loading: boolean;
+
   items: IShopProduct[];
 
   sorting: 'relevance' | 'byLowestPrice' | 'byHighestRated';
@@ -17,18 +20,29 @@ export default class ShopPageStore {
 
   count: number;
 
+  itemsPerPage: number;
+
   filtersToToggle: SpecificationWithDeviceCount[];
 
   activeFilters: SpecificationWithDeviceCount[];
 
+  page: number;
+
   constructor() {
+    this.loading = true;
+    this.itemsPerPage = 15;
     this.items = [];
     this.sorting = 'relevance';
     this.view = 'grid';
     this.count = 0;
     this.filtersToToggle = [];
     this.activeFilters = [];
+    this.page = 1;
     makeAutoObservable(this);
+  }
+
+  setPage(page: number) {
+    this.page = page;
   }
 
   setItems(arr: IShopProduct[], count: number) {
@@ -134,6 +148,7 @@ export default class ShopPageStore {
 
   changeSorting(string: 'relevance' | 'byLowestPrice' | 'byHighestRated') {
     this.sorting = string;
+    this.fetchAndSortShopProducts();
   }
 
   createShopProductsQuery(page: number, limit: number): QueryReqFetchMultipleShopProducts {
@@ -167,5 +182,48 @@ export default class ShopPageStore {
       }
     });
     return returnedArr;
+  }
+
+  async fetchAndSetShopProducts(): Promise<void> {
+    (async () => {
+      try {
+        this.loading = true;
+        const { itemsPerPage } = this;
+        const params = this.createShopProductsQuery(1, itemsPerPage);
+        const res = await fetchProducts(params);
+        this.setItems(res.rows, res.count);
+      } finally {
+        this.loading = false;
+      }
+    })();
+  }
+
+  async fetchMoreShopProducts(newPage: number): Promise<void> {
+    (async () => {
+      try {
+        this.loading = true;
+        const { itemsPerPage } = this;
+        const params = this.createShopProductsQuery(newPage, itemsPerPage);
+        const res = await fetchProducts(params);
+        this.setItems([...this.items, ...res.rows], res.count);
+      } finally {
+        this.loading = false;
+      }
+    })();
+  }
+
+  async fetchAndSortShopProducts(): Promise<void> {
+    (async () => {
+      try {
+        this.loading = true;
+        const { itemsPerPage, page } = this;
+        const params = this.createShopProductsQuery(1, itemsPerPage);
+        params.limit = page * itemsPerPage;
+        const res = await fetchProducts(params);
+        this.setItems(res.rows, res.count);
+      } finally {
+        this.loading = false;
+      }
+    })();
   }
 }

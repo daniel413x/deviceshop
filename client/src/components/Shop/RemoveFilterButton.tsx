@@ -26,8 +26,9 @@ function RemoveFilterButton({ specification }: RemoveFilterButtonProps) {
   } = useContext(Context);
   const onClick = () => {
     setClasses('');
-    const timer = setTimeout(() => {
+    const timer = setTimeout(async () => {
       shopPage.removeFilter(id);
+      await shopPage.fetchAndSetShopProducts();
       const newSearchParams = shopPage.createSearchParamsRecordFromFilters();
       setSearchParams(newSearchParams);
     }, 220);
@@ -43,7 +44,16 @@ function RemoveFilterButton({ specification }: RemoveFilterButtonProps) {
       buttonStyle="warn"
       title="Remove filter"
     >
-      {`${key}: ${value}`}
+      <div>
+        <span className="key">
+          {key}
+        </span>
+        :
+        {' '}
+        <span className="value">
+          {value}
+        </span>
+      </div>
       <CloseIcon
         className="icon"
       />

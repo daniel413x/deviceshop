@@ -12,6 +12,7 @@ import LoadingAnimation from '../LoadingAnimation';
 import Button from '../Button';
 import FilterCheckboxButton from './FilterCheckboxButton';
 import useQuery from '../../hooks/useQuery';
+import { makeSlug } from '../../utils/functions';
 
 interface FilterMenuProps {
   label?: string;
@@ -58,18 +59,21 @@ function FilterMenu({
       setSpecifications([]);
     }
   }, [shopPage.activeFilters]);
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
     shopPage.toggleFilters();
+    await shopPage.fetchAndSetShopProducts();
     const newSearchParams = shopPage.createSearchParamsRecordFromFilters();
     setSearchParams(newSearchParams);
   };
   const showLoadingIcon = loading || specifications.length === 0;
   const showList = toggled && !loading && specifications.length > 0;
+  const idFromKey = makeSlug(specificationKey);
   return (
     <div
       className={`filter-menu ${toggled && 'toggled'}`}
       ref={divRef}
+      id={idFromKey}
     >
       <button
         className="toggle"

@@ -117,34 +117,39 @@ ProductCol.defaultProps = {
 
 function InDepth() {
   const { types } = useContext(Context);
+  const [loading, setLoading] = useState<boolean>(true);
   const [firstItem, setFirstItem] = useState<IShopProduct>();
   const [secondItem, setSecondItem] = useState<IShopProduct>();
   const smartphones = types.findType('Smartphone');
   useEffect(() => {
     (async () => {
-      if (smartphones) {
-        const products = await fetchProducts({
-          limit: 5,
-          where: {
-            typeId: smartphones.id,
-          },
-        });
-        const firstItemIndex = randomInt(0, 4);
-        let secondItemIndex;
-        if (firstItemIndex === 4) {
-          secondItemIndex = 3;
-        } else if (firstItemIndex === 0) {
-          secondItemIndex = 1;
-        } else {
-          secondItemIndex = firstItemIndex + 1;
+      try {
+        if (smartphones) {
+          const products = await fetchProducts({
+            limit: 5,
+            where: {
+              typeId: smartphones.id,
+            },
+          });
+          const firstItemIndex = randomInt(0, 4);
+          let secondItemIndex;
+          if (firstItemIndex === 4) {
+            secondItemIndex = 3;
+          } else if (firstItemIndex === 0) {
+            secondItemIndex = 1;
+          } else {
+            secondItemIndex = firstItemIndex + 1;
+          }
+          setFirstItem(products.rows[firstItemIndex]);
+          setSecondItem(products.rows[secondItemIndex]);
         }
-        setFirstItem(products.rows[firstItemIndex]);
-        setSecondItem(products.rows[secondItemIndex]);
+      } catch (err: any) {
+        setLoading(false);
       }
     })();
   }, []);
   return (
-    <div className="in-depth">
+    <div className={`in-depth ${loading}`}>
       <SectionHeader
         header="In depth"
       />

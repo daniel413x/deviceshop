@@ -43,7 +43,7 @@ function FrontPageSlider() {
     arrows: false,
     swipe: false,
     accessibility: false,
-    autoplay: true,
+    autoplay: !true,
     fade: true,
     afterChange: (newIndex: number) => {
       setPage(newIndex);
@@ -110,7 +110,7 @@ function FrontPageSlider() {
     })();
   }, []);
   return (
-    <div className="slider">
+    <div id="top-slider" className="slider">
       <div className="wrapper">
         <SliderAngleButton
           className="angle-button-next"
@@ -143,17 +143,21 @@ function FrontPageSlider() {
             />
           ))}
         </Slider>
-        <div className="dots">
+        <ul className="dots">
           {headerImages.map(({ img }, index) => (
-            <button
-              type="button"
-              onClick={() => goTo(index)}
-              key={`${img}_button`}
+            <li
+              key={`${img}_slider_button`}
             >
-              <div className={`dot ${page === index ? 'active' : undefined}`} />
-            </button>
+              <button
+                type="button"
+                onClick={() => goTo(index)}
+                className={`dot ${page === index ? 'active' : undefined}`}
+              >
+                {}
+              </button>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </div>
   );

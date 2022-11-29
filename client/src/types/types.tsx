@@ -1,5 +1,15 @@
 import { FC } from 'react';
 
+export type RequireAll<T> = Required<T> | Partial<Record<keyof T, undefined>>;
+
+type Only<T, U> = {
+  [P in keyof T]: T[P];
+} & {
+  [P in keyof U]?: never;
+};
+
+export type Either<T, U> = Only<T, U> | Only<U, T>;
+
 export interface IRouterRoute {
   path: string;
   Component: FC;
@@ -100,11 +110,6 @@ export type SpecificationColumn = Omit<ISpecification, 'value' | 'key' | 'shopPr
   values: string[];
 };
 
-export type Link = {
-  to: string;
-  label: string;
-};
-
 export type Cache<T> = {
   [number: number]: T[],
 };
@@ -162,13 +167,3 @@ export type SequelizeFindAndCountAll<T> = {
   rows: T[];
   count: number;
 };
-
-export type RequireAll<T> = Required<T> | Partial<Record<keyof T, undefined>>;
-
-type Only<T, U> = {
-  [P in keyof T]: T[P];
-} & {
-  [P in keyof U]?: never;
-};
-
-export type Either<T, U> = Only<T, U> | Only<U, T>;

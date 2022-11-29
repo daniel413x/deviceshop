@@ -19,20 +19,20 @@ function RatingStars({
   const floor = Math.floor(numberRating);
   const difference = ceiling - numberRating;
   for (let n = 0; n < floor; n += 1) {
-    stars.push(<FullStar key={`${nameForKey}${stars.length}`} />);
+    stars.push(<FullStar className="full-star" key={`${nameForKey}${stars.length}`} />);
   }
   if (stars.length === 0) {
     for (let i = 0; i < 5; i += 1) {
-      stars.push(<GrayStar key={`${nameForKey}${stars.length}`} />);
+      stars.push(<GrayStar className="gray-star" key={`${nameForKey}${stars.length}`} />);
     }
   }
   if (stars.length < 5) {
     if (difference === 0) {
-      stars.push(<EmptyStar key={`${nameForKey}${stars.length}`} />);
+      stars.push(<EmptyStar className="empty-star" key={`${nameForKey}${stars.length}`} />);
     } else if (difference >= 0.5) {
-      stars.push(<FullStar key={`${nameForKey}${stars.length}`} />);
+      stars.push(<FullStar className="full-star" key={`${nameForKey}${stars.length}`} />);
     } else {
-      stars.push(<HalfStar key={`${nameForKey}${stars.length}`} />);
+      stars.push(<HalfStar className="half-star" key={`${nameForKey}${stars.length}`} />);
     }
     const starsNeeded = 5 - stars.length;
     for (let n = 0; n < starsNeeded; n += 1) {

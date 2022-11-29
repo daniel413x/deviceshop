@@ -24,6 +24,7 @@
   --input-padding: 0.775rem 1rem;
   --card-box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.25);
   --dropdown-box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  --navbar-font-size: 0.875rem;
 }
 
 @media (max-width: 1399px) {
@@ -59,6 +60,11 @@ body, html {
   min-height: calc(100vh - var(--footer-height));
 }
 
+#main-routes-content, #footer, #navbar {
+  background-color: #fff;
+  filter: brightness(0.5);
+}
+
 .blocked {
   pointer-events: none;
   opacity: 0.5;
@@ -89,6 +95,7 @@ body, html {
   color: var(--primary-text);
   padding: 10px  20px;
   border-radius: var(--styled-border-radius);
+  font-size: var(--navbar-font-size);
 }
 
 .nav-button:hover {
@@ -100,6 +107,8 @@ body, html {
   position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  font-size: var(--navbar-font-size);
 }
 
 .dropdown .toggle {
@@ -121,12 +130,35 @@ body, html {
   color: var(--primary-text);
 }
 
+.dropdown.white .toggle {
+  border-radius: var(--styled-border-radius);
+}
+
+.dropdown.white .toggle, .nav-button.dropdown.white, button.dropdown.white {
+  background-color:#fff;
+  color: var(--primary-text);
+}
+
+.nav-button.dropdown.white:hover, button.dropdown.white:hover {
+  background-color: var(--primary-accent);
+  color: #fff;
+}
+
+.dropdown.white .toggle.shown, .dropdown.white .toggle:hover, .dropdown.shown.white .toggle:focus {
+  background-color: var(--primary-accent);
+  color: #fff;
+}
+
 .dropdown .items .toggle:focus {
   border-radius: 0px;
 }
 
 .dropdown .toggle.shown svg path, .dropdown .toggle:hover svg path, .dropdown .toggle:focus svg path, .dropdown .items li.highlight .dropdown .toggle svg path {
   fill: #fff;
+}
+
+.dropdown .items .toggle {
+  border-radius: 0px;
 }
 
 .dropdown .items {
@@ -160,7 +192,7 @@ body, html {
   visibility: visible;
 }
 
-.dropdown .items li>*:not(.dropdown) {
+.dropdown .items li>*:not(.dropdown.wrapper) {
   padding: 10px  20px;
   /* color: var(--primary-text); */
 }
@@ -731,7 +763,6 @@ input, textarea, input::placeholder, textarea::placeholder {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
 }
 
 @media (max-width: 575px) {
@@ -771,7 +802,7 @@ input, textarea, input::placeholder, textarea::placeholder {
 #navbar .end-row {
   display: flex;
   align-items: center;
-  grid-gap: 0.75rem;
+  grid-gap: 1rem;
 }
 
 #navbar .end-row .account-link {
@@ -779,6 +810,7 @@ input, textarea, input::placeholder, textarea::placeholder {
   display: flex;
   align-items: center;
   grid-gap: 8px;
+  font-size: var(--navbar-font-size);
 }
 
 #navbar .end-row .account-link svg {
@@ -1536,6 +1568,10 @@ input, textarea, input::placeholder, textarea::placeholder {
   grid-gap: 0.625rem;
 }
 
+#footer .wrapper .right-col .links-section .label {
+  color: var(--primary-text);
+}
+
 #footer .wrapper .right-col .links-section-ul {
   display: flex;
   flex-direction: column;
@@ -1550,9 +1586,7 @@ input, textarea, input::placeholder, textarea::placeholder {
 }
 
 #footer .wrapper .right-col .links-section .links-ul .link {
-  background-color: #fff;
-  padding: 0.25rem 0.625rem;
-  border-radius: var(--styled-border-radius);
+  padding: 0.35rem 0.75rem;
 }
 
 #footer .to-top-button {

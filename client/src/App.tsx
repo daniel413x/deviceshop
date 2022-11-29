@@ -20,7 +20,7 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
-        const fetchedTypes = await fetchTypes({ attributes: ['name', 'id'] });
+        const fetchedTypes = await fetchTypes();
         types.setTypes(fetchedTypes);
         const registeredToken = localStorage.getItem('registeredToken');
         if (registeredToken) {

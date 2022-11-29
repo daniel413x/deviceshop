@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React, {
-  useContext, useEffect, useRef, useState,
+  useContext, useEffect,
 } from 'react';
 import { NavLink } from 'react-router-dom';
 import BreadcrumbTrail from '../components/BreadcrumbTrail';
@@ -14,7 +14,6 @@ import ShopProductCard from '../components/ShopProductCard';
 import SideCol from '../components/SideCol';
 import Context from '../context/context';
 import usePagination from '../hooks/usePagination';
-import { fetchProducts } from '../http/shopProductAPI';
 import { shopFilterButtons } from '../utils/arrays';
 import { ReactComponent as AngleIcon } from '../assets/icons/angleup.svg';
 import useTrackDimensions from '../hooks/useTrackDimensions';
@@ -23,9 +22,7 @@ import useQuery from '../hooks/useQuery';
 
 function Shop() {
   const { shopPage } = useContext(Context);
-  const [loading, setLoading] = useState<boolean>(true);
-  const productCount = shopPage.count;
-  const nullFirstRender = useRef(null);
+  const dbProductCount = shopPage.count;
   const itemsPerPage = 15;
   const {
     page,
@@ -33,18 +30,21 @@ function Shop() {
     changePage,
   } = usePagination({
     itemsPerPage,
-    itemsInDb: productCount,
+    itemsInDb: dbProductCount,
   });
   const {
     searchParamsRecord,
     thereAreSearchParams,
-    searchParams,
   } = useQuery();
-  const renderedProductCount = productCount < itemsPerPage ? productCount : itemsPerPage * page;
+  const currentCount = shopPage.items.length;
+  let renderedProductCount = currentCount;
+  if (currentCount >= dbProductCount) {
+    renderedProductCount = dbProductCount;
+  }
   const { width: mainColWidth } = useTrackDimensions('main-col');
   const gridGap = 20;
   const itemWidth = 265;
-  const compositeWidth = itemWidth + gridGap;
+  const compositeWidth = itemWidth + gridGap; // each compositeWidth is intended to correspond to the width of a .shop-product-card plus the right side of its grid gap, creating predictable break point matching up with that of the .shop-product-ul's flex container
   const maxWidth = (Math.floor(
     (mainColWidth! + gridGap) / compositeWidth,
   )
@@ -53,46 +53,24 @@ function Shop() {
   const loadMore = async () => {
     const newPage = page + 1;
     changePage(newPage);
-    const params = shopPage.createShopProductsQuery(newPage, itemsPerPage);
-    const res = await fetchProducts(params);
-    shopPage.setItems([...shopPage.items, ...res.rows], res.count);
+    await shopPage.fetchMoreShopProducts(newPage);
   };
+  useEffect(() => {
+    changePage(1);
+  }, [shopPage.activeFilters]);
+  useEffect(() => {
+    shopPage.setPage(page);
+  }, [page]);
   useEffect(() => {
     if (thereAreSearchParams) {
       shopPage.setFiltersFromSearchParams(searchParamsRecord);
     } else {
       shopPage.resetFilters();
     }
-  }, [searchParams]);
-  useEffect(() => {
     (async () => {
-      try {
-        changePage(1);
-        const params = shopPage.createShopProductsQuery(1, itemsPerPage);
-        const res = await fetchProducts(params);
-        shopPage.setItems(res.rows, res.count);
-      } finally {
-        setLoading(false);
-      }
+      await shopPage.fetchAndSetShopProducts();
     })();
-  }, [shopPage.activeFilters]);
-  useEffect(() => {
-    if (nullFirstRender.current) {
-      nullFirstRender.current = null;
-      return;
-    }
-    (async () => {
-      try {
-        const params = shopPage.createShopProductsQuery(page, itemsPerPage);
-        params.limit = page * itemsPerPage;
-        params.page = 1;
-        const res = await fetchProducts(params);
-        shopPage.setItems(res.rows, res.count);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [shopPage.sorting]);
+  }, []);
   return (
     <div id="shop">
       <SideCol />
@@ -109,7 +87,11 @@ function Shop() {
             style={{ maxWidth }}
           >
             <span className="product-count">
-              {`${productCount} products`}
+              <span className="figure">
+                {dbProductCount}
+              </span>
+              {' '}
+              products
             </span>
             <List
               className="remove-filter-button-ul"
@@ -139,7 +121,7 @@ function Shop() {
         </div>
         <List
           items={shopPage.items}
-          className={`shop-products-ul ${listView && 'list-view'}`}
+          className={`shop-products-ul ${listView && 'list-view'} ${shopPage.loading && 'loading'}`}
           renderAs={((product) => (
             <li key={product.id}>
               <ShopProductCard
@@ -150,7 +132,7 @@ function Shop() {
             </li>
           ))}
         />
-        {loading && (
+        {shopPage.loading && (
           <LoadingAnimation />
         )}
         <div
@@ -162,7 +144,7 @@ function Shop() {
             {' '}
             of
             {' '}
-            {productCount}
+            {dbProductCount}
             {' '}
             products
           </span>

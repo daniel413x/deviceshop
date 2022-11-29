@@ -13,7 +13,8 @@ interface DropdownProps {
   label: string;
   callback?: () => void;
   dropdownIcon?: 'angle' | 'triangle';
-  colorStyle?: 'gray' | 'accent';
+  colorStyle?: 'gray' | 'accent' | 'white';
+  className?: string;
 }
 
 function Dropdown({
@@ -22,11 +23,12 @@ function Dropdown({
   callback,
   dropdownIcon,
   colorStyle,
+  className,
 }: DropdownProps) {
   if (callback) {
     return (
       <button
-        className="callback-button"
+        className={`dropdown callback-button ${className} ${colorStyle}`}
         onClick={callback}
         key={label}
         type="button"
@@ -41,6 +43,7 @@ function Dropdown({
       <NavButton
         to={to as string}
         key={label}
+        className={`dropdown ${className} ${colorStyle}`}
       >
         {label}
       </NavButton>
@@ -129,18 +132,16 @@ function Dropdown({
   }, [tabPress, document.activeElement]);
   return (
     <div
-      className={`dropdown ${shown && 'shown'} ${colorStyle}`}
+      className={`dropdown wrapper ${shown && 'shown'} ${colorStyle}`}
       ref={wrapperRef}
     >
       <button
-        className={`toggle ${shown && 'shown'}`}
+        className={`toggle ${shown && 'shown'} ${className}`}
         onClick={() => setShown(!shown)}
         type="button"
       >
         {dropdownIcon === 'triangle' && <TriangleDown />}
-        <span>
-          {label}
-        </span>
+        {label}
         {dropdownIcon === 'angle' && (
           <AngleIcon
             className="angle-icon"
@@ -160,6 +161,7 @@ function Dropdown({
               to={embeddedTo}
               label={embeddedLabel}
               callback={embeddedCallback}
+              className={className}
             />
           </li>
         )}
@@ -173,6 +175,7 @@ Dropdown.defaultProps = {
   callback: false,
   dropdownIcon: 'triangle',
   colorStyle: 'accent',
+  className: '',
 };
 
 export default Dropdown;

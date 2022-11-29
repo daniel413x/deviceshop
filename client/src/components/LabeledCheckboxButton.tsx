@@ -49,9 +49,7 @@ function LabeledCheckboxButton({
       }}
       onClick={onClick}
     >
-      <div>
-        <div className={`checkbox-div ${boolean && 'checked'} ${active && 'active'} ${boxShadowVal}`} />
-      </div>
+      <div className={`checkbox-div ${boolean && 'checked'} ${active && 'active'} ${boxShadowVal}`} />
       <div className="label">
         {label}
       </div>

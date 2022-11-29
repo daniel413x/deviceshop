@@ -6,11 +6,12 @@ import {
   footerLinkSections,
 } from '../../utils/arrays';
 import { ReactComponent as AngleUp } from '../../assets/icons/angleup.svg';
-import { Link } from '../../types/types';
+import { INavButton } from '../../types/types';
 import List from '../List';
+import Dropdown from '../Dropdown';
 
 interface LinksProps {
-  links: Link[];
+  links: INavButton[];
   label: string;
 }
 
@@ -25,9 +26,12 @@ function Links({ label, links }: LinksProps) {
         className="links-ul"
         renderAs={(({ label: linkLabel, to }) => (
           <li key={`${linkLabel}_footer`}>
-            <NavLink to={to} className="link">
-              {linkLabel}
-            </NavLink>
+            <Dropdown
+              to={to}
+              label={linkLabel}
+              className="link"
+              colorStyle="white"
+            />
           </li>
         ))}
       />

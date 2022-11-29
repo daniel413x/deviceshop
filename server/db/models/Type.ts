@@ -4,8 +4,6 @@ import {
 import { IType, ModelAttributes } from '../../types/types';
 import sequelize from '../connection';
 import BaseModel, { baseModelAttributes } from './BaseModel';
-import Brand from './Brand';
-import TypeBrand from './TypeBrand';
 
 // eslint-disable-next-line no-use-before-define
 class Type extends BaseModel<Type> implements IType {
@@ -22,7 +20,6 @@ class Type extends BaseModel<Type> implements IType {
       foreignKey: 'typeId',
       as: 'orderedProducts',
     });
-    Type.belongsToMany(Brand, { through: TypeBrand });
   }
 }
 

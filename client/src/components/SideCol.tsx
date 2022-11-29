@@ -31,7 +31,7 @@ function SideCol() {
     })();
   }, []);
   return (
-    <div className="side-col">
+    <div className={`side-col ${(loadingBrands || loadingTypes) && 'loading'}`}>
       <span className="label">
         Department
       </span>

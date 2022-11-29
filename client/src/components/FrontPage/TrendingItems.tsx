@@ -18,15 +18,20 @@ function TrendingItems({
   header,
   className,
 }: TrendingItemsProps) {
+  const [loading, setLoading] = useState<boolean>(true);
   const [products, setProducts] = useState<IShopProduct[]>([]);
   useEffect(() => {
     (async () => {
-      const fetchedProducts = await api();
-      setProducts(fetchedProducts.rows);
+      try {
+        const fetchedProducts = await api();
+        setProducts(fetchedProducts.rows);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
   return (
-    <div className={`trending-items ${className}`}>
+    <div className={`trending-items ${className} ${loading}`}>
       <SectionHeader
         header={header}
       />

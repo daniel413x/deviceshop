@@ -35,9 +35,11 @@ function BreadcrumbTrail() {
           );
         }
         return (
-          <span key={str} className="breadcrumb current">
-            {str}
-          </span>
+          <li key={str}>
+            <span className="breadcrumb current">
+              {str}
+            </span>
+          </li>
         );
       })}
     </ul>

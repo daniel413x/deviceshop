@@ -29,6 +29,17 @@ export const indexPublicRoutes = [
 //   },
 // ];
 
+export const nestedNavButtons = [
+  {
+    to: '#',
+    label: 'Nested Link',
+  },
+  {
+    to: '#',
+    label: 'Nested Link Two',
+  },
+];
+
 export const supportNavButtons = [
   {
     to: '#',
@@ -56,6 +67,10 @@ export const companyNavButtons = [
   {
     to: '#',
     label: 'Jobs',
+  },
+  {
+    to: nestedNavButtons,
+    label: 'Nested',
   },
 ];
 

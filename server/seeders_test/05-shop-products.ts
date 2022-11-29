@@ -37,16 +37,20 @@ for (let n = 0; n <= 12; n += 1) {
   const laptopId = uuid();
   const accessoryId = uuid();
   const tabletId = uuid();
-  const makeA53 = n % 2;
+  // const even = n % 2 === 0;
+  const odd = n % 2;
+  const makeSamsung = odd;
+  const makeHP = odd;
+  const deviceNumber = n + 1;
   const smartphone = {
     thumbnail: 'test-product-filler-thumbnail.png',
     images: ['test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png'],
     price: 100000,
     discount: 20,
     discountedPrice: 80000,
-    name: makeA53 ? `Samsung Galaxy numGB Android 11 5G Smartphone ${n + 1}` : `Apple iPhone numGB iOS 16 5G Smartphone ${n + 1}`,
-    // name: `Smartphone ${n + 1}`,
-    brandId: makeA53 ? samsung : apple,
+    name: makeSamsung ? `Samsung Galaxy ${n <= 4 ? '256GB' : '128GB'} Android 11 5G Smartphone ${deviceNumber}` : `Apple iPhone  ${n <= 4 ? '256GB' : '128GB'} iOS 16 5G Smartphone ${deviceNumber}`,
+    // name: `Smartphone ${deviceNumber}`,
+    brandId: makeSamsung ? samsung : apple,
     typeId: smartphonetypeId,
     numberSold,
     stock: 10,
@@ -67,7 +71,7 @@ for (let n = 0; n <= 12; n += 1) {
     price: 100000,
     discount: 20,
     discountedPrice: 80000,
-    name: `Laptop ${n + 1}`,
+    name: makeHP ? `HP Laptop ${deviceNumber}` : `Apple Macbook ${deviceNumber}`,
     numberSold: 0,
     stock: 10,
     rating: 0,
@@ -83,7 +87,7 @@ for (let n = 0; n <= 12; n += 1) {
     price: 1000,
     discount: 20,
     discountedPrice: 800,
-    name: `Accessory ${n + 1}`,
+    name: `Accessory ${deviceNumber}`,
     numberSold: 0,
     stock: 10,
     rating: 0,
@@ -99,7 +103,7 @@ for (let n = 0; n <= 12; n += 1) {
     price: 10000,
     discount: 20,
     discountedPrice: 8000,
-    name: `Tablet ${n + 1}`,
+    name: `Tablet ${deviceNumber}`,
     numberSold: 0,
     stock: 10,
     rating: 0,

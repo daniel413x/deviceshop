@@ -65,15 +65,20 @@ function Review({
 }
 
 function RecentlyReviewed() {
+  const [loading, setLoading] = useState<boolean>(true);
   const [reviews, setReviews] = useState<IReview[]>([]);
   useEffect(() => {
     (async () => {
-      const fetchedReviews = await fetchRecentReviews();
-      setReviews(fetchedReviews.rows);
+      try {
+        const fetchedReviews = await fetchRecentReviews();
+        setReviews(fetchedReviews.rows);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
   return (
-    <div className="recently-reviewed">
+    <div className={`recently-reviewed ${loading}`}>
       <div className="header-col">
         <SectionHeader
           header="Recently reviewed"
