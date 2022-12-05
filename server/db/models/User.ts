@@ -21,7 +21,7 @@ class User extends BaseModel<User> implements IUser {
 
   password!: string;
 
-  avatar?: CreationOptional<string>;
+  avatar!: string;
 
   phoneNumber?: CreationOptional<string>;
 
@@ -74,6 +74,7 @@ export const userAttributes: ModelAttributes<User> = {
   },
   avatar: {
     type: DataTypes.STRING,
+    defaultValue: 'default-avatar.jpg',
   },
   phoneNumber: {
     type: DataTypes.STRING,

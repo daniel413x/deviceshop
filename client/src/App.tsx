@@ -10,6 +10,7 @@ import { autoAuth } from './http/userAPI';
 import Footer from './components/Footer/Footer';
 import ScrollWrapper from './components/ScrollWrapper';
 import { fetchTypes } from './http/typeAPI';
+import Notifications from './components/Notifications/Notifications';
 
 function App() {
   const {
@@ -39,6 +40,7 @@ function App() {
   return loading ? null : (
     <Router>
       <ScrollWrapper>
+        <Notifications />
         <Navbar />
         <div
           id="main-routes-content"

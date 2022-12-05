@@ -23,7 +23,7 @@ function Review({
     body,
     rating,
   } = review;
-  const { name: productName } = review.product;
+  const { name: productName } = review.shopproduct;
   const {
     username,
     firstName,

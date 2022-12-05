@@ -1,18 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Slider from 'react-slick';
-import { NavLink } from 'react-router-dom';
-import useKeyPress from '../../hooks/useKeyPress';
-import imageOne from '../../assets/images/frontpage-slider-img-1.jpg';
-import imageTwo from '../../assets/images/frontpage-slider-img-2.jpg';
-import imageThree from '../../assets/images/frontpage-slider-img-3.jpg';
-import imageFour from '../../assets/images/frontpage-slider-img-4.jpg';
-import imageFive from '../../assets/images/frontpage-slider-img-5.jpg';
-import { fetchShopElementByReference } from '../../http/shopElementAPI';
-import { IShopElement } from '../../types/types';
-import SliderAngleButton from '../SliderAngleButton';
+import useKeyPress from '../hooks/useKeyPress';
+import SliderAngleButton from './SliderAngleButton';
 
-function FrontPageSlider() {
-  const [foreground, setForeground] = useState<IShopElement>();
+interface SliderComponentProps {
+  items: string[];
+  autoplay?: boolean;
+  instant?: boolean;
+}
+
+function SliderComponent({
+  items,
+  autoplay,
+  instant,
+}: SliderComponentProps) {
   const [page, setPage] = useState<number>(0);
   const rightPress = useKeyPress('ArrowRight');
   const leftPress = useKeyPress('ArrowLeft');
@@ -20,37 +21,20 @@ function FrontPageSlider() {
   const sliderRef = useRef<Slider>(null);
   const settings = {
     infinite: true,
-    speed: 1500,
+    speed: instant ? 0 : 1500,
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: false,
     swipe: false,
-    accessibility: false,
-    autoplay: !true,
-    fade: true,
+    accessibility: true,
+    autoplay,
+    fade: instant,
     afterChange: (newIndex: number) => {
       setPage(newIndex);
     },
   };
-  const headerImages = [
-    {
-      img: imageOne,
-    },
-    {
-      img: imageTwo,
-    },
-    {
-      img: imageThree,
-    },
-    {
-      img: imageFour,
-    },
-    {
-      img: imageFive,
-    },
-  ];
   const firstPageReached = page === 0;
-  const lastPageReached = page === headerImages.length - 1;
+  const lastPageReached = page === items.length - 1;
   const tempBlock = () => {
     setBlockActions(true);
     setTimeout(() => setBlockActions(false), 1100);
@@ -86,50 +70,43 @@ function FrontPageSlider() {
       next();
     }
   }, [rightPress]);
-  useEffect(() => {
-    (async () => {
-      const foregroundImage = await fetchShopElementByReference('front-page-slider-foreground');
-      setForeground(foregroundImage);
-    })();
-  }, []);
+  const showNextButton = page !== items.length - 1;
+  const showPrevButton = page !== 0;
   return (
     <div className="slider">
       <div className="wrapper">
-        <SliderAngleButton
-          className="angle-button-next"
-          func={next}
-        />
-        <SliderAngleButton
-          className="angle-button-prev"
-          func={prev}
-        />
-        {foreground && (
-          <NavLink to={foreground.to}>
-            <img
-              className="fg-header"
-              src={`${process.env.REACT_APP_API_URL}${foreground?.image}`}
-              alt="Promotional"
-            />
-          </NavLink>
+        {showNextButton && (
+          <SliderAngleButton
+            className="angle-button-next"
+            func={next}
+          />
+        )}
+        {showPrevButton && (
+          <SliderAngleButton
+            className="angle-button-prev"
+            func={prev}
+          />
         )}
         <Slider
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...settings}
           ref={sliderRef}
         >
-          {headerImages.map(({ img }) => (
+          {items.map((img, i) => (
             <img
-              key={img}
+              // eslint-disable-next-line react/no-array-index-key
+              key={`${img}${i}`}
               src={img}
-              alt=""
+              alt="Product in slider"
               className="slid-image"
             />
           ))}
         </Slider>
         <ul className="dots">
-          {headerImages.map(({ img }, index) => (
+          {items.map((img, index) => (
             <li
-              key={`${img}_slider_button`}
+              // eslint-disable-next-line react/no-array-index-key
+              key={`${img}${index}_slider_button`}
             >
               <button
                 type="button"
@@ -146,4 +123,9 @@ function FrontPageSlider() {
   );
 }
 
-export default FrontPageSlider;
+SliderComponent.defaultProps = {
+  autoplay: false,
+  instant: false,
+};
+
+export default SliderComponent;

@@ -1,8 +1,17 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 
-function BreadcrumbTrail() {
+interface BreadcrumbTrailProps {
+  lastString?: string;
+}
+
+function BreadcrumbTrail({
+  lastString,
+}: BreadcrumbTrailProps) {
   const breadcrumbs = useLocation().pathname.split(/\//).filter(Boolean);
+  if (lastString) {
+    breadcrumbs[breadcrumbs.length - 1] = lastString;
+  }
   return (
     <ul className="breadcrumb-trail">
       <li key="breadcrumb_main">
@@ -45,5 +54,9 @@ function BreadcrumbTrail() {
     </ul>
   );
 }
+
+BreadcrumbTrail.defaultProps = {
+  lastString: '',
+};
 
 export default BreadcrumbTrail;

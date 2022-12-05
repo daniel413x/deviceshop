@@ -57,10 +57,10 @@ Cypress.Commands.add('shopProductsDidLoad', () => {
 
 Cypress.Commands.add('shopOpenSortingDropdown', () => {
   cy.wait(300);
-  cy.get('.sort-buttons')
+  cy.get('.sort-dropdown')
     .find('.toggle')
     .click({ force: true });
-  cy.get('.sort-buttons')
+  cy.get('.sort-dropdown')
     .find('.callback-button')
     .as('sortingDropdownButtons');
 });

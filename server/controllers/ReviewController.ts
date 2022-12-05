@@ -1,6 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
-import { Op, Sequelize } from 'sequelize';
+import {
+  col,
+  FindAndCountOptions,
+  Op,
+  Sequelize,
+} from 'sequelize';
 import Order from '../db/models/Order';
+import OrderedProduct from '../db/models/OrderedProduct';
 import Review from '../db/models/Review';
 import ShopProduct from '../db/models/ShopProduct';
 import User from '../db/models/User';
@@ -8,13 +14,43 @@ import ApiError from '../error/ApiError';
 import { DELIVERED } from '../utils/consts';
 import BaseController from './BaseController';
 
+const includeAll = [
+  {
+    model: User,
+    as: 'user',
+  },
+  {
+    model: ShopProduct,
+    as: 'shopproduct',
+  },
+  {
+    model: OrderedProduct,
+    as: 'orderedproduct',
+    attributes: ['createdAt'],
+  },
+];
+
 class ReviewController extends BaseController<Review> {
   constructor() {
     super(Review);
   }
 
   get(req: Request, res: Response) {
-    this.execFindAndCountAll(req, res);
+    const options: FindAndCountOptions<Review> = {
+      include: includeAll,
+    };
+    if (req.query.order) {
+      const order = JSON.parse(req.query.order as string);
+      const byLowestRated = order.byLowestRated as string;
+      const byHighestRated = order.byHighestRated as string;
+      if (byLowestRated) {
+        options.order = [[col('rating'), 'ASC']];
+      }
+      if (byHighestRated) {
+        options.order = [[col('rating'), 'DESC']];
+      }
+    }
+    this.execFindAndCountAll(req, res, options);
   }
 
   recentReviews(req: Request, res: Response) {
@@ -29,16 +65,7 @@ class ReviewController extends BaseController<Review> {
       },
       limit: 3,
       order: Sequelize.literal('random()'),
-      include: [
-        {
-          model: User,
-          as: 'user',
-        },
-        {
-          model: ShopProduct,
-          as: 'product',
-        },
-      ],
+      include: includeAll,
     };
     this.execFindAndCountAll(req, res, options);
   }

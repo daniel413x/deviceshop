@@ -37,8 +37,10 @@ export interface IBrand {
 export interface IShopProduct {
   id: string;
   name: string;
+  description: string;
   price: number;
   discount: number;
+  discountedPrice: number;
   thumbnail: string;
   type: IType;
   typeId: string;
@@ -52,6 +54,16 @@ export interface IShopProduct {
   stock: number;
 }
 
+export interface IOrderedProduct {
+  id: string;
+  price: number;
+  typeId: string;
+  brandId: string;
+  shopProductId: string;
+  userId: string;
+  createdAt: string;
+}
+
 export interface IUser {
   id: string;
   firstName?: string;
@@ -60,7 +72,7 @@ export interface IUser {
   username: string;
   phoneNumber?: string;
   roles: string[];
-  avatar?: string;
+  avatar: string;
 }
 
 export interface IReview {
@@ -68,7 +80,8 @@ export interface IReview {
   rating: number;
   body: string;
   shopProductId: string;
-  product: IShopProduct;
+  shopproduct: IShopProduct;
+  orderedproduct: IOrderedProduct;
   user: IUser;
   userId: string;
 }
@@ -76,6 +89,7 @@ export interface IReview {
 export interface ICart {
   id: string;
   userId: string;
+  cartItems: IOrderedProduct[];
 }
 
 export interface IOrder {
@@ -102,6 +116,15 @@ export interface IShopElement {
   id: string;
 }
 
+export interface INotification {
+  messageLineOne?: string;
+  messageLineTwo?: string;
+  color?: string;
+  image?: string;
+  timeout: number;
+  id: number;
+}
+
 export type SpecificationWithDeviceCount = Omit<ISpecification, 'category' | 'shopProductId' | 'typeId'> & {
   count: number;
 };
@@ -121,6 +144,8 @@ export interface INavButton {
 }
 
 export type IterableAttributes<T> = { [ key in keyof T ]: any };
+
+export type InclusionAttributes<T> = ((keyof T) | [keyof T, string])[] | { exclude: ((keyof T) | [keyof T, string])[] };
 
 export type QueryReqFetchOne<T> = {
   attributes?: T;
@@ -148,14 +173,17 @@ export type QueryFilterSpecifications = {
   filters: Filter[]; // specification.value
 };
 
+export type QueryReqOrderedProduct = Omit<IOrderedProduct, 'id' | 'createdAt'>;
+
 export type QueryReqFetchMultiple<T> = {
   page?: number;
   limit?: number;
-  attributes?: ((keyof T) | [keyof T, string])[];
+  attributes?: InclusionAttributes<T>;
   searchbar?: SearchViaSearchbar;
   filteredSearch?: SearchViaFilteredSearch;
   where?: Partial<T>;
   order?: any;
+  associationAttributes?: [string[], InclusionAttributes<any>][]; // model alias (like chain selector), attributes to include
 };
 
 export type QueryReqFetchMultipleShopProducts = QueryReqFetchMultiple<IShopProduct> & {

@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { IShopProduct, SpecificationColumn } from '../types/types';
 import { SHOP_ROUTE } from '../utils/consts';
 import {
-  calcPriceAfterDiscounts,
+  convertPriceInt,
   formatPrice,
   listProductAttributeInColumns,
   listProductAttributes,
@@ -33,17 +33,14 @@ function ShopProductCard({
     type: {
       name: typeName,
     },
+    rating,
     reviews,
     specifications,
     id,
+    thumbnail,
   } = product;
-  let rating = 0;
-  for (let r = 0; r < reviews.length; r += 1) {
-    rating += reviews[r].rating;
-  }
-  rating /= reviews.length;
-  const undiscountedPrice = formatPrice(calcPriceAfterDiscounts(price));
-  const discountedPrice = formatPrice(calcPriceAfterDiscounts(price, discount));
+  const undiscountedPrice = formatPrice(convertPriceInt(price));
+  const discountedPrice = formatPrice(convertPriceInt(price, discount));
   const slug = makeSlug(productName);
   const attributes = listView ? listProductAttributeInColumns(specifications) : listProductAttributes(specifications);
   const showGridViewAttributes = expanded && !listView;
@@ -51,12 +48,12 @@ function ShopProductCard({
   return (
     <NavLink
       className={`shop-product-card ${expanded && 'expanded'} ${listView && 'list-view'}`}
-      to={`${SHOP_ROUTE}/${slug}`}
+      to={`/${SHOP_ROUTE}/${slug}`}
       title={productName}
     >
       <div className="img-wrapper">
         <img
-          src={`${process.env.REACT_APP_API_URL}${product.thumbnail}`}
+          src={`${process.env.REACT_APP_API_URL}${thumbnail}`}
           alt="Shop now"
         />
         <div className="price-row">

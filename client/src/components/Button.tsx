@@ -5,7 +5,7 @@ interface ButtonProps {
   className?: string;
   onClick?: (...args: any[]) => void;
   children?: ReactElement | (ReactElement | string)[] | string;
-  buttonStyle?: 'primary' | 'secondary' | 'warn';
+  buttonStyle?: 'primary' | 'secondary' | 'warn' | 'blank';
   title?: string;
 }
 

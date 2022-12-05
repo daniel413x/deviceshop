@@ -34,3 +34,6 @@ export const orderForFourthUserWithAReview = '2290b417-c14c-498b-b9b7-35c5c64938
 export const orderedProductWithAddon = 'c03143c1-1d73-4323-804a-644999aa4bd0';
 export const orderedProductThreeStars = 'bece6c76-ea23-4472-8bba-94a50a907c74';
 export const orderedProductFourStars = '3e5056f5-9561-4ae3-a762-410672f35535';
+export const orderedProductForSecondUser = '06ac8bed-038d-4a8e-8139-4dc633d24dbb';
+export const orderedProductForThirdUser = '91be5b78-ddaf-47cc-b822-e7a0a30b1320';
+export const orderedProductForFourthUser = 'add2ff0e-bf20-4a6d-aa71-ce264eebfb46';

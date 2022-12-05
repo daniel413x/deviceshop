@@ -1,6 +1,12 @@
 import { v4 as uuid } from 'uuid';
 import {
   fourthUserWithAReview,
+  orderedProductForFourthUser,
+  orderedProductForSecondUser,
+  orderedProductForThirdUser,
+  orderedProductFourStars,
+  orderedProductThreeStars,
+  orderedProductWithAddon,
   secondUserWithAReview,
   thirdUserWithAReview,
   userWithCartItemsAndOrdersAndReviews,
@@ -12,6 +18,7 @@ export default {
     {
       body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
       rating: 5,
+      orderedProductId: orderedProductWithAddon,
       shopProductId: smartphonesIds[0],
       userId: userWithCartItemsAndOrdersAndReviews,
       id: uuid(),
@@ -21,6 +28,7 @@ export default {
     {
       body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
       rating: 4,
+      orderedProductId: orderedProductFourStars,
       shopProductId: smartphonesIds[3],
       userId: userWithCartItemsAndOrdersAndReviews,
       id: uuid(),
@@ -32,6 +40,7 @@ export default {
       rating: 3,
       shopProductId: smartphonesIds[3],
       userId: userWithCartItemsAndOrdersAndReviews,
+      orderedProductId: orderedProductThreeStars,
       id: uuid(),
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -39,6 +48,7 @@ export default {
     {
       body: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       rating: 5,
+      orderedProductId: orderedProductForSecondUser,
       shopProductId: smartphonesIds[0],
       userId: secondUserWithAReview,
       id: uuid(),
@@ -48,6 +58,7 @@ export default {
     {
       body: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       rating: 5,
+      orderedProductId: orderedProductForThirdUser,
       shopProductId: smartphonesIds[0],
       userId: thirdUserWithAReview,
       id: uuid(),
@@ -57,6 +68,7 @@ export default {
     {
       body: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       rating: 5,
+      orderedProductId: orderedProductForFourthUser,
       shopProductId: smartphonesIds[0],
       userId: fourthUserWithAReview,
       id: uuid(),

@@ -32,27 +32,30 @@ function SideCol() {
   }, []);
   return (
     <div className={`side-col ${(loadingBrands || loadingTypes) && 'loading'}`}>
-      <span className="label">
-        Department
-      </span>
-      {!loadingTypes && (
-        <List
-          items={types}
-          renderAs={({ name, id }) => (
-            <li key={id}>
-              <div className="divider" />
-              <Dropdown
-                to={`${SIDE_COL_SHOP_TYPE_ROUTE}${name.toLowerCase()}`}
-                label={toPlural(name)}
-              />
-            </li>
-          )}
-        />
-      )}
-      <span className="label">
-        Brand
-      </span>
-      {!loadingBrands && (
+      <div className="labeled-col">
+        <span className="label">
+          Department
+        </span>
+        {!loadingTypes && (
+          <List
+            items={types}
+            renderAs={({ name, id }) => (
+              <li key={id}>
+                <div className="divider" />
+                <Dropdown
+                  to={`${SIDE_COL_SHOP_TYPE_ROUTE}${name.toLowerCase()}`}
+                  label={toPlural(name)}
+                />
+              </li>
+            )}
+          />
+        )}
+      </div>
+      <div className="labeled-col">
+        <span className="label">
+          Brand
+        </span>
+        {!loadingBrands && (
         <List
           items={brands}
           renderAs={({ name, id }) => (
@@ -65,7 +68,8 @@ function SideCol() {
             </li>
           )}
         />
-      )}
+        )}
+      </div>
     </div>
   );
 }

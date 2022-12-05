@@ -1,4 +1,5 @@
 /* eslint-disable no-multiple-empty-lines */
+import ShopProductPage from '../pages/ShopProductPage';
 import FrontPage from '../pages/FrontPage';
 import Shop from '../pages/Shop';
 import * as routes from './consts';
@@ -8,6 +9,10 @@ export const indexPublicRoutes = [
   //   path: routes.ACCOUNT_WILDCARD_ROUTE,
   //   Component: Account,
   // },
+  {
+    path: `${routes.SHOP_ROUTE}/:title`,
+    Component: ShopProductPage,
+  },
   {
     path: routes.SHOP_ROUTE,
     Component: Shop,

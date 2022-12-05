@@ -9,7 +9,7 @@ export default class UserStore implements IUser {
 
   id: string;
 
-  avatar?: string;
+  avatar: string;
 
   email: string;
 

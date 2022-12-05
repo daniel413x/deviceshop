@@ -1,7 +1,7 @@
-import { observer } from 'mobx-react-lite';
 import React, {
   useContext, useEffect,
 } from 'react';
+import { observer } from 'mobx-react-lite';
 import { NavLink } from 'react-router-dom';
 import BreadcrumbTrail from '../components/BreadcrumbTrail';
 import Button from '../components/Button';
@@ -52,8 +52,8 @@ function Shop() {
   const listView = shopPage.view === 'list';
   const loadMore = async () => {
     const newPage = page + 1;
-    changePage(newPage);
     await shopPage.fetchMoreShopProducts(newPage);
+    changePage(newPage);
   };
   useEffect(() => {
     changePage(1);
@@ -72,7 +72,7 @@ function Shop() {
     })();
   }, []);
   return (
-    <div id="shop">
+    <div id="shop" className="columned-page">
       <SideCol />
       <div className="main-col" id="main-col">
         <BreadcrumbTrail />

@@ -43,7 +43,7 @@ for (let smartphoneId = 0; smartphoneId < laptopsIds.length; smartphoneId += 1) 
     const specification = {
       category: '',
       value: 'Value',
-      key: 'Key specifications',
+      key: 'Key',
       shopProductId: smartphonesIds[smartphoneId],
       typeId: smartphone,
       id,

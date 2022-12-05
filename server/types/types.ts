@@ -145,6 +145,8 @@ export type SearchViaSearchbarParams = { value: string };
 // eslint-disable-next-line no-unused-vars
 export type IterableAttributes<T> = { [ key in keyof T ]: any };
 
+export type InclusionAttributes<T> = ((keyof T) | [keyof T, string])[] | { exclude: ((keyof T) | [keyof T, string])[] };
+
 // eslint-disable-next-line no-unused-vars
 export type ModelAttributes<T extends Model> = { [ key in keyof InferCreationAttributes<T> ]: any }
 

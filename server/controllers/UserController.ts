@@ -10,6 +10,7 @@ import User from '../db/models/User';
 import BaseController from './BaseController';
 import { assignBodyAndProcessImages } from '../utils/functions';
 import Cart from '../db/models/Cart';
+import OrderedProduct from '../db/models/OrderedProduct';
 
 const generateJwt = ({
   id,
@@ -119,6 +120,12 @@ class UserController extends BaseController<User> {
       where: {
         userId: user.id,
       },
+      include: [
+        {
+          model: OrderedProduct,
+          as: 'cartItems',
+        },
+      ],
     });
     return res.json({ token, cart });
   }

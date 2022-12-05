@@ -13,11 +13,14 @@ class Review extends BaseModel<Review> implements IReview {
 
   shopProductId: string;
 
+  orderedProductId: string;
+
   userId: string;
 
   static associate(models: any) {
     Review.belongsTo(models.User, { targetKey: 'id', foreignKey: 'userId', as: 'user' });
-    Review.belongsTo(models.ShopProduct, { targetKey: 'id', foreignKey: 'shopProductId', as: 'product' });
+    Review.belongsTo(models.ShopProduct, { targetKey: 'id', foreignKey: 'shopProductId', as: 'shopproduct' });
+    Review.belongsTo(models.OrderedProduct, { targetKey: 'id', foreignKey: 'orderedProductId', as: 'orderedproduct' });
   }
 }
 
@@ -37,6 +40,10 @@ export const reviewAttributes: ModelAttributes<Review> = {
     type: DataTypes.STRING(2000),
   },
   shopProductId: {
+    allowNull: false,
+    type: DataTypes.UUID,
+  },
+  orderedProductId: {
     allowNull: false,
     type: DataTypes.UUID,
   },

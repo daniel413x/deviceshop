@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { col, Op } from 'sequelize';
-import User from '../db/models/User';
+import {
+  col,
+  // fn,
+  literal,
+  Op,
+} from 'sequelize';
 import ShopProduct from '../db/models/ShopProduct';
 import BaseController from './BaseController';
 import Brand from '../db/models/Brand';
@@ -9,6 +13,35 @@ import Specification from '../db/models/Specification';
 import { FilteredSearchParams, FindAndCountOptions, SearchViaSearchbarParams } from '../types/types';
 import Review from '../db/models/Review';
 
+const includeAll = [
+  {
+    model: Brand,
+    as: 'brand',
+  },
+  {
+    model: Type,
+    as: 'type',
+  },
+  {
+    model: Specification,
+    as: 'specifications',
+  },
+  {
+    model: Review,
+    as: 'reviews',
+  },
+];
+
+const getReviewCounts = [
+  literal(`(
+    SELECT COUNT(id)
+        FROM "Review"
+    WHERE 
+        "Review"."shopProductId" = "ShopProduct"."id"
+)`),
+  'reviewCounts',
+];
+
 class ShopProductController extends BaseController<ShopProduct> {
   constructor() {
     super(ShopProduct);
@@ -16,25 +49,9 @@ class ShopProductController extends BaseController<ShopProduct> {
 
   async get(req: Request, res: Response) {
     const options: FindAndCountOptions<ShopProduct> = {
-      include: [
-        {
-          model: Brand,
-          as: 'brand',
-        },
-        {
-          model: Type,
-          as: 'type',
-        },
-        {
-          model: Specification,
-          as: 'specifications',
-        },
-        {
-          model: Review,
-          as: 'reviews',
-        },
-      ],
+      include: includeAll,
     };
+    options.distinct = true;
     if (req.query.searchbar) {
       const search = JSON.parse(req.query.searchbar as string) as SearchViaSearchbarParams;
       const searchTerms = search.value.split(' ');
@@ -143,17 +160,25 @@ class ShopProductController extends BaseController<ShopProduct> {
         options.order = [[col('price'), 'ASC']];
       }
     }
-    options.distinct = true;
     this.execFindAndCountAll(req, res, options);
   }
 
   getByName(req: Request, res: Response, next: NextFunction) {
-    const options = {
-      include: [{
-        model: User,
-        as: 'User',
-      }],
+    const options: any = {
+      include: includeAll,
     };
+    let attributes;
+    if (req.query.attributes) {
+      attributes = [
+        ...req.query.attributes as (string[] | [string, string][]),
+      ];
+    } else {
+      attributes = [
+        ...Object.keys(ShopProduct.getAttributes()),
+      ];
+    }
+    attributes.push(getReviewCounts);
+    options.attributes = attributes;
     return this.execFindOneByParams(req, res, next, options);
   }
 

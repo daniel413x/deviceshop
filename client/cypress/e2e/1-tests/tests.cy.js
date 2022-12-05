@@ -9,9 +9,9 @@ describe('deviceshop app', () => {
     cy.visit(clientUrl);
   });
   describe('as a guest', () => {
-    describe.only('on the front page', () => {
+    describe('on the front page', () => {
       beforeEach(() => {
-        cy.get('#top-slider');
+        cy.get('.slider');
         cy.get('.browse-the-shop')
           .find('.row')
           .children()
@@ -210,9 +210,9 @@ describe('deviceshop app', () => {
           });
         });
       });
-      describe('using the slider', () => {
+      describe('slider', () => {
         beforeEach(() => {
-          cy.get('#top-slider')
+          cy.get('.slider')
             .as('theSlider');
           cy.get('.slick-slide')
             .eq(0)
@@ -223,7 +223,7 @@ describe('deviceshop app', () => {
           cy.get('.slick-slide')
             .eq(2)
             .as('slideThree');
-          cy.get('#top-slider')
+          cy.get('.slider')
             .as('theSlider');
         });
         describe('using the dots', () => {
@@ -863,7 +863,7 @@ describe('deviceshop app', () => {
           cy.get('.remove-filter-button')
             .should('have.length', 3);
         });
-        describe.only('there are multiple filters from address bar search params', () => {
+        describe('there are multiple filters from address bar search params', () => {
           beforeEach(() => {
             cy.visit(`${clientUrl}/shop?manufacturer=samsung%7Capple&storage%20capacity=256gb`);
           });
@@ -881,7 +881,7 @@ describe('deviceshop app', () => {
       beforeEach(() => {
         cy.get('#top-slider');
       });
-      it.only('', () => {
+      itsetSorting('', () => {
       });
     });
  */

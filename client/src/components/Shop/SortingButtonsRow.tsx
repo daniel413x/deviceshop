@@ -5,7 +5,7 @@ import React, {
 import { ReactComponent as GridIcon } from '../../assets/icons/gridview.svg';
 import { ReactComponent as ListItemIcon } from '../../assets/icons/listview.svg';
 import Context from '../../context/context';
-import Dropdown from '../Dropdown';
+import SortingDropdown from '../SortingDropdown';
 
 function SortingButtonsRow() {
   const {
@@ -21,40 +21,29 @@ function SortingButtonsRow() {
   if (shopPage.sorting === 'byHighestRated') {
     sortingDropdownLabel = 'Highest Rated';
   }
-  const sortingButtons = {
-    label: sortingDropdownLabel,
-    to: [
-      {
-        label: 'Relevance',
-        callback: () => shopPage.changeSorting('relevance'),
-      },
-      {
-        label: 'Rating',
-        callback: () => shopPage.changeSorting('byHighestRated'),
-      },
-      {
-        label: 'Price: Low to High',
-        callback: () => shopPage.changeSorting('byLowestPrice'),
-      },
-    ],
-  };
+  const sortingButtons = [
+    {
+      label: 'Relevance',
+      callback: () => shopPage.changeSorting('relevance'),
+    },
+    {
+      label: 'Rating',
+      callback: () => shopPage.changeSorting('byHighestRated'),
+    },
+    {
+      label: 'Price: Low to High',
+      callback: () => shopPage.changeSorting('byLowestPrice'),
+    },
+  ];
   return (
     <div>
       <div
         className="sorting-buttons-row"
       >
-        <div className="sort-buttons">
-          <span>
-            Sort by:
-          </span>
-          <Dropdown
-            label={sortingButtons.label}
-            to={sortingButtons.to}
-            dropdownIcon="angle"
-            colorStyle="gray"
-          />
-          <div className="divider vertical" />
-        </div>
+        <SortingDropdown
+          sortButtons={sortingButtons}
+          label={sortingDropdownLabel}
+        />
         <div className="view-buttons">
           <button
             title="Grid view"

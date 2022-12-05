@@ -50,7 +50,7 @@ export function listProductAttributeInColumns(specifications: ISpecification[]):
   return columnizedAttributes;
 }
 
-export function calcPriceAfterDiscounts(price: number, discount?: number): number {
+export function convertPriceInt(price: number, discount?: number): number {
   let calculatedPrice = price * 0.01;
   if (discount) {
     calculatedPrice -= (calculatedPrice * (discount * 0.01));
@@ -81,4 +81,30 @@ export function toPlural(string: string): string {
     return string.replace(/\D$/, 'ies');
   }
   return `${string}s`;
+}
+
+export function categorizeSpecifications(specifications: ISpecification[]): ISpecification[][] {
+  const uniqueCategories: string[] = [];
+  specifications.forEach(({ category }) => {
+    if (uniqueCategories.indexOf(category) === -1) {
+      uniqueCategories.push(category);
+    }
+  });
+  return uniqueCategories.map((uniqueCategory) => {
+    const arr: ISpecification[] = [];
+    specifications.forEach((spec) => {
+      if (spec.category === uniqueCategory) {
+        arr.push(spec);
+      }
+    });
+    return arr;
+  });
+}
+
+export function dateMonthYear(string: string): string {
+  return new Date(string).toLocaleTimeString(navigator.language, {
+    month: 'numeric',
+    day: 'numeric',
+    year: 'numeric',
+  }).split(',')[0];
 }

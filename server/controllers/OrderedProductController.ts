@@ -12,6 +12,7 @@ class OrderedProductController extends BaseController<OrderedProduct> {
   }
 
   create(req: Request, res: Response) {
+    // no orderId essentially creates a cart product
     this.execCreate(req, res);
   }
 

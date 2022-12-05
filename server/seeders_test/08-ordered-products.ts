@@ -14,6 +14,13 @@ import {
   thirdUserWithAReview,
   orderForFourthUserWithAReview,
   fourthUserWithAReview,
+  orderedProductForSecondUser,
+  orderedProductForThirdUser,
+  orderedProductForFourthUser,
+  cartForUserWithCartItemsAndOrderAndReviews,
+  cartForSecondUserWithReviews,
+  cartForThirdUserWithReviews,
+  cartForFourthUserWithReviews,
 } from '../utils/consts';
 import { apple, samsung } from './03-brands';
 import { smartphone } from './04-types';
@@ -22,6 +29,7 @@ export default {
   up: async (queryInterface) => queryInterface.bulkInsert('OrderedProduct', [
     {
       price: 8000,
+      cartId: cartForUserWithCartItemsAndOrderAndReviews,
       orderId: orderForUserWithCartItemsAndOrdersAndReviewsProcessing,
       brandId: samsung,
       typeId: smartphone,
@@ -33,6 +41,7 @@ export default {
     },
     {
       price: 8000,
+      cartId: cartForUserWithCartItemsAndOrderAndReviews,
       orderId: orderForUserWithCartItemsAndOrdersAndReviewsCanceled,
       brandId: samsung,
       typeId: smartphone,
@@ -44,6 +53,7 @@ export default {
     },
     {
       price: 8000,
+      cartId: cartForUserWithCartItemsAndOrderAndReviews,
       orderId: orderForUserWithCartItemsAndOrdersAndReviewsDelivered,
       brandId: samsung,
       typeId: smartphone,
@@ -55,6 +65,7 @@ export default {
     },
     {
       price: 8000,
+      cartId: cartForUserWithCartItemsAndOrderAndReviews,
       orderId: orderForUserWithCartItemsAndOrdersAndReviewsDelivered,
       brandId: apple,
       typeId: smartphone,
@@ -66,6 +77,7 @@ export default {
     },
     {
       price: 8000,
+      cartId: cartForUserWithCartItemsAndOrderAndReviews,
       orderId: orderForUserWithCartItemsAndOrdersAndReviewsDelivered,
       brandId: apple,
       typeId: smartphone,
@@ -78,33 +90,36 @@ export default {
     {
       price: 8000,
       orderId: orderForSecondUserWithAReview,
+      cartId: cartForSecondUserWithReviews,
       brandId: samsung,
       typeId: smartphone,
       userId: secondUserWithAReview,
       shopProductId: smartphonesIds[0],
-      id: uuid(),
+      id: orderedProductForSecondUser,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
     {
       price: 8000,
       orderId: orderForThirdUserWithAReview,
+      cartId: cartForThirdUserWithReviews,
       brandId: samsung,
       typeId: smartphone,
       userId: thirdUserWithAReview,
       shopProductId: smartphonesIds[0],
-      id: uuid(),
+      id: orderedProductForThirdUser,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
     {
       price: 8000,
       orderId: orderForFourthUserWithAReview,
+      cartId: cartForFourthUserWithReviews,
       brandId: samsung,
       typeId: smartphone,
       userId: fourthUserWithAReview,
       shopProductId: smartphonesIds[0],
-      id: uuid(),
+      id: orderedProductForFourthUser,
       createdAt: new Date(),
       updatedAt: new Date(),
     },

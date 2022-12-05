@@ -15,6 +15,8 @@ class ShopProduct extends BaseModel<ShopProduct> implements IShopProduct {
 
   discountedPrice!: number;
 
+  description!: string;
+
   rating!: number;
 
   thumbnail!: string;
@@ -92,6 +94,10 @@ export const shopProductAttributes: ModelAttributes<ShopProduct> = {
   rating: {
     allowNull: false,
     type: DataTypes.DECIMAL,
+  },
+  description: {
+    allowNull: false,
+    type: DataTypes.STRING,
   },
   typeId: {
     type: DataTypes.UUID,

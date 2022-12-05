@@ -23,13 +23,13 @@ export default abstract class BaseController<M extends Model> {
     this.model = model;
   }
 
-  async execFindOneByParams(req: Request, res: Response, next?: NextFunction, options?: FindOptions<M>) {
+  async execFindOneByParams(req: Request, res: Response, next?: NextFunction, options?: FindAndCountOptions<M>) {
     const fetchedParamKey = Object.keys(req.params)[0];
     const fetchedParamVal = req.params[fetchedParamKey];
     if (!fetchedParamVal) {
       return next(ApiError.internal('Erroneous'));
     }
-    const fetchedParamValRegex = fetchedParamVal.split('-').join('( |-)');
+    const fetchedParamValRegex = fetchedParamVal.split('-').join('( |-)*');
     const params: FindOptions<M> = {
       ...options,
     };
