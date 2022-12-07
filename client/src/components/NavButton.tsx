@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { NavLink } from 'react-router-dom';
 import { INavButton } from '../types/types';
 
 interface NavButtonProps {
   to: string | INavButton[];
-  children: string;
+  children: ReactElement | (ReactElement | string)[] | string;
   className?: string;
 }
 
-function NavButton({ to, children, className }: NavButtonProps) {
+function NavButton({
+  to,
+  children,
+  className,
+}: NavButtonProps) {
   return (
     <NavLink className={`nav-button ${className}`} to={to as string}>
       {children}

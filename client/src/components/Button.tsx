@@ -7,6 +7,7 @@ interface ButtonProps {
   children?: ReactElement | (ReactElement | string)[] | string;
   buttonStyle?: 'primary' | 'secondary' | 'warn' | 'blank';
   title?: string;
+  id?: string;
 }
 
 function Button({
@@ -16,6 +17,7 @@ function Button({
   children,
   buttonStyle,
   title,
+  id,
 }: ButtonProps) {
   return (
     <button
@@ -24,6 +26,7 @@ function Button({
     // eslint-disable-next-line react/button-has-type
       type={type}
       onClick={onClick}
+      id={id}
     >
       {children}
     </button>
@@ -34,6 +37,7 @@ Button.defaultProps = {
   type: 'button',
   title: '',
   className: '',
+  id: '',
   children: false,
   onClick: () => null,
   buttonStyle: 'primary',

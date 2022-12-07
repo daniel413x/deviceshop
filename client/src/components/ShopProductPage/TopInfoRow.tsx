@@ -54,24 +54,51 @@ function TopInfoRow({
     discountedPrice = formatPrice(convertPriceInt(price, discount));
   }
   const addToCart = async () => {
-    notifications.message(
-      [`${productName}`, 'was added to your cart'],
-      gray,
-      3000,
-      thumbnail,
-    );
-    return;
-    const item = {
-      userId,
-      cartId,
-      price,
-      brandId,
-      typeId,
-      shopProductId,
-    };
-    const newCartItem = await createOrderedProduct(item);
-    cart.addItem(newCartItem);
-    // creates an OrderedProduct without an orderId, essentially a cart item
+    if (user.isGuest) {
+      const guestAddedItem = {
+        id: new Date().toString(),
+        shopproduct: product,
+      };
+      if (!localStorage.getItem('guestItems')) {
+        const guestItems = [guestAddedItem];
+        localStorage.setItem('guestItems', JSON.stringify(guestItems));
+      } else {
+        const guestItems = JSON.parse(localStorage.getItem('guestItems')!);
+        guestItems.push(guestAddedItem);
+        localStorage.setItem('guestItems', JSON.stringify(guestItems));
+      }
+      cart.addItem(guestAddedItem);
+      notifications.message(
+        [`${productName}`, 'was added to your cart'],
+        gray,
+        3000,
+        thumbnail,
+      );
+      return;
+    }
+    try {
+      const item = {
+        userId,
+        cartId,
+        price,
+        brandId,
+        typeId,
+        shopProductId,
+      };
+      const newCartItem = await createOrderedProduct(item);
+      // creates an OrderedProduct without an orderId, essentially a cart item
+      cart.addItem(newCartItem);
+      notifications.message(
+        [`${productName}`, 'was added to your cart'],
+        gray,
+        3000,
+        thumbnail,
+      );
+    } catch (error: any) {
+      notifications.error(
+        error.response.data.message,
+      );
+    }
   };
   return (
     <div className="top-info-row">

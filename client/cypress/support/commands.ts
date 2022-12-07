@@ -2,7 +2,7 @@
 /// <reference types="cypress" />
 
 export const clientUrl = 'http://localhost:3000';
-export const serverUrl = 'http://localhost:6002';
+export const serverUrl = 'http://localhost:6004';
 
 /*
 
@@ -319,6 +319,19 @@ Cypress.Commands.add('shopFilterMenuCountsDidNotChange', (initial: number[], cou
     .then(() => {
       expect(currentFilterCounts).to.deep.eq(initial);
     });
+});
+
+// login
+
+Cypress.Commands.add('enterValidRegistrationForm', () => {
+  cy.get('#username-field')
+    .type('adbc1234', { force: true });
+  cy.get('#email-field')
+    .type('adbc1234@gmail.com', { force: true });
+  cy.get('#password-field')
+    .type('defg5678', { force: true });
+  cy.get('#confirm-password-field')
+    .type('defg5678', { force: true });
 });
 
 export {};

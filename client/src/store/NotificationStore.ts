@@ -1,6 +1,11 @@
 import { makeAutoObservable } from 'mobx';
 import { INotification } from '../types/types';
-import { green } from '../utils/consts';
+import {
+  gray,
+  green,
+  red,
+  shortNotification,
+} from '../utils/consts';
 
 export default class NotificationStore {
   notifications: INotification[];
@@ -38,6 +43,22 @@ export default class NotificationStore {
       notification.messageLineOne = message;
     }
     this.notifications = [notification, ...this.notifications];
+  }
+
+  error(message: string | string[]) {
+    this.message(
+      message,
+      red,
+      shortNotification,
+    );
+  }
+
+  neutral(message: string | string[]) {
+    this.message(
+      message,
+      gray,
+      shortNotification,
+    );
   }
 
   removeNotification(id: number) {

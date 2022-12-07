@@ -62,6 +62,12 @@ export interface IOrderedProduct {
   shopProductId: string;
   userId: string;
   createdAt: string;
+  guestAddedId?: string;
+}
+
+export interface IGuestAddedProduct {
+  shopproduct: IShopProduct;
+  id: string;
 }
 
 export interface IUser {
@@ -149,6 +155,24 @@ export type InclusionAttributes<T> = ((keyof T) | [keyof T, string])[] | { exclu
 
 export type QueryReqFetchOne<T> = {
   attributes?: T;
+};
+
+export type QueryResUserAuthed = {
+  user: Omit<IUser, 'phoneNumber'>;
+  cart: ICart;
+};
+
+export type QueryReqRegistration = {
+  email: string;
+  password: string;
+  username: string;
+  guestAddedItems?: IGuestAddedProduct[];
+};
+
+export type QueryReqLogin = {
+  emailOrUsername: string;
+  password: string;
+  guestAddedItems?: IGuestAddedProduct[];
 };
 
 export type SearchViaSearchbar = {

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ReactComponent as TriangleDown } from '../assets/icons/triangle-down.svg';
 import { ReactComponent as AngleIcon } from '../assets/icons/angleup.svg';
+import { ReactComponent as AccountIcon } from '../assets/icons/account.svg';
 import useKeyPress from '../hooks/useKeyPress';
 import useOnInsideClick from '../hooks/useOnInsideClick';
 import useOnOutsideClick from '../hooks/useOnOutsideClick';
@@ -12,7 +13,7 @@ interface DropdownProps {
   to?: string | INavButton[];
   label: string;
   callback?: () => void;
-  dropdownIcon?: 'angle' | 'triangle';
+  dropdownIcon?: 'angle' | 'triangle' | 'account';
   colorStyle?: 'gray' | 'accent' | 'white';
   className?: string;
 }
@@ -140,6 +141,11 @@ function Dropdown({
         onClick={() => setShown(!shown)}
         type="button"
       >
+        {dropdownIcon === 'account' && (
+          <AccountIcon
+            className="account-icon"
+          />
+        )}
         {dropdownIcon === 'triangle' && <TriangleDown />}
         {label}
         {dropdownIcon === 'angle' && (

@@ -2,7 +2,7 @@
   --side-margins: 15vw;
   --side-margins-non-widescreen: 5rem;
   --styled-border-radius: 20px;
-  --navbar-height: 82.78px;
+  --navbar-height: 81.11px;
   --footer-height: 364px;
   --primary-dark-light: #888888;
   --inactive-element: rgba(152, 157, 165, 0.33);
@@ -20,7 +20,7 @@
   --bg-light-gray: #EEE;
   --bg-light-bluegray: #e3e4e8;
   --primary-text-light: #999;
-  --primary-w: #FFF;
+  --primary-white: #FFF;
   --navbar-gray-highlighted: #C9C9C9;
   --footer-gray: #DADADA;
   --navbar-searchbar-width: 165px;
@@ -29,8 +29,8 @@
   --dropdown-box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   --navbar-font-size: 0.875rem;
   --pageYEdgeMargin: 70px;
-  color: var(--primary-text);
   --ease-out-anim: cubic-bezier(0.000, 1.050, 0.305, 0.990);
+  color: var(--primary-text);
 }
 
 @media (max-width: 1399px) {
@@ -104,10 +104,17 @@ body, html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: var(--navbar-gray);
+  background-color: var(--bg-light-gray);
   width: 100%;
-  height: max-content;
+  min-height: 0;
+  transform: translateY(-20%);
+  transition: all .50s var(--ease-out-anim);
   z-index: 3;
+}
+
+.notifications-container.show {
+  min-height: calc(var(--navbar-height) - 1px);
+  transform: translateY(0);
 }
 
 .notifications-container .body {
@@ -126,29 +133,26 @@ body, html {
   color: var(--primary-red);
   display: flex;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 300;
   opacity: 0;
   padding: .5rem 1rem;
   margin-bottom: .25rem;
   transition: all .50s var(--ease-out-anim);
-  transform:translateX(10%);
+  transform:translateY(-20%);
   z-index: 1055;
   height: var(--navbar-height);
+  top: 0;
+}
+
+.notification.show {
+  transform: none;
+  opacity: 1;
+  top: 100%;
 }
 
 .notification img {
   height: 100px;
 }
-
-.notifications-container .show {
-  transform: none;
-  opacity: 1;
-}
-
-.notifications-container .close {
-  opacity: 0;
-  transform: scale(.97);
-  }
 
 .notification .x-button {
   transform: scale(2);
@@ -182,6 +186,10 @@ body, html {
 .nav-button:hover {
   color: #fff;
   background-color: var(--primary-accent);
+}
+
+.nav-button:hover svg path, .nav-button:focus svg path {
+  fill: #fff;
 }
 
 .dropdown {
@@ -366,8 +374,9 @@ p {
 
 input, textarea {
   border: 1px solid var(--inactive-element);
-  border-radius: var(--styled-border-radius);
+  border-radius: 4px;
   padding: var(--input-padding);
+  height: 34px;
 }
 
 input.warn, textarea.warn {
@@ -378,6 +387,23 @@ input, textarea, input::placeholder, textarea::placeholder {
   color: var(--indigo-light);
   font-weight: 300;
   font-size: 0.938rem;
+}
+
+.labeled-input {
+  display: flex;
+  flex-direction: column;
+}
+
+.labeled-input .label {
+  font-weight: 600;
+  color: var(--primary-accent);
+  margin-bottom: 0.33rem;
+}
+
+.labeled-input .subscript {
+  color: var(--primary-text-light);
+  font-size: 0.75rem;
+  margin-top: 0.35rem;
 }
 
 .textarea {
@@ -391,6 +417,7 @@ input, textarea, input::placeholder, textarea::placeholder {
 
 .textarea:focus-visible, input:focus-visible {
   box-shadow: 0 0 0 .15rem var(--primary-accent);
+  outline:none;
 }
 
 .hidden {
@@ -480,6 +507,11 @@ input, textarea, input::placeholder, textarea::placeholder {
 }
 
 .searchbox {
+  border-radius: var(--styled-border-radius);
+}
+
+.searchbox input {
+  height: 41px;
   border-radius: var(--styled-border-radius);
 }
 
@@ -931,7 +963,7 @@ input, textarea, input::placeholder, textarea::placeholder {
   content: '';
   height: 0%;
   width: 100%;
-  background-color: var(--primary-w);
+  background-color: var(--primary-white);
   position: absolute;
   opacity: 0.75;
 }
@@ -1041,19 +1073,18 @@ input, textarea, input::placeholder, textarea::placeholder {
 #navbar .end-row {
   display: flex;
   align-items: center;
-  grid-gap: 1rem;
+  grid-gap: 0.5rem;
+}
+
+#navbar .end-row>* {
+  height: 40px;
 }
 
 #navbar .end-row .account-link {
-  color: var(--primary-text);
   display: flex;
   align-items: center;
   grid-gap: 8px;
   font-size: var(--navbar-font-size);
-}
-
-#navbar .end-row .account-link svg {
-  fill: var(--primary-accent);
 }
 
 #front-page {
@@ -1798,6 +1829,7 @@ input, textarea, input::placeholder, textarea::placeholder {
 
 #shop-product-page .top-info-row {
   display: flex;
+  margin-top: 2rem;
   grid-gap: 1.25rem;
   padding-bottom: 1.25rem;
 }
@@ -2040,6 +2072,44 @@ input, textarea, input::placeholder, textarea::placeholder {
 #shop-product-page .reviews .next-page-button {
   align-self: center;
   margin: 2.5rem 0 var(--pageYEdgeMargin);
+}
+
+#login-and-register {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--pageYEdgeMargin) var(--side-margins);
+}
+
+#login-and-register .page-header {
+  margin-bottom: 0.75rem;
+}
+
+#login-and-register .subheaders {
+  text-align: center;
+  max-width: 310px;
+  margin-bottom: 1rem;
+}
+
+#login-and-register .switch-link {
+  text-decoration: underline;
+  color: var(--primary-accent)
+}
+
+#login-and-register .breadcrumb-trail {
+  align-self: flex-start;
+}
+
+#login-and-register form {
+  width: 100%;
+  max-width: 360px;
+  grid-gap: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+
+#login-and-register form button[type='submit'] {
+  margin-top: 1rem;
 }
 
 #footer {

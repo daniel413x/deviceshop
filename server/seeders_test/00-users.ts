@@ -20,7 +20,7 @@ const hashPassword = async () => {
 export default {
   up: async (queryInterface) => queryInterface.bulkInsert('User', [
     {
-      email: 'admin@devicedeal.com',
+      email: 'admin@deviceshop.com',
       firstName: 'Daniel',
       lastName: 'Maramba',
       username: 'admin',
@@ -32,7 +32,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      email: 'userwithorders@devicedeal.com',
+      email: 'userwithorders@deviceshop.com',
       firstName: 'Taylah',
       lastName: 'Avila',
       username: 'userwithorders',
@@ -44,7 +44,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      email: 'userwithcartitems@devicedeal.com',
+      email: 'userwithcartitems@deviceshop.com',
       firstName: 'Emmanuella',
       lastName: 'Pedro',
       username: 'userwithorderandcartitems',
@@ -56,7 +56,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      email: 'userwithsavedaddresses@devicedeal.com',
+      email: 'userwithsavedaddresses@deviceshop.com',
       firstName: 'Kelsea',
       lastName: 'Sullivan',
       username: 'userwithsavedaddresses',
@@ -68,7 +68,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      email: 'userwithcartitemsandordersandreviews@devicedeal.com',
+      email: 'userwithcartitemsandordersandreviews@deviceshop.com',
       firstName: 'Mccauley',
       lastName: 'Gibbons',
       username: 'userwithcartitemsandordersandreviews',
@@ -80,7 +80,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      email: 'seconduserwithareview@devicedeal.com',
+      email: 'seconduserwithareview@deviceshop.com',
       firstName: 'Eveleen',
       lastName: 'Andriy',
       username: 'seconduserwithareview',
@@ -92,7 +92,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      email: 'thirduserwithareview@devicedeal.com',
+      email: 'thirduserwithareview@deviceshop.com',
       firstName: 'Kristopher',
       lastName: 'Gu',
       username: 'thirduserwithareview',
@@ -104,7 +104,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      email: 'fourthuserwithareview@devicedeal.com',
+      email: 'fourthuserwithareview@deviceshop.com',
       firstName: '',
       lastName: '',
       username: 'asmara95',

@@ -45,6 +45,10 @@ export interface IOrderedProduct {
   price: number;
 }
 
+export interface IGuestAddedProduct {
+  shopproduct: IOrderedProduct;
+}
+
 export interface ISpecification {
   id: string;
   category: string;
@@ -91,6 +95,7 @@ export interface IUser {
 export interface ICart {
   id: string;
   userId: string;
+  cartItems?: IOrderedProduct[];
 }
 
 export interface IOrder {

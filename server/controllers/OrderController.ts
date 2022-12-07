@@ -20,8 +20,8 @@ class OrderController extends BaseController<Order> {
       include: [
         {
           model: OrderedProduct,
-          include: [{ model: ShopProduct, as: 'shopproduct' }],
           as: 'products',
+          include: [{ model: ShopProduct, as: 'shopproduct' }],
         },
         {
           model: AddressForOrder,

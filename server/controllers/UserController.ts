@@ -4,24 +4,35 @@ import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Op } from 'sequelize';
 import ApiError from '../error/ApiError';
-import { IUser } from '../types/types';
+import {
+  ICart,
+  IGuestAddedProduct,
+  IUser,
+} from '../types/types';
 import { USER } from '../utils/consts';
 import User from '../db/models/User';
 import BaseController from './BaseController';
 import { assignBodyAndProcessImages } from '../utils/functions';
 import Cart from '../db/models/Cart';
 import OrderedProduct from '../db/models/OrderedProduct';
+import ShopProduct from '../db/models/ShopProduct';
 
 const generateJwt = ({
   id,
   email,
   roles,
+  username,
+  firstName,
+  lastName,
   avatar,
   name,
 }: any, expiresIn?: string) => jwt.sign(
   {
     id,
     email,
+    username,
+    firstName,
+    lastName,
     roles,
     avatar,
     name,
@@ -35,6 +46,36 @@ const generateJwt = ({
 class UserController extends BaseController<User> {
   constructor() {
     super(User);
+  }
+
+  async convertGuestAddedItems(items: IGuestAddedProduct[], cart: ICart): Promise<void> {
+    await Promise.all(items.map(async (item) => {
+      await OrderedProduct.create({
+        ...item.shopproduct, // note price is saved at the time when guest adds item to their cart
+        id: uuidv4(),
+        cartId: cart.id,
+        userId: cart.userId,
+      });
+    }));
+  }
+
+  async getCart(userId: string): Promise<ICart> {
+    const cart = await Cart.findOne({
+      where: {
+        userId,
+      },
+      include: [
+        {
+          model: OrderedProduct,
+          as: 'cartItems',
+          include: [{
+            model: ShopProduct,
+            as: 'shopproduct',
+          }],
+        },
+      ],
+    });
+    return cart;
   }
 
   async create(req: Request, res: Response, next: NextFunction) {
@@ -83,9 +124,13 @@ class UserController extends BaseController<User> {
       roles: [USER],
     });
     const token = generateJwt(user, '24h');
-    const cart = await Cart.create({
+    let cart = await Cart.create({
       userId: user.id,
-    });
+    }) as ICart;
+    if (req.body.guestAddedItems) {
+      await this.convertGuestAddedItems(req.body.guestAddedItems, cart);
+      cart = await this.getCart(user.id);
+    }
     return res.json({ token, cart });
   }
 
@@ -116,24 +161,19 @@ class UserController extends BaseController<User> {
       return next(ApiError.internal('Incorrect password'));
     }
     const token = generateJwt(user, '24h');
-    const cart = await Cart.findOne({
-      where: {
-        userId: user.id,
-      },
-      include: [
-        {
-          model: OrderedProduct,
-          as: 'cartItems',
-        },
-      ],
-    });
+    let cart = await this.getCart(user.id);
+    if (req.body.guestAddedItems) {
+      await this.convertGuestAddedItems(req.body.guestAddedItems, cart);
+      cart = await this.getCart(user.id);
+    }
     return res.json({ token, cart });
   }
 
   async auth(req: Request, res: Response) {
     const { user } = res.locals;
     const token = generateJwt(user, '24h');
-    return res.json({ token });
+    const cart = await this.getCart(user.id);
+    return res.json({ token, cart });
   }
 
   async edit(req: Request, res: Response) {

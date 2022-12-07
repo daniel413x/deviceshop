@@ -6,15 +6,17 @@ import {
 import Context from './context/context';
 import AppRouter from './components/routers/AppRouter';
 import Navbar from './components/Navbar/Navbar';
-import { autoAuth } from './http/userAPI';
+import { stillAuthed } from './http/userAPI';
 import Footer from './components/Footer/Footer';
 import ScrollWrapper from './components/ScrollWrapper';
 import { fetchTypes } from './http/typeAPI';
 import Notifications from './components/Notifications/Notifications';
+import { GUEST } from './utils/consts';
 
 function App() {
   const {
     user,
+    cart,
     types,
   } = useContext(Context);
   const [loading, setLoading] = useState<boolean>(true);
@@ -25,8 +27,9 @@ function App() {
         types.setTypes(fetchedTypes);
         const registeredToken = localStorage.getItem('registeredToken');
         if (registeredToken) {
-          const stillAuthed = await autoAuth();
-          user.set(stillAuthed);
+          const { user: fetchedUser, cart: fetchedCart } = await stillAuthed();
+          user.set(fetchedUser);
+          cart.set(fetchedCart);
         }
       } catch (error: any) {
         if (error.response.status === 401) {
@@ -36,7 +39,19 @@ function App() {
         setLoading(false);
       }
     })();
+    if (user.isGuest) {
+      if (localStorage.getItem('guestItems')) {
+        const guestItems = JSON.parse(localStorage.getItem('guestItems')!);
+        localStorage.setItem('guestItems', JSON.stringify(guestItems));
+        cart.setItems(guestItems);
+      }
+    }
   }, []);
+  useEffect(() => {
+    if (user.id !== GUEST) {
+      localStorage.removeItem('guestItems');
+    }
+  }, [user.id]);
   return loading ? null : (
     <Router>
       <ScrollWrapper>

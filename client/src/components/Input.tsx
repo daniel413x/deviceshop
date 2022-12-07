@@ -1,12 +1,14 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 
-interface InputProps {
+export interface InputProps {
   input: string;
   setInput: (e: string) => void;
   setPressedSubmit?: (boolean: boolean) => void;
   pressedSubmit?: boolean;
   placeholder?: string;
   textarea?: boolean;
+  type?: 'password' | 'input';
+  id?: string;
 }
 
 function Input({
@@ -16,6 +18,8 @@ function Input({
   pressedSubmit,
   placeholder,
   textarea,
+  id,
+  type,
 }: InputProps) {
   const [incomplete, setIncomplete] = useState<boolean>(false);
   const removeWarning = () => {
@@ -43,6 +47,7 @@ function Input({
       placeholder={placeholder}
       value={input}
       onChange={(e) => changeTextarea(e)}
+      id={id}
       onClick={() => removeWarning()}
     />
   ) : (
@@ -52,6 +57,8 @@ function Input({
       value={input}
       onChange={(e) => changeInput(e)}
       onClick={() => removeWarning()}
+      type={type}
+      id={id}
     />
   );
 }
@@ -61,6 +68,8 @@ Input.defaultProps = {
   pressedSubmit: false,
   placeholder: false,
   textarea: false,
+  type: '',
+  id: '',
 };
 
 export default Input;

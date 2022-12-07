@@ -13,7 +13,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
       return ApiError.unauthorized('Unauthorized request');
     }
     const decoded = jwt.verify(token, process.env.S_KEY);
-    res.locals.User = decoded;
+    res.locals.user = decoded;
     return next();
   } catch (e) {
     return ApiError.unauthorized('Auth token expired. Please re-log in.');

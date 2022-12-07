@@ -3,6 +3,8 @@ import ShopProductPage from '../pages/ShopProductPage';
 import FrontPage from '../pages/FrontPage';
 import Shop from '../pages/Shop';
 import * as routes from './consts';
+import LoginRegister from '../pages/LoginRegister';
+import Logout from '../pages/Logout';
 
 export const indexPublicRoutes = [
   // {
@@ -16,6 +18,18 @@ export const indexPublicRoutes = [
   {
     path: routes.SHOP_ROUTE,
     Component: Shop,
+  },
+  {
+    path: routes.LOGOUT_ROUTE,
+    Component: Logout,
+  },
+  {
+    path: routes.LOGIN_ROUTE,
+    Component: LoginRegister,
+  },
+  {
+    path: routes.REGISTER_ROUTE,
+    Component: LoginRegister,
   },
   {
     path: routes.INDEX_ROUTE,
@@ -118,6 +132,17 @@ export const navbarButtons = [
   {
     to: routes.BLOG_ROUTE,
     label: 'Blog',
+  },
+];
+
+export const accountNavButtons = [
+  {
+    to: routes.ACCOUNT_ROUTE,
+    label: 'Main',
+  },
+  {
+    to: routes.LOGOUT_ROUTE,
+    label: 'Logout',
   },
 ];
 

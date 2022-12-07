@@ -1,21 +1,21 @@
 import { makeAutoObservable } from 'mobx';
 import {
-  ICart, IOrderedProduct,
+  ICart, IGuestAddedProduct, IOrderedProduct,
 } from '../types/types';
 
 export default class CartStore {
-  items: IOrderedProduct[];
+  items: (IOrderedProduct | IGuestAddedProduct)[];
 
   id: string;
 
   constructor() {
     this.items = [];
-    this.id = 'guest';
+    this.id = 'GUEST';
     makeAutoObservable(this);
   }
 
-  setFetchedCart(cart: ICart) {
-    this.items = cart.cartItems;
+  set(cart: ICart) {
+    this.items = cart.cartItems || [];
     this.id = cart.id;
   }
 
@@ -23,7 +23,12 @@ export default class CartStore {
     this.items = newItems;
   }
 
-  addItem(newItem: IOrderedProduct) {
+  unset() {
+    this.items = [];
+    this.id = 'guest';
+  }
+
+  addItem(newItem: IOrderedProduct | IGuestAddedProduct) {
     this.items = [...this.items, newItem];
   }
 

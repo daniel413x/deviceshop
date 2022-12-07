@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
 import logoMedium from '../../assets/logos/logo-medium.png';
 import logoSmall from '../../assets/logos/logo-small.png';
 import {
+  accountNavButtons,
   navbarButtons,
 } from '../../utils/arrays';
-import { FRONT_PAGE_ROUTE, SHOP_ROUTE } from '../../utils/consts';
+import { CART_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from '../../utils/consts';
 import { ReactComponent as AccountIcon } from '../../assets/icons/account.svg';
 import Search from './Search';
 import { fetchProducts } from '../../http/shopProductAPI';
@@ -15,8 +17,14 @@ import EndItem from './EndItem';
 import useBreakpoints from '../../hooks/useBreakpoints';
 import Dropdown from '../Dropdown';
 import List from '../List';
+import Context from '../../context/context';
+import NavButton from '../NavButton';
 
 function Navbar() {
+  const {
+    user,
+    cart,
+  } = useContext(Context);
   const { lg } = useBreakpoints();
   const [searchResults, setSearchResults] = useState<IShopProduct[]>([]);
   const searchParams: QueryReqFetchMultipleShopProducts = {
@@ -26,6 +34,8 @@ function Navbar() {
     },
     limit: 5,
   };
+  const cartCount = cart.items.length || 0;
+  const showCartAsGuest = cartCount > 0;
   return (
     <nav id="navbar" className="navbar">
       <NavLink
@@ -50,10 +60,26 @@ function Navbar() {
         )}
       />
       <div className="end-row">
-        <NavLink className="account-link" to={FRONT_PAGE_ROUTE}>
-          <AccountIcon />
-          Login
-        </NavLink>
+        {(user.isRegistered || showCartAsGuest) && (
+          <NavButton className="cart-link" to={CART_ROUTE}>
+            Cart
+            {' '}
+            {`(${cartCount.toString()})`}
+          </NavButton>
+        )}
+        {!user.isRegistered && (
+          <NavButton className="account-link" to={LOGIN_ROUTE}>
+            <AccountIcon />
+            Login
+          </NavButton>
+        )}
+        {user.isRegistered && (
+          <Dropdown
+            label="Account"
+            to={accountNavButtons}
+            dropdownIcon="account"
+          />
+        )}
         <Search
           searchParams={searchParams}
           searchHandler={fetchProducts}
@@ -68,4 +94,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default observer(Navbar);

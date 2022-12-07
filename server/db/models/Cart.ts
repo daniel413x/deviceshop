@@ -1,7 +1,7 @@
 import {
   DataTypes,
 } from 'sequelize';
-import { ICart, ModelAttributes } from '../../types/types';
+import { ICart, IOrderedProduct, ModelAttributes } from '../../types/types';
 import sequelize from '../connection';
 import BaseModel, { baseModelAttributes } from './BaseModel';
 
@@ -11,6 +11,8 @@ class Cart extends BaseModel<Cart> implements ICart {
 
   userId!: string;
 
+  cartItems?: IOrderedProduct[];
+
   static associate(models: any) {
     Cart.belongsTo(models.User, {
       targetKey: 'id',
@@ -18,6 +20,7 @@ class Cart extends BaseModel<Cart> implements ICart {
     });
     Cart.hasMany(models.OrderedProduct, {
       sourceKey: 'id',
+      foreignKey: 'cartId',
       as: 'cartItems',
     });
   }
