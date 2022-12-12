@@ -5,6 +5,10 @@ import { USER } from '../utils/consts';
 
 const router = Router();
 
+router.get(
+  '/',
+  (req, res) => AddonController.get(req, res),
+);
 router.post(
   '/',
   checkRoleMiddleware(USER),

@@ -1,11 +1,13 @@
 import React, { ReactElement } from 'react';
 
+type ButtonStyles = 'primary' | 'secondary' | 'warn' | 'blank' | 'accent-gray' | 'match-navlink';
+
 interface ButtonProps {
   type?: 'button' | 'submit' | 'reset' | undefined;
   className?: string;
   onClick?: (...args: any[]) => void;
   children?: ReactElement | (ReactElement | string)[] | string;
-  buttonStyle?: 'primary' | 'secondary' | 'warn' | 'blank';
+  buttonStyle?: ButtonStyles | ButtonStyles[];
   title?: string;
   id?: string;
 }
@@ -22,7 +24,7 @@ function Button({
   return (
     <button
       title={title}
-      className={`button ${buttonStyle} ${className}`}
+      className={`button ${Array.isArray(buttonStyle) ? buttonStyle.join(' ') : buttonStyle} ${className}`}
     // eslint-disable-next-line react/button-has-type
       type={type}
       onClick={onClick}

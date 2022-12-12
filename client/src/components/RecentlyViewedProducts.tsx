@@ -29,7 +29,7 @@ function RecentlyViewedProducts() {
       }
     })();
   }, [recentlyViewedIds]);
-  return products && (
+  return products.length === 0 ? null : (
     <div className="recently-viewed-products">
       <div className="divider" />
       <h4 className="header">

@@ -1,20 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import Cart from '../db/models/Cart';
-import OrderedProduct from '../db/models/OrderedProduct';
-import ShopProduct from '../db/models/ShopProduct';
 import { FindOptions } from '../types/types';
+import { includeOrderedProducts } from '../utils/inclusions';
 import BaseController from './BaseController';
-
-const include = [
-  {
-    model: OrderedProduct,
-    as: 'cartItems',
-    include: [{
-      model: ShopProduct,
-      as: 'shopproduct',
-    }],
-  },
-];
 
 class CartController extends BaseController<Cart> {
   constructor() {
@@ -27,7 +15,7 @@ class CartController extends BaseController<Cart> {
       where: {
         userId: id,
       },
-      include,
+      include: includeOrderedProducts,
     };
     this.execFindOne(req, res, next, options);
   }

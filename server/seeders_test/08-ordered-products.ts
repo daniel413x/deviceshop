@@ -28,7 +28,7 @@ import { smartphone } from './04-types';
 export default {
   up: async (queryInterface) => queryInterface.bulkInsert('OrderedProduct', [
     {
-      price: 8000,
+      price: 80000,
       cartId: cartForUserWithCartItemsAndOrderAndReviews,
       orderId: orderForUserWithCartItemsAndOrdersAndReviewsProcessing,
       brandId: samsung,
@@ -40,7 +40,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      price: 8000,
+      price: 80000,
       cartId: cartForUserWithCartItemsAndOrderAndReviews,
       orderId: orderForUserWithCartItemsAndOrdersAndReviewsCanceled,
       brandId: samsung,
@@ -52,7 +52,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      price: 8000,
+      price: 80000,
       cartId: cartForUserWithCartItemsAndOrderAndReviews,
       orderId: orderForUserWithCartItemsAndOrdersAndReviewsDelivered,
       brandId: samsung,
@@ -64,7 +64,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      price: 8000,
+      price: 80000,
       cartId: cartForUserWithCartItemsAndOrderAndReviews,
       orderId: orderForUserWithCartItemsAndOrdersAndReviewsDelivered,
       brandId: apple,
@@ -76,7 +76,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      price: 8000,
+      price: 80000,
       cartId: cartForUserWithCartItemsAndOrderAndReviews,
       orderId: orderForUserWithCartItemsAndOrdersAndReviewsDelivered,
       brandId: apple,
@@ -88,7 +88,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      price: 8000,
+      price: 80000,
       orderId: orderForSecondUserWithAReview,
       cartId: cartForSecondUserWithReviews,
       brandId: samsung,
@@ -100,7 +100,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      price: 8000,
+      price: 80000,
       orderId: orderForThirdUserWithAReview,
       cartId: cartForThirdUserWithReviews,
       brandId: samsung,
@@ -112,7 +112,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      price: 8000,
+      price: 80000,
       orderId: orderForFourthUserWithAReview,
       cartId: cartForFourthUserWithReviews,
       brandId: samsung,

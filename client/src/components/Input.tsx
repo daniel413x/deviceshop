@@ -7,7 +7,7 @@ export interface InputProps {
   pressedSubmit?: boolean;
   placeholder?: string;
   textarea?: boolean;
-  type?: 'password' | 'input';
+  type?: 'password' | 'input' | 'email';
   id?: string;
 }
 

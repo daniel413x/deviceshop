@@ -1,6 +1,5 @@
 import { makeAutoObservable } from 'mobx';
 import {
-  IShopProduct,
   IUser,
 } from '../types/types';
 import { ADMIN, GUEST, USER } from '../utils/consts';
@@ -22,7 +21,7 @@ export default class UserStore implements IUser {
 
   lastName?: string;
 
-  pleaseLoginAddItem?: IShopProduct | false;
+  loginToCheckout?: boolean;
 
   constructor() {
     this.roles = ['GUEST'];
@@ -32,7 +31,7 @@ export default class UserStore implements IUser {
     this.lastName = '';
     this.avatar = 'default-avatar.jpg';
     this.email = '';
-    this.pleaseLoginAddItem = false;
+    this.loginToCheckout = false;
     makeAutoObservable(this);
   }
 
@@ -83,7 +82,7 @@ export default class UserStore implements IUser {
     this.email = str;
   }
 
-  setPleaseLoginAddItem(arg: IShopProduct | false) {
-    this.pleaseLoginAddItem = arg;
+  setLoginToCheckout(bool: boolean) {
+    this.loginToCheckout = bool;
   }
 }

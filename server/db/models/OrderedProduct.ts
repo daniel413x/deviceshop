@@ -38,9 +38,9 @@ class OrderedProduct extends BaseModel<OrderedProduct> implements IOrderedProduc
       foreignKey: 'orderId',
       as: 'products',
     });
-    OrderedProduct.hasMany(models.Addon, {
+    OrderedProduct.hasMany(models.OrderedAddon, {
       sourceKey: 'id',
-      foreignKey: 'shopProductId',
+      foreignKey: 'orderedProductId',
       as: 'addons',
     });
   }

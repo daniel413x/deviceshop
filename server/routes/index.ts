@@ -12,6 +12,7 @@ import typeRouter from './typeRouter';
 import brandRouter from './brandRouter';
 import specificationRouter from './specificationRouter';
 import addonRouter from './addonRouter';
+import orderedAddonRouter from './orderedAddonRouter';
 
 const router = Router();
 
@@ -27,6 +28,7 @@ router.use('/cart', cartRouter);
 router.use('/shopelement', shopElementRouter);
 router.use('/specification', specificationRouter);
 router.use('/addon', addonRouter);
+router.use('/orderedaddon', orderedAddonRouter);
 router.use('/testing', testingRouter);
 
 export default router;

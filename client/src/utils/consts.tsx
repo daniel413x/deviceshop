@@ -6,6 +6,7 @@ export const ACCOUNT_ROUTE = 'account';
 export const COMPANY_WILDCARD_ROUTE = 'company/*';
 export const ABOUT_ROUTE = 'about';
 export const CART_ROUTE = 'cart';
+export const CHECKOUT_ROUTE = 'checkout';
 export const ADVANTAGES_ROUTE = 'advantages';
 export const PARTNERS_ROUTE = 'partners';
 export const FEEDBACK_ROUTE = 'feedback';

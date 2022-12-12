@@ -9,10 +9,12 @@ import Context from '../../context/context';
 import LabeledInput from '../LabeledInput';
 import Button from '../Button';
 import {
-  FRONT_PAGE_ROUTE, longNotification, red, SHOP_ROUTE,
+  CART_ROUTE,
+  CHECKOUT_ROUTE,
+  FRONT_PAGE_ROUTE, longNotification, red,
 } from '../../utils/consts';
 import { login, registration } from '../../http/userAPI';
-import { makeSlug, validateEmail, validatePassword } from '../../utils/functions';
+import { validateEmail, validatePassword } from '../../utils/functions';
 import { QueryReqLogin, QueryReqRegistration } from '../../types/types';
 
 interface FormProps {
@@ -32,8 +34,8 @@ function Form({ isLogin }: FormProps) {
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const navOnSuccess = () => {
-    if (user.pleaseLoginAddItem) {
-      navigate(`/${SHOP_ROUTE}/${makeSlug(user.pleaseLoginAddItem.name)}`);
+    if (user.loginToCheckout) {
+      navigate(`/${CART_ROUTE}/${CHECKOUT_ROUTE}`);
     } else {
       navigate(FRONT_PAGE_ROUTE);
     }
@@ -121,6 +123,7 @@ function Form({ isLogin }: FormProps) {
           pressedSubmit={pressedSubmit}
           setPressedSubmit={setPressedSubmit}
           id="email-field"
+          type="input"
           placeholder="Your username or email"
         />
         <LabeledInput
@@ -151,6 +154,7 @@ function Form({ isLogin }: FormProps) {
         pressedSubmit={pressedSubmit}
         setPressedSubmit={setPressedSubmit}
         placeholder="Your username"
+        type="input"
         id="username-field"
       />
       <LabeledInput
@@ -160,6 +164,7 @@ function Form({ isLogin }: FormProps) {
         pressedSubmit={pressedSubmit}
         setPressedSubmit={setPressedSubmit}
         placeholder="Your email"
+        type="input"
         id="email-field"
       />
       <LabeledInput

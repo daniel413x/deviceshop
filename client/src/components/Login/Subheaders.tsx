@@ -24,7 +24,7 @@ function Subheaders({ isLogin }: SubheadersProps) {
     </div>
   ) : (
     <div className="subheaders">
-      {user.pleaseLoginAddItem && (
+      {user.loginToCheckout && (
       <h4>
         To continue placing your order, please register an account
       </h4>

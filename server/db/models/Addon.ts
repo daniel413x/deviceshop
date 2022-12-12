@@ -1,4 +1,5 @@
 import {
+  CreationOptional,
   DataTypes,
 } from 'sequelize';
 import { IAddon, ModelAttributes } from '../../types/types';
@@ -9,17 +10,21 @@ import BaseModel, { baseModelAttributes } from './BaseModel';
 class Addon extends BaseModel<Addon> implements IAddon {
   id!: string;
 
-  orderedProductId!: string;
+  category!: string;
 
   name!: string;
+
+  bulletPoints?: CreationOptional<string[]>;
+
+  description?: CreationOptional<string>;
 
   price!: number;
 
   static associate(models: any) {
-    Addon.belongsTo(models.OrderedProduct, {
-      targetKey: 'id',
-      foreignKey: 'orderedProductId',
-      as: 'user',
+    Addon.hasMany(models.OrderedAddon, {
+      sourceKey: 'id',
+      foreignKey: 'addonId',
+      as: 'orderedaddons',
     });
   }
 }
@@ -29,17 +34,19 @@ export const addonAttributes: ModelAttributes<Addon> = {
     allowNull: false,
     type: DataTypes.STRING,
   },
+  category: {
+    allowNull: false,
+    type: DataTypes.STRING,
+  },
+  bulletPoints: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+  },
+  description: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+  },
   price: {
     allowNull: false,
     type: DataTypes.INTEGER,
-  },
-  orderedProductId: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    references: {
-      model: 'OrderedProduct',
-      key: 'id',
-    },
   },
   ...baseModelAttributes,
 };

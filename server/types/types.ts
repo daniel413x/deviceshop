@@ -18,6 +18,7 @@ export interface IShopProduct {
   name: string;
   price: number;
   discount: number;
+  discountedPrice: number;
   thumbnail: string;
   typeId: string;
   brandId: string;
@@ -28,9 +29,19 @@ export interface IShopProduct {
 
 export interface IAddon {
   id: string;
-  orderedProductId: string;
+  category: string;
+  bulletPoints?: string[];
+  description?: string;
   name: string;
   price: number;
+}
+
+export interface IOrderedAddon extends Omit<IAddon, 'bulletPoints' | 'description' | 'name'> {
+  orderedProductId: string;
+}
+
+export interface IGuestAddedAddon extends IOrderedAddon {
+  addon: IAddon;
 }
 
 export interface IOrderedProduct {
@@ -41,12 +52,12 @@ export interface IOrderedProduct {
   brandId: string;
   typeId: string;
   userId: string;
-  addons?: IAddon[];
+  addons?: (IOrderedAddon | IGuestAddedAddon)[];
   price: number;
 }
 
-export interface IGuestAddedProduct {
-  shopproduct: IOrderedProduct;
+export interface IGuestAddedProduct extends Pick<IOrderedProduct, 'addons'> {
+  shopproduct: IShopProduct;
 }
 
 export interface ISpecification {

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { FindAndCountOptions } from 'sequelize';
+import OrderedAddon from '../db/models/OrderedAddon';
 import OrderedProduct from '../db/models/OrderedProduct';
 import ShopProduct from '../db/models/ShopProduct';
 import BaseController from './BaseController';
@@ -29,7 +30,8 @@ class OrderedProductController extends BaseController<OrderedProduct> {
     this.execUpdate(req, res);
   }
 
-  delete(req: Request, res: Response) {
+  async delete(req: Request, res: Response) {
+    await OrderedAddon.destroy({ where: { orderedProductId: req.params.id } });
     this.execDestroy(req, res);
   }
 }

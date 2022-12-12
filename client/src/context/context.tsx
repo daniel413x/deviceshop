@@ -5,6 +5,7 @@ import TypeStore from '../store/TypeStore';
 import ReviewStore from '../store/ReviewStore';
 import ShopPageStore from '../store/ShopPageStore';
 import CartStore from '../store/CartStore';
+import ModalStore from '../store/ModalStore';
 
 interface ContextProps {
   notifications: NotificationStore;
@@ -13,6 +14,7 @@ interface ContextProps {
   types: TypeStore;
   reviews: ReviewStore;
   shopPage: ShopPageStore;
+  modals: ModalStore;
 }
 
 const Context = createContext<ContextProps>({
@@ -22,6 +24,7 @@ const Context = createContext<ContextProps>({
   reviews: new ReviewStore(),
   shopPage: new ShopPageStore(),
   cart: new CartStore(),
+  modals: new ModalStore(),
 });
 
 export default Context;

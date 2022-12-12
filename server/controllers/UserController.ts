@@ -6,6 +6,7 @@ import { Op } from 'sequelize';
 import ApiError from '../error/ApiError';
 import {
   ICart,
+  IGuestAddedAddon,
   IGuestAddedProduct,
   IUser,
 } from '../types/types';
@@ -15,7 +16,8 @@ import BaseController from './BaseController';
 import { assignBodyAndProcessImages } from '../utils/functions';
 import Cart from '../db/models/Cart';
 import OrderedProduct from '../db/models/OrderedProduct';
-import ShopProduct from '../db/models/ShopProduct';
+import { includeOrderedProducts } from '../utils/inclusions';
+import OrderedAddon from '../db/models/OrderedAddon';
 
 const generateJwt = ({
   id,
@@ -50,12 +52,43 @@ class UserController extends BaseController<User> {
 
   async convertGuestAddedItems(items: IGuestAddedProduct[], cart: ICart): Promise<void> {
     await Promise.all(items.map(async (item) => {
-      await OrderedProduct.create({
-        ...item.shopproduct, // note price is saved at the time when guest adds item to their cart
+      const {
+        shopproduct: {
+          id: shopProductId,
+          discountedPrice,
+          brandId,
+          typeId,
+        },
+        addons,
+      } = item;
+      const {
+        id: orderedProductId,
+      } = await OrderedProduct.create({
+        shopProductId,
+        price: discountedPrice,
         id: uuidv4(),
         cartId: cart.id,
         userId: cart.userId,
+        brandId,
+        typeId,
       });
+      if (item.addons) {
+        await Promise.all(addons.map(async (addon) => {
+          const {
+            category,
+            price,
+            addon: {
+              id: addonId,
+            },
+          } = addon as IGuestAddedAddon;
+          await OrderedAddon.create({
+            orderedProductId,
+            category,
+            price,
+            addonId,
+          });
+        }));
+      }
     }));
   }
 
@@ -64,16 +97,7 @@ class UserController extends BaseController<User> {
       where: {
         userId,
       },
-      include: [
-        {
-          model: OrderedProduct,
-          as: 'cartItems',
-          include: [{
-            model: ShopProduct,
-            as: 'shopproduct',
-          }],
-        },
-      ],
+      include: includeOrderedProducts,
     });
     return cart;
   }

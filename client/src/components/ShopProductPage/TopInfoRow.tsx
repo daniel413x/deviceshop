@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 import Context from '../../context/context';
 import { IShopProduct } from '../../types/types';
-import { convertPriceInt, formatPrice, listProductAttributes } from '../../utils/functions';
+import { listProductAttributes } from '../../utils/functions';
 import SliderComponent from '../SliderComponent';
 import { ReactComponent as CircleCheck } from '../../assets/icons/CircleCheck.svg';
 import { ReactComponent as CircleWarning } from '../../assets/icons/CircleWarning.svg';
@@ -12,6 +12,7 @@ import DiscountTag from '../DiscountTag';
 import RatingBadge from './RatingBadge';
 import { createOrderedProduct } from '../../http/orderedProductAPI';
 import { gray } from '../../utils/consts';
+import PriceTags from '../PriceTags';
 
 interface TopInfoRowProps {
   product: IShopProduct;
@@ -44,20 +45,17 @@ function TopInfoRow({
     rating,
     stock,
     thumbnail,
+    discountedPrice,
   } = product;
   const imageUrls = images.map((string) => `${process.env.REACT_APP_API_URL}${string}`);
   const specsTeaser = listProductAttributes(specifications);
-  let discountedPrice;
-  let previousPrice = formatPrice(convertPriceInt(price, discount));
-  if (discount) {
-    previousPrice = formatPrice(convertPriceInt(price));
-    discountedPrice = formatPrice(convertPriceInt(price, discount));
-  }
   const addToCart = async () => {
     if (user.isGuest) {
       const guestAddedItem = {
         id: new Date().toString(),
         shopproduct: product,
+        price: discountedPrice,
+        addons: [],
       };
       if (!localStorage.getItem('guestItems')) {
         const guestItems = [guestAddedItem];
@@ -80,7 +78,7 @@ function TopInfoRow({
       const item = {
         userId,
         cartId,
-        price,
+        price: discountedPrice,
         brandId,
         typeId,
         shopProductId,
@@ -112,16 +110,10 @@ function TopInfoRow({
           discount={discount}
         />
         )}
-        {discount && (
-        <span className="previous-price">
-          $
-          {previousPrice}
-        </span>
-        )}
-        <span className="discounted-price">
-          $
-          {discountedPrice}
-        </span>
+        <PriceTags
+          price={price}
+          discount={discount}
+        />
         <span className="name">
           {productName}
         </span>

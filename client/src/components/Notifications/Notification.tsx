@@ -16,7 +16,6 @@ function Notification({
     setClasses('');
     const timer = setTimeout(() => {
       notifications.removeNotification(id);
-      setClasses('');
     }, 520);
     return () => clearTimeout(timer);
   };

@@ -10,6 +10,10 @@ type Only<T, U> = {
 
 export type Either<T, U> = Only<T, U> | Only<U, T>;
 
+export type IterableAttributes<T> = { [ key in keyof T ]: any };
+
+export type InclusionAttributes<T> = ((keyof T) | [keyof T, string])[] | { exclude: ((keyof T) | [keyof T, string])[] };
+
 export interface IRouterRoute {
   path: string;
   Component: FC;
@@ -54,21 +58,35 @@ export interface IShopProduct {
   stock: number;
 }
 
+export interface IAddon {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  bulletPoints?: string[];
+  description?: string;
+}
+
+export interface IOrderedAddon extends Omit<IAddon, 'name' | 'bulletPoints' | 'description'> {
+  orderedProductId: string;
+  addonId: string;
+  addon: IAddon;
+}
+
 export interface IOrderedProduct {
   id: string;
   price: number;
   typeId: string;
   brandId: string;
   shopProductId: string;
+  shopproduct: IShopProduct;
   userId: string;
   createdAt: string;
   guestAddedId?: string;
+  addons: IOrderedAddon[];
 }
 
-export interface IGuestAddedProduct {
-  shopproduct: IShopProduct;
-  id: string;
-}
+export interface IGuestAddedProduct extends Pick<IOrderedProduct, 'shopproduct' | 'addons' | 'id' | 'price'> {}
 
 export interface IUser {
   id: string;
@@ -131,6 +149,11 @@ export interface INotification {
   id: number;
 }
 
+export interface IModal {
+  component: JSX.Element;
+  props: any;
+}
+
 export type SpecificationWithDeviceCount = Omit<ISpecification, 'category' | 'shopProductId' | 'typeId'> & {
   count: number;
 };
@@ -148,10 +171,6 @@ export interface INavButton {
   label: string;
   callback?: () => void;
 }
-
-export type IterableAttributes<T> = { [ key in keyof T ]: any };
-
-export type InclusionAttributes<T> = ((keyof T) | [keyof T, string])[] | { exclude: ((keyof T) | [keyof T, string])[] };
 
 export type QueryReqFetchOne<T> = {
   attributes?: T;
@@ -175,12 +194,20 @@ export type QueryReqLogin = {
   guestAddedItems?: IGuestAddedProduct[];
 };
 
+export type QueryReqCreateAddon = Omit<IOrderedAddon, 'id'>;
+
+export type QueryReqCreateOrderedAddon = Pick<IOrderedAddon, 'price' | 'orderedProductId' | 'addonId' | 'category'>;
+
 export type SearchViaSearchbar = {
   value: string;
 };
 
 export type SearchViaFilteredSearch = {
   specifications: Omit<ISpecification, 'category' | 'id' | 'typeId' | 'shopProductId'>[];
+};
+
+export type AddonChoice = Omit<IAddon, 'orderedProductId' | 'id'> & {
+  bulletPoints: string[];
 };
 
 export type Filter = {
@@ -197,7 +224,7 @@ export type QueryFilterSpecifications = {
   filters: Filter[]; // specification.value
 };
 
-export type QueryReqOrderedProduct = Omit<IOrderedProduct, 'id' | 'createdAt'>;
+export type QueryReqOrderedProduct = Omit<IOrderedProduct, 'id' | 'createdAt' | 'shopproduct' | 'addons'>;
 
 export type QueryReqFetchMultiple<T> = {
   page?: number;

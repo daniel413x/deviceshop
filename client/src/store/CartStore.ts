@@ -1,7 +1,8 @@
 import { makeAutoObservable } from 'mobx';
 import {
-  ICart, IGuestAddedProduct, IOrderedProduct,
+  ICart, IGuestAddedProduct, IOrderedAddon, IOrderedProduct,
 } from '../types/types';
+import { convertPriceInt, formatPrice } from '../utils/functions';
 
 export default class CartStore {
   items: (IOrderedProduct | IGuestAddedProduct)[];
@@ -34,5 +35,61 @@ export default class CartStore {
 
   removeItem(removedId: string) {
     this.items = this.items.filter(({ id }) => id !== removedId);
+  }
+
+  addAddon(changedCartItemId: string, addon: IOrderedAddon) {
+    const { items } = this;
+    const changedCartItem = items.find((item) => item.id === changedCartItemId);
+    if (changedCartItem) {
+      changedCartItem.addons = changedCartItem.addons?.concat(addon) || [addon];
+      this.items = items.map((item) => {
+        if (item.id === changedCartItemId) {
+          return changedCartItem;
+        }
+        return item;
+      });
+    }
+  }
+
+  removeAddon(changedCartItemId: string, removedAddonId: string) {
+    const { items } = this;
+    const changedCartItem = items.find((item) => item.id === changedCartItemId);
+    if (changedCartItem) {
+      changedCartItem.addons = changedCartItem.addons!.filter((addon) => addon.addonId !== removedAddonId);
+      this.items = items.map((item) => {
+        if (item.id === changedCartItemId) {
+          return changedCartItem;
+        }
+        return item;
+      });
+    }
+  }
+
+  findOrderedAddon(addonId: string) {
+    const { items } = this;
+    for (let i = 0; i < items.length; i += 1) {
+      const foundAddon = items[i].addons?.find((addon) => addon.addonId === addonId);
+      if (foundAddon) {
+        return foundAddon;
+      }
+    }
+    return false;
+  }
+
+  getIntTotal() {
+    let total = 0;
+    this.items.forEach((item) => {
+      total += item.price;
+      if (item.addons.length > 0) {
+        item.addons.forEach((addon) => {
+          total += addon.price;
+        });
+      }
+    });
+    return total;
+  }
+
+  getFormattedTotal() {
+    return formatPrice(convertPriceInt(this.getIntTotal()));
   }
 }

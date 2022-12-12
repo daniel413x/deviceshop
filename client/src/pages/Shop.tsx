@@ -19,6 +19,7 @@ import { ReactComponent as AngleIcon } from '../assets/icons/angleup.svg';
 import useTrackDimensions from '../hooks/useTrackDimensions';
 import LoadingAnimation from '../components/LoadingAnimation';
 import useQuery from '../hooks/useQuery';
+import useBreakpoints from '../hooks/useBreakpoints';
 
 function Shop() {
   const { shopPage } = useContext(Context);
@@ -42,10 +43,11 @@ function Shop() {
     renderedProductCount = dbProductCount;
   }
   const { width: mainColWidth } = useTrackDimensions('main-col');
+  const { width } = useBreakpoints();
   const gridGap = 20;
   const itemWidth = 265;
   const compositeWidth = itemWidth + gridGap; // each compositeWidth is intended to correspond to the width of a .shop-product-card plus the right side of its grid gap, creating predictable break point matching up with that of the .shop-product-ul's flex container
-  const maxWidth = (Math.floor(
+  const maxWidth = width! < 767 ? '100%' : (Math.floor(
     (mainColWidth! + gridGap) / compositeWidth,
   )
     * compositeWidth) - gridGap;
@@ -82,6 +84,7 @@ function Shop() {
         <div
           style={{ maxWidth }}
         >
+          <div className="divider" />
           <div
             className="product-count-row"
             style={{ maxWidth }}

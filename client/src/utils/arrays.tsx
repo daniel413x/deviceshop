@@ -5,6 +5,7 @@ import Shop from '../pages/Shop';
 import * as routes from './consts';
 import LoginRegister from '../pages/LoginRegister';
 import Logout from '../pages/Logout';
+import Cart from '../pages/Cart';
 
 export const indexPublicRoutes = [
   // {
@@ -14,6 +15,10 @@ export const indexPublicRoutes = [
   {
     path: `${routes.SHOP_ROUTE}/:title`,
     Component: ShopProductPage,
+  },
+  {
+    path: routes.CART_ROUTE,
+    Component: Cart,
   },
   {
     path: routes.SHOP_ROUTE,

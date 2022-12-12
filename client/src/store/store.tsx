@@ -5,6 +5,7 @@ import ReviewStore from './ReviewStore';
 import ShopPageStore from './ShopPageStore';
 import CartStore from './CartStore';
 import NotificationStore from './NotificationStore';
+import ModalStore from './ModalStore';
 
 const store = {
   notifications: new NotificationStore(),
@@ -14,6 +15,7 @@ const store = {
   reviews: new ReviewStore(),
   shopPage: new ShopPageStore(),
   cart: new CartStore(),
+  modals: new ModalStore(),
 };
 
 export default store;

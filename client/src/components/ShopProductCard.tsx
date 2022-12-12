@@ -3,13 +3,12 @@ import { NavLink } from 'react-router-dom';
 import { IShopProduct, SpecificationColumn } from '../types/types';
 import { SHOP_ROUTE } from '../utils/consts';
 import {
-  convertPriceInt,
-  formatPrice,
   listProductAttributeInColumns,
   listProductAttributes,
   makeSlug,
 } from '../utils/functions';
 import List from './List';
+import PriceTags from './PriceTags';
 import RatingStars from './RatingStars';
 
 interface ShopProductCardProps {
@@ -39,8 +38,6 @@ function ShopProductCard({
     id,
     thumbnail,
   } = product;
-  const undiscountedPrice = formatPrice(convertPriceInt(price));
-  const discountedPrice = formatPrice(convertPriceInt(price, discount));
   const slug = makeSlug(productName);
   const attributes = listView ? listProductAttributeInColumns(specifications) : listProductAttributes(specifications);
   const showGridViewAttributes = expanded && !listView;
@@ -56,16 +53,10 @@ function ShopProductCard({
           src={`${process.env.REACT_APP_API_URL}${thumbnail}`}
           alt="Shop now"
         />
-        <div className="price-row">
-          <span className="undiscounted-price">
-            $
-            {undiscountedPrice}
-          </span>
-          <span className="discounted-price">
-            $
-            {discountedPrice}
-          </span>
-        </div>
+        <PriceTags
+          price={price}
+          discount={discount}
+        />
       </div>
       <div className="lower-col">
         <span className="name">

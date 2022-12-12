@@ -7,6 +7,10 @@ class AddonController extends BaseController<Addon> {
     super(Addon);
   }
 
+  get(req: Request, res: Response) {
+    this.execFindAndCountAll(req, res);
+  }
+
   create(req: Request, res: Response) {
     this.execCreate(req, res);
   }
