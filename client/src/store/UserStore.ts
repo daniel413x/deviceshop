@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import {
+  IAddressInAddressBook,
   IUser,
 } from '../types/types';
 import { ADMIN, GUEST, USER } from '../utils/consts';
@@ -23,6 +24,8 @@ export default class UserStore implements IUser {
 
   loginToCheckout?: boolean;
 
+  addresses: IAddressInAddressBook[];
+
   constructor() {
     this.roles = ['GUEST'];
     this.id = 'GUEST';
@@ -32,6 +35,7 @@ export default class UserStore implements IUser {
     this.avatar = 'default-avatar.jpg';
     this.email = '';
     this.loginToCheckout = false;
+    this.addresses = [];
     makeAutoObservable(this);
   }
 
@@ -80,6 +84,10 @@ export default class UserStore implements IUser {
 
   setEmail(str: string) {
     this.email = str;
+  }
+
+  setAddresses(arr: IAddressInAddressBook[]) {
+    this.addresses = arr;
   }
 
   setLoginToCheckout(bool: boolean) {

@@ -6,6 +6,7 @@ import ShopPageStore from './ShopPageStore';
 import CartStore from './CartStore';
 import NotificationStore from './NotificationStore';
 import ModalStore from './ModalStore';
+import OrderStore from './OrderStore';
 
 const store = {
   notifications: new NotificationStore(),
@@ -15,6 +16,7 @@ const store = {
   reviews: new ReviewStore(),
   shopPage: new ShopPageStore(),
   cart: new CartStore(),
+  orders: new OrderStore(),
   modals: new ModalStore(),
 };
 

@@ -11,7 +11,7 @@ function LoginRegister() {
   return (
     <div id="login-and-register">
       <BreadcrumbTrail />
-      <PageHeader header={isLogin ? 'Login' : 'Register'} />
+      <PageHeader header={isLogin ? 'Login' : 'Register'} noEllipses noDiv />
       <Subheaders isLogin={isLogin} />
       <Form isLogin={isLogin} />
     </div>

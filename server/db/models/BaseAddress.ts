@@ -22,6 +22,8 @@ class BaseAddress<M extends Model> extends BaseModel<M> implements IBaseAddress 
   state!: string;
 
   zip!: string;
+
+  company?: CreationOptional<string>;
 }
 
 export const baseAddressAttributes: ModelAttributes<BaseAddress<any>> = {
@@ -50,6 +52,9 @@ export const baseAddressAttributes: ModelAttributes<BaseAddress<any>> = {
   },
   zip: {
     allowNull: false,
+    type: DataTypes.STRING,
+  },
+  company: {
     type: DataTypes.STRING,
   },
   ...baseModelAttributes,

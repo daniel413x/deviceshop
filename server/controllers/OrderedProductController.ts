@@ -2,13 +2,8 @@ import { Request, Response } from 'express';
 import { FindAndCountOptions } from 'sequelize';
 import OrderedAddon from '../db/models/OrderedAddon';
 import OrderedProduct from '../db/models/OrderedProduct';
-import ShopProduct from '../db/models/ShopProduct';
+import { inclusionsForOrderedProduct } from '../utils/inclusions';
 import BaseController from './BaseController';
-
-const include = [{
-  model: ShopProduct,
-  as: 'shopproduct',
-}];
 
 const options: FindAndCountOptions<OrderedProduct> = {};
 
@@ -17,12 +12,12 @@ class OrderedProductController extends BaseController<OrderedProduct> {
     super(OrderedProduct);
   }
 
-  get(req: Request, res: Response) {
+  get(req: Request, res: Response) { // only retrieved via cart
     this.execFindAndCountAll(req, res, options);
   }
 
   create(req: Request, res: Response) {
-    options.include = include;
+    options.include = inclusionsForOrderedProduct;
     this.execCreate(req, res, options);
   }
 

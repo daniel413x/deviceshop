@@ -18,6 +18,8 @@ class Order extends BaseModel<Order> implements IOrder {
 
   userId!: string;
 
+  total!: number;
+
   status!: ('Processing' | 'Shipped' | 'Cancellation Requested' | 'Canceled' | 'Delivered')[];
 
   static associate(models: any) {
@@ -35,6 +37,11 @@ class Order extends BaseModel<Order> implements IOrder {
       sourceKey: 'id',
       foreignKey: 'orderId',
       as: 'orderAddress',
+    });
+    Order.hasOne(models.OrderedShippingMethod, {
+      sourceKey: 'id',
+      foreignKey: 'orderId',
+      as: 'shippingMethod',
     });
   }
 }
@@ -65,6 +72,10 @@ export const orderAttributes: ModelAttributes<Order> = {
       model: 'User',
       key: 'id',
     },
+  },
+  total: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   ...baseModelAttributes,
 };

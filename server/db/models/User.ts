@@ -41,6 +41,11 @@ class User extends BaseModel<User> implements IUser {
       foreignKey: 'userId',
       as: 'cart',
     });
+    User.hasOne(models.AddressInAddressBook, {
+      sourceKey: 'id',
+      foreignKey: 'userId',
+      as: 'savedAddresses',
+    });
   }
 }
 

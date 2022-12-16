@@ -10,6 +10,7 @@ import PriceTags from '../PriceTags';
 import CloseButton from '../CloseButton';
 import List from '../List';
 import CartAddon from './CartAddon';
+import { SHOP_ROUTE } from '../../utils/consts';
 
 interface CartItemProps {
   orderedProduct: IOrderedProduct | IGuestAddedProduct;
@@ -28,7 +29,6 @@ function CartItem({
   const {
     shopproduct,
     addons,
-    price,
   } = orderedProduct;
   const {
     thumbnail,
@@ -36,6 +36,7 @@ function CartItem({
     specifications,
     discount,
     id: shopProductId,
+    price,
   } = shopproduct;
   const [loading, setLoading] = useState<boolean>(true);
   const [listedSpecifications, setListedSpecifications] = useState<string>();
@@ -68,7 +69,7 @@ function CartItem({
         />
         <div className="text-col">
           <div className="name-row">
-            <NavLink className="name" to={slug}>
+            <NavLink className="name" to={`/${SHOP_ROUTE}/${slug}`}>
               {name}
             </NavLink>
           </div>

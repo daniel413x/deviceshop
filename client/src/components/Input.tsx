@@ -5,21 +5,25 @@ export interface InputProps {
   setInput: (e: string) => void;
   setPressedSubmit?: (boolean: boolean) => void;
   pressedSubmit?: boolean;
+  name?: string;
   placeholder?: string;
   textarea?: boolean;
   type?: 'password' | 'input' | 'email';
   id?: string;
+  optional?: boolean;
 }
 
 function Input({
   input,
   setInput,
+  name,
   setPressedSubmit,
   pressedSubmit,
   placeholder,
   textarea,
   id,
   type,
+  optional,
 }: InputProps) {
   const [incomplete, setIncomplete] = useState<boolean>(false);
   const removeWarning = () => {
@@ -37,7 +41,7 @@ function Input({
     setInput(e.target.value);
   };
   useEffect(() => {
-    if (pressedSubmit && !input) {
+    if (!optional && pressedSubmit && !input) {
       setIncomplete(true);
     }
   }, [pressedSubmit]);
@@ -49,6 +53,7 @@ function Input({
       onChange={(e) => changeTextarea(e)}
       id={id}
       onClick={() => removeWarning()}
+      name={name}
     />
   ) : (
     <input
@@ -58,6 +63,7 @@ function Input({
       onChange={(e) => changeInput(e)}
       onClick={() => removeWarning()}
       type={type}
+      name={name}
       id={id}
     />
   );
@@ -68,7 +74,9 @@ Input.defaultProps = {
   pressedSubmit: false,
   placeholder: false,
   textarea: false,
+  optional: false,
   type: '',
+  name: '',
   id: '',
 };
 

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { ReactElement, useContext } from 'react';
 import { useNavigate } from 'react-router';
 import Context from '../../context/context';
 import { CHECKOUT_ROUTE, REGISTER_ROUTE } from '../../utils/consts';
@@ -16,24 +16,34 @@ function Checkout() {
     user.setLoginToCheckout(true);
     navigate(`/${REGISTER_ROUTE}`);
   };
-  return (
-    <div className="checkout">
-      Total
-      <div className="divider" />
-      $
-      {total}
-      {user.isGuest ? (
+  let checkoutLink: ReactElement | null = null;
+  if (cart.items.length > 0) {
+    if (user.isGuest) {
+      checkoutLink = (
         <Button className="checkout-link" buttonStyle={['match-navlink', 'secondary']} onClick={requestLogin}>
           &#8594;
           Checkout
         </Button>
-      )
-        : (
-          <NavButton className="checkout-link" buttonStyle={['match-button', 'secondary']} to={CHECKOUT_ROUTE}>
-            &#8594;
-            Checkout
-          </NavButton>
-        )}
+      );
+    } else {
+      checkoutLink = (
+        <NavButton className="checkout-link" buttonStyle={['match-button', 'secondary']} to={CHECKOUT_ROUTE}>
+          &#8594;
+          Checkout
+        </NavButton>
+      );
+    }
+  }
+  return (
+    <div className="checkout">
+      <div className={`total ${!checkoutLink && 'fill-margin'}`}>
+        Total
+        {cart.items.length > 0 && ' (tax incl.)'}
+        <div className="divider" />
+        $
+        {total}
+      </div>
+      {checkoutLink}
     </div>
   );
 }

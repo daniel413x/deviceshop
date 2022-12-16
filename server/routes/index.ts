@@ -12,6 +12,7 @@ import typeRouter from './typeRouter';
 import brandRouter from './brandRouter';
 import specificationRouter from './specificationRouter';
 import addonRouter from './addonRouter';
+import shippingMethodRouter from './shippingMethodRouter';
 import orderedAddonRouter from './orderedAddonRouter';
 
 const router = Router();
@@ -29,6 +30,7 @@ router.use('/shopelement', shopElementRouter);
 router.use('/specification', specificationRouter);
 router.use('/addon', addonRouter);
 router.use('/orderedaddon', orderedAddonRouter);
+router.use('/shippingmethod', shippingMethodRouter);
 router.use('/testing', testingRouter);
 
 export default router;

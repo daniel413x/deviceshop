@@ -36,6 +36,21 @@ export interface IAddon {
   price: number;
 }
 
+export interface IBaseShippingMethod {
+  id: string;
+  price: number;
+  name: string;
+}
+
+export interface IShippingMethod extends IBaseShippingMethod {}
+
+export interface IOrderedShippingMethod extends IShippingMethod {
+  id: string;
+  price: number;
+  name: string;
+  orderId: string;
+}
+
 export interface IOrderedAddon extends Omit<IAddon, 'bulletPoints' | 'description' | 'name'> {
   orderedProductId: string;
 }

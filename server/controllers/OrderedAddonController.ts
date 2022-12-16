@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import OrderedAddon from '../db/models/OrderedAddon';
-import { includeAddon } from '../utils/inclusions';
+import { inclusionsForOrderedAddon } from '../utils/inclusions';
 import BaseController from './BaseController';
 
 class OrderedAddonController extends BaseController<OrderedAddon> {
@@ -23,7 +23,7 @@ class OrderedAddonController extends BaseController<OrderedAddon> {
       await removePreviousAddon.destroy();
     }
     const options = {
-      include: includeAddon,
+      include: inclusionsForOrderedAddon,
     };
     this.execCreate(req, res, options);
   }

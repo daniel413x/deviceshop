@@ -45,7 +45,7 @@ function Specification({ specification }: SpecificationProps) {
       <span className="key">
         {renderedKey}
       </span>
-      <div className="ellipses" />
+      <div className="dots-divider" />
       <span className="value">
         {specification.value}
       </span>

@@ -97,6 +97,7 @@ export interface IUser {
   phoneNumber?: string;
   roles: string[];
   avatar: string;
+  addresses: IAddress[];
 }
 
 export interface IReview {
@@ -131,6 +132,12 @@ export interface IAddress {
   city: string;
   zip: string;
   state: string;
+  company?: string;
+  userId: string;
+}
+
+export interface IAddressInAddressBook extends IAddress {
+  default: boolean;
 }
 
 export interface IShopElement {
@@ -152,6 +159,12 @@ export interface INotification {
 export interface IModal {
   component: JSX.Element;
   props: any;
+}
+
+export interface IShippingMethod {
+  id: string;
+  price: number;
+  name: string;
 }
 
 export type SpecificationWithDeviceCount = Omit<ISpecification, 'category' | 'shopProductId' | 'typeId'> & {
@@ -197,6 +210,27 @@ export type QueryReqLogin = {
 export type QueryReqCreateAddon = Omit<IOrderedAddon, 'id'>;
 
 export type QueryReqCreateOrderedAddon = Pick<IOrderedAddon, 'price' | 'orderedProductId' | 'addonId' | 'category'>;
+
+export type QueryReqCreateAddress = IAddressInAddressBook;
+
+export type CCDebitPayment = {
+  nameOnCard: string;
+  cardNumber: string;
+  expirationDate: string;
+  cvc: string;
+};
+
+export type PaymentMethod = 'Credit/debit card' | 'PayPal' | 'Google Pay' | 'Crypto';
+
+export type QueryReqCreateOrder = {
+  address: Omit<IAddress, 'id' | 'userId'>;
+  paymentMethod: PaymentMethod;
+  payment: CCDebitPayment;
+  shippingMethod: string; // stringify
+  total: number;
+};
+
+export type QueryReqCreateShippingMethod = Omit<IShippingMethod, 'id'>;
 
 export type SearchViaSearchbar = {
   value: string;

@@ -78,13 +78,12 @@ function Shop() {
       <SideCol />
       <div className="main-col" id="main-col">
         <BreadcrumbTrail />
-        <PageHeader
-          header="Shop all products"
-        />
         <div
           style={{ maxWidth }}
         >
-          <div className="divider" />
+          <PageHeader
+            header="Shop all products"
+          />
           <div
             className="product-count-row"
             style={{ maxWidth }}

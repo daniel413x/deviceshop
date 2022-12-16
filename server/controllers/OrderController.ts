@@ -5,6 +5,8 @@ import OrderedProduct from '../db/models/OrderedProduct';
 import ShopProduct from '../db/models/ShopProduct';
 import AddressForOrder from '../db/models/AddressForOrder';
 import { PROCESSING } from '../utils/consts';
+import OrderedShippingMethod from '../db/models/OrderedShippingMethod';
+import { inclusionsForOrder } from '../utils/inclusions';
 
 class OrderController extends BaseController<Order> {
   constructor() {
@@ -34,24 +36,34 @@ class OrderController extends BaseController<Order> {
 
   async create(req: Request, res: Response) {
     const { id: userId } = res.locals.user;
+    const { total, shippingMethod, address } = req.body;
     const orderedProducts = await OrderedProduct.findAndCountAll({
       where: {
         userId,
-        orderId: null,
+        orderId: null, // cart item = no order id yet
       },
     });
     const order = await Order.create({
       userId,
       status: [PROCESSING],
+      total,
     });
     await Promise.all(orderedProducts.rows.map(async (item) => {
-      await OrderedProduct.update({ orderId: order.id }, { where: { id: item.id } });
+      // await OrderedProduct.update({ orderId: order.id }, { where: { id: item.id } });
+      await item.update({ orderId: order.id });
     }));
     await AddressForOrder.create({
-      ...req.body.address,
+      ...address,
       orderId: order.id,
     });
-    return res.json(order);
+    await OrderedShippingMethod.create({
+      ...JSON.parse(shippingMethod),
+      orderId: order.id,
+    });
+    const returnedOrder = await Order.findByPk(order.id, {
+      include: inclusionsForOrder,
+    });
+    return res.json(returnedOrder);
   }
 
   async changeStatus(req: Request, res: Response, next: NextFunction) {

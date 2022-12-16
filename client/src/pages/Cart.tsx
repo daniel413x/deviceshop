@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import BreadcrumbTrail from '../components/BreadcrumbTrail';
-import { ReactComponent as Ellipses } from '../assets/icons/Ellipses.svg';
 import PageHeader from '../components/PageHeader';
 import SideCol from '../components/SideCol';
 import List from '../components/List';
@@ -57,13 +56,9 @@ function Cart() {
         <SideCol />
         <div className="main-col">
           <BreadcrumbTrail />
-          <div className="header-row">
-            <PageHeader
-              header="Cart"
-            />
-            <Ellipses />
-          </div>
-          <div className="divider" />
+          <PageHeader
+            header="Cart"
+          />
           <List
             className="cart-items-ul"
             items={cart.items}
@@ -78,6 +73,11 @@ function Cart() {
           >
             {!checkoutBreakpoint && <Checkout />}
           </List>
+          {cart.items.length === 0 && (
+            <span className="empty-cart">
+              Your cart is empty
+            </span>
+          )}
         </div>
         {checkoutBreakpoint && (
         <div className="checkout-col">

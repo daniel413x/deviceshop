@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import {
-  ICart, IGuestAddedProduct, IOrderedAddon, IOrderedProduct,
+  ICart, IGuestAddedProduct, IOrderedAddon, IOrderedProduct, IShippingMethod,
 } from '../types/types';
 import { convertPriceInt, formatPrice } from '../utils/functions';
 
@@ -9,9 +9,12 @@ export default class CartStore {
 
   id: string;
 
+  shippingMethod: IShippingMethod | undefined;
+
   constructor() {
     this.items = [];
     this.id = 'GUEST';
+    this.shippingMethod = undefined;
     makeAutoObservable(this);
   }
 
@@ -24,9 +27,14 @@ export default class CartStore {
     this.items = newItems;
   }
 
+  setShippingMethod(shippingMethod: IShippingMethod | undefined) {
+    this.shippingMethod = shippingMethod;
+  }
+
   unset() {
     this.items = [];
     this.id = 'guest';
+    this.shippingMethod = undefined;
   }
 
   addItem(newItem: IOrderedProduct | IGuestAddedProduct) {
@@ -80,13 +88,17 @@ export default class CartStore {
     let total = 0;
     this.items.forEach((item) => {
       total += item.price;
-      if (item.addons.length > 0) {
+      if (item.addons && item.addons.length > 0) {
         item.addons.forEach((addon) => {
           total += addon.price;
         });
       }
     });
-    return total;
+    if (this.shippingMethod) {
+      total += this.shippingMethod.price;
+    }
+    const tax = total * 0.05;
+    return total + tax;
   }
 
   getFormattedTotal() {

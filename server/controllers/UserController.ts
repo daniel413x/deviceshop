@@ -16,7 +16,7 @@ import BaseController from './BaseController';
 import { assignBodyAndProcessImages } from '../utils/functions';
 import Cart from '../db/models/Cart';
 import OrderedProduct from '../db/models/OrderedProduct';
-import { includeOrderedProducts } from '../utils/inclusions';
+import { inclusionsForCart } from '../utils/inclusions';
 import OrderedAddon from '../db/models/OrderedAddon';
 
 const generateJwt = ({
@@ -97,7 +97,7 @@ class UserController extends BaseController<User> {
       where: {
         userId,
       },
-      include: includeOrderedProducts,
+      include: inclusionsForCart,
     });
     return cart;
   }

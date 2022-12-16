@@ -4,6 +4,7 @@ import Input, { InputProps } from './Input';
 interface LabeledInputProps extends InputProps {
   label: string;
   subscript?: string;
+  labelSubscript?: string;
 }
 
 function LabeledInput({
@@ -15,14 +16,23 @@ function LabeledInput({
   placeholder,
   textarea,
   subscript,
+  labelSubscript,
   type,
+  name,
   id,
+  optional,
 }: LabeledInputProps) {
   return (
     <div className="labeled-input">
-      <span className="label">
+      <label htmlFor={id} className="label">
         {label}
-      </span>
+        {' '}
+        {labelSubscript && (
+        <span className="label-subscript">
+          {labelSubscript}
+        </span>
+        )}
+      </label>
       <Input
         input={input}
         setInput={setInput}
@@ -30,6 +40,8 @@ function LabeledInput({
         pressedSubmit={pressedSubmit}
         placeholder={placeholder}
         textarea={textarea}
+        optional={optional}
+        name={name}
         type={type}
         id={id}
       />
@@ -44,6 +56,7 @@ function LabeledInput({
 
 LabeledInput.defaultProps = {
   subscript: '',
+  labelSubscript: '',
 };
 
 export default LabeledInput;

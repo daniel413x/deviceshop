@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import {
+  indexAuthRoutes,
   indexPublicRoutes,
 } from './utils/arrays';
 import Context from './context/context';
@@ -62,6 +63,7 @@ function App() {
         >
           <AppRouter
             publicRoutes={indexPublicRoutes}
+            authedRoutes={indexAuthRoutes}
           />
         </div>
         <Footer />

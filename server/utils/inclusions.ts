@@ -1,36 +1,54 @@
 import Addon from '../db/models/Addon';
+import AddressForOrder from '../db/models/AddressForOrder';
 import OrderedAddon from '../db/models/OrderedAddon';
 import OrderedProduct from '../db/models/OrderedProduct';
+import OrderedShippingMethod from '../db/models/OrderedShippingMethod';
 import ShopProduct from '../db/models/ShopProduct';
 import Specification from '../db/models/Specification';
 
-// eslint-disable-next-line import/prefer-default-export
-export const includeOrderedProducts = [
+export const inclusionsForOrderedAddon = [{
+  model: Addon,
+  as: 'addon',
+}];
+
+export const inclusionsForOrderedProduct = [{
+  model: ShopProduct,
+  as: 'shopproduct',
+  include: [{
+    model: Specification,
+    as: 'specifications',
+  }],
+},
+{
+  model: OrderedAddon,
+  as: 'addons',
+  include: [...inclusionsForOrderedAddon],
+}];
+
+export const inclusionsForCart = [
   {
     model: OrderedProduct,
     as: 'cartItems',
-    include: [{
-      model: ShopProduct,
-      as: 'shopproduct',
-      include: [{
-        model: Specification,
-        as: 'specifications',
-      }],
-    },
-    {
-      model: OrderedAddon,
-      as: 'addons',
-      include: [{
-        model: Addon,
-        as: 'addon',
-      }],
-    }],
+    include: [
+      ...inclusionsForOrderedProduct,
+    ],
   },
 ];
 
-export const includeAddon = [
+export const inclusionsForOrder = [
   {
-    model: Addon,
-    as: 'addon',
+    model: OrderedProduct,
+    as: 'orderItems',
+    include: [
+      ...inclusionsForOrderedProduct,
+    ],
+  },
+  {
+    model: AddressForOrder,
+    as: 'orderAddress',
+  },
+  {
+    model: OrderedShippingMethod,
+    as: 'shippingMethod',
   },
 ];

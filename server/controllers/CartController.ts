@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import Cart from '../db/models/Cart';
 import { FindOptions } from '../types/types';
-import { includeOrderedProducts } from '../utils/inclusions';
+import { inclusionsForCart } from '../utils/inclusions';
 import BaseController from './BaseController';
 
 class CartController extends BaseController<Cart> {
@@ -15,7 +15,7 @@ class CartController extends BaseController<Cart> {
       where: {
         userId: id,
       },
-      include: includeOrderedProducts,
+      include: inclusionsForCart,
     };
     this.execFindOne(req, res, next, options);
   }

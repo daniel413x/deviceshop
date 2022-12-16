@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import React, { useEffect, useRef, useState } from 'react';
 import { ReactComponent as TriangleDown } from '../assets/icons/triangle-down.svg';
 import { ReactComponent as AngleIcon } from '../assets/icons/angleup.svg';
@@ -149,7 +147,9 @@ function Dropdown({
           />
         )}
         {dropdownIcon === 'triangle' && <TriangleDown />}
-        {label}
+        <span className="toggle-label">
+          {label}
+        </span>
         {dropdownIcon === 'angle' && (
           <AngleIcon
             className="angle-icon"

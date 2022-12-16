@@ -22,6 +22,7 @@ export default {
       userId: userWithCartItemsAndOrdersAndReviews,
       createdAt: new Date(),
       updatedAt: new Date(),
+      total: 80000,
     },
     {
       status: [CANCELED],
@@ -29,6 +30,7 @@ export default {
       userId: userWithCartItemsAndOrdersAndReviews,
       createdAt: new Date(),
       updatedAt: new Date(),
+      total: 80000,
     },
     {
       status: [DELIVERED],
@@ -36,6 +38,7 @@ export default {
       userId: userWithCartItemsAndOrdersAndReviews,
       createdAt: new Date(),
       updatedAt: new Date(),
+      total: 240000,
     },
     {
       status: [DELIVERED],
@@ -43,6 +46,7 @@ export default {
       userId: secondUserWithAReview,
       createdAt: new Date(),
       updatedAt: new Date(),
+      total: 80000,
     },
     {
       status: [DELIVERED],
@@ -50,6 +54,7 @@ export default {
       userId: thirdUserWithAReview,
       createdAt: new Date(),
       updatedAt: new Date(),
+      total: 80000,
     },
     {
       status: [DELIVERED],
@@ -57,6 +62,7 @@ export default {
       userId: fourthUserWithAReview,
       createdAt: new Date(),
       updatedAt: new Date(),
+      total: 80000,
     },
   ]),
   down: (queryInterface) => queryInterface.bulkDelete('Order', null, {}),
