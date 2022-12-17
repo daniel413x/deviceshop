@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import Context from '../../context/context';
 import { IShopProduct } from '../../types/types';
@@ -21,6 +21,7 @@ interface TopInfoRowProps {
 function TopInfoRow({
   product,
 }: TopInfoRowProps) {
+  const [pressedSubmit, setPressedSubmit] = useState<boolean>(false);
   const { user, cart, notifications } = useContext(Context);
   const {
     id: userId,
@@ -50,6 +51,8 @@ function TopInfoRow({
   const imageUrls = images.map((string) => `${process.env.REACT_APP_API_URL}${string}`);
   const specsTeaser = listProductAttributes(specifications);
   const addToCart = async () => {
+    setPressedSubmit(true);
+    setTimeout(() => setPressedSubmit(false), 1500);
     if (user.isGuest) {
       const guestAddedItem = {
         id: new Date().toString(),
@@ -141,7 +144,7 @@ function TopInfoRow({
         </div>
         )}
         <Button
-          className="add-to-cart"
+          className={`add-to-cart ${pressedSubmit && 'blocked'}`}
           onClick={addToCart}
         >
           <ShoppingCart />

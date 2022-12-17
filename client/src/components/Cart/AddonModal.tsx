@@ -59,11 +59,6 @@ function AddonModal({
       const guestItems: IOrderedProduct[] = JSON.parse(localStorage.getItem('guestItems')!);
       const updatedItem = guestItems.find((orderedProduct) => id === orderedProduct.id);
       if (updatedItem) {
-        // for (let i = 0; i < updatedItem.addons.length; i += 1) {
-        //   const replacePrevious = updatedItem.addons.find((addon) => addon.category === category);
-        //   if (updatedItem.addons[i].category === category) {
-        //   }
-        // }
         const orderedAddonForGuest: IOrderedAddon = {
           id: Date.toString(),
           addonId: selection.id,
@@ -96,9 +91,6 @@ function AddonModal({
     });
     cart.addAddon(id, newAddon);
     setSelectedAddon(selection);
-    // const warranty = await deleteOrderedProduct(id);
-    // close();
-    // cart.removeItem(id);
   };
   const fetch = async (fetchedCategory: string) => fetchAddons({ where: { category: fetchedCategory } });
   useEffect(() => {
@@ -153,7 +145,7 @@ function AddonModal({
           className="addon-choice-ul"
           items={addons}
           renderAs={(addon) => (
-            <li>
+            <li key={addon.id}>
               <AddonChoice
                 addon={addon}
                 selectedAddonId={selectedAddon?.id}

@@ -4,10 +4,12 @@ import React, {
   useContext,
   useEffect,
   useRef,
+  useState,
 } from 'react';
 import ReactDom from 'react-dom';
 import Context from '../context/context';
 import useOnOutsideClick from '../hooks/useOnOutsideClick';
+import useTrackDimensions from '../hooks/useTrackDimensions';
 
 interface ModalProps {
   show: any;
@@ -26,19 +28,32 @@ function Modal({
   size,
   id,
 }: ModalProps) {
+  const [handleOverflow, setHandleOverflow] = useState<boolean>(false);
   const ref = useRef<HTMLDivElement>(null);
+  const { width: windowWidth, height: windowHeight } = useTrackDimensions();
   useOnOutsideClick(ref, close);
   const { modals } = useContext(Context);
   const firstInQueue = modals.all[0] === id;
   useEffect(() => {
     if (!show) {
       modals.unqueue(id);
+      setTimeout(() => ref.current?.scrollTo(0, 0), 500);
     } else {
       modals.queue(id);
     }
   }, [show]);
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+    if (ref.current.scrollHeight > windowHeight!) {
+      setHandleOverflow(true);
+    } else {
+      setHandleOverflow(false);
+    }
+  }, [windowWidth, windowHeight, ref.current?.scrollHeight]);
   return ReactDom.createPortal(
-    <div className={`modal ${(firstInQueue && show) && 'show'} ${className} ${size}`}>
+    <div className={`modal ${(firstInQueue && show) && 'show'} ${className} ${size} ${handleOverflow && 'handle-overflow'}`}>
       <div className="overlay" />
       <div
         className="window"

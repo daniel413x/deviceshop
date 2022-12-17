@@ -4,27 +4,27 @@ const useTrackDimensions: (refOrId?: string | RefObject<any>) => {
   height: number | undefined;
   width: number | undefined;
 } = (refOrId) => {
-  const [height, setHeight] = useState<number | undefined>(0);
-  const [width, setWidth] = useState<number | undefined>(0);
+  const [height, setHeight] = useState<number | undefined>(window.innerHeight);
+  const [width, setWidth] = useState<number | undefined>(window.innerWidth);
   useEffect(() => {
     const update = () => {
-      let clientHeight;
-      let clientWidth;
+      let returnedHeight;
+      let returnedWidth;
       if (typeof refOrId === 'string') {
         const id = refOrId as string;
         const element = document.getElementById(id);
-        clientHeight = element?.clientHeight;
-        clientWidth = element?.clientWidth;
+        returnedHeight = element?.clientHeight;
+        returnedWidth = element?.clientWidth;
       } else if (refOrId) {
         const ref = refOrId as RefObject<any>;
-        clientHeight = ref?.current.clientHeight || 0;
-        clientWidth = ref?.current.clientWidth || 0;
+        returnedHeight = ref?.current.clientHeight || 0;
+        returnedWidth = ref?.current.clientWidth || 0;
       } else {
-        clientHeight = window.innerHeight || 0;
-        clientWidth = window.innerWidth || 0;
+        returnedHeight = window.innerHeight || 0;
+        returnedWidth = window.innerWidth || 0;
       }
-      setHeight(clientHeight);
-      setWidth(clientWidth);
+      setHeight(returnedHeight);
+      setWidth(returnedWidth);
     };
     window.addEventListener('resize', update);
     update();

@@ -1259,14 +1259,16 @@ form.checkout-style .labeled-input input {
   transform: translate(-50%, -50%);
   width: 100%;
   max-width: 500px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   z-index: 1000;
   transition: all 0.5s var(--ease-out-anim);
   opacity: 0;
   border-left: 8px solid var(--primary-accent);
   padding: 0;
+}
+
+.modal.handle-overflow .window {
+  overflow-y: scroll;
+  height: 800px;
 }
 
 .modal.show .window {
@@ -1327,6 +1329,7 @@ form.checkout-style .labeled-input input {
 
 .modal.cartitem-addon .addon-choice .info-col .name {
   font-size: 1.25rem;
+  pointer-events: none;
 }
 
 .modal.cartitem-addon .addon-choice .info-col .price {

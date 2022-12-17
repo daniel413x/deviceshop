@@ -41,7 +41,7 @@ function AddonChoice({
           className="bullet-points-ul"
           items={bulletPoints}
           renderAs={(bulletPoint) => (
-            <li>
+            <li key={bulletPoint}>
               {bulletPoint}
             </li>
           )}
