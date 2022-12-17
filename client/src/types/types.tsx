@@ -121,6 +121,10 @@ export interface IOrder {
   id: string;
   userId: string;
   status: ('Processing' | 'Shipped' | 'Cancellation Requested' | 'Canceled' | 'Delivered')[];
+  shippingMethod: IShippingMethod;
+  orderItems: IOrderedProduct[];
+  total: number;
+  orderAddress: IAddress;
 }
 
 export interface IAddress {

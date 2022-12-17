@@ -106,7 +106,7 @@ function CartItem({
           className="addons-ul"
           items={addons!}
           renderAs={(orderedAddon) => (
-            <li>
+            <li key={orderedAddon.id}>
               <CartAddon orderedAddon={orderedAddon} />
             </li>
           )}

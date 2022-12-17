@@ -22,7 +22,7 @@ type ListProps<C, S, E> = {
   className?: string;
   items: C[];
   renderAs: (list: C, index?: number) => ReactNode;
-  children?: ReactElement | (ReactElement | string | undefined)[] | string | false | undefined;
+  children?: ReactElement | string | false | undefined | (ReactElement | string | undefined)[];
   id?: string;
 } & OptionalProps<S, E>;
 

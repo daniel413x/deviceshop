@@ -35,7 +35,7 @@ export default abstract class BaseController<M extends Model> {
     };
     params.where = {
       ...params.where,
-      [fetchedParamKey]: { [Op.iRegexp]: fetchedParamValRegex },
+      [fetchedParamKey]: fetchedParamKey === 'id' ? fetchedParamVal : { [Op.iRegexp]: fetchedParamValRegex }, // exception for uuid's
     };
     if (req.query.attributes) {
       params.attributes = req.query.attributes as FindAttributeOptions;

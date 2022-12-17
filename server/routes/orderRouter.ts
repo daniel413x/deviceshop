@@ -10,6 +10,11 @@ router.get(
   checkRoleMiddleware(USER),
   (req, res) => OrderController.get(req, res),
 );
+router.get(
+  '/:id',
+  checkRoleMiddleware(USER),
+  (req, res, next) => OrderController.getOne(req, res, next),
+);
 router.post(
   '/',
   checkRoleMiddleware(USER),

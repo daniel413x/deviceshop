@@ -25,7 +25,7 @@ function Navbar() {
     user,
     cart,
   } = useContext(Context);
-  const { lg } = useBreakpoints();
+  const { width } = useBreakpoints();
   const [searchResults, setSearchResults] = useState<IShopProduct[]>([]);
   const searchParams: QueryReqFetchMultipleShopProducts = {
     attributes: ['name', 'id', 'thumbnail'],
@@ -43,7 +43,7 @@ function Navbar() {
         to="/"
       >
         <img
-          src={!lg ? logoMedium : logoSmall}
+          src={width <= 991 ? logoMedium : logoSmall}
           alt="Stonetech logo"
         />
       </NavLink>

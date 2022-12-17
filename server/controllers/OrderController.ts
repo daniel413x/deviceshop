@@ -34,6 +34,17 @@ class OrderController extends BaseController<Order> {
     this.execFindAndCountAll(req, res, options);
   }
 
+  async getOne(req: Request, res: Response, next: NextFunction) {
+    const { id } = res.locals.user;
+    const options = {
+      where: {
+        userId: id,
+      },
+      include: inclusionsForOrder,
+    };
+    this.execFindOneByParams(req, res, next, options);
+  }
+
   async create(req: Request, res: Response) {
     const { id: userId } = res.locals.user;
     const { total, shippingMethod, address } = req.body;
@@ -49,8 +60,10 @@ class OrderController extends BaseController<Order> {
       total,
     });
     await Promise.all(orderedProducts.rows.map(async (item) => {
-      // await OrderedProduct.update({ orderId: order.id }, { where: { id: item.id } });
-      await item.update({ orderId: order.id });
+      await item.update({
+        orderId: order.id,
+        cartId: null,
+      });
     }));
     await AddressForOrder.create({
       ...address,

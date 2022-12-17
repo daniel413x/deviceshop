@@ -63,16 +63,17 @@ function Cart() {
             className="cart-items-ul"
             items={cart.items}
             renderAs={(orderedProduct) => (
-              <CartItem
-                orderedProduct={orderedProduct}
-                openDeleteModal={() => openDeleteModal(orderedProduct.id)}
-                openWarrantyModal={() => openWarrantyModal(orderedProduct)}
-                openInsuranceModal={() => openInsuranceModal(orderedProduct)}
-              />
+              <li key={orderedProduct.id}>
+                <CartItem
+                  orderedProduct={orderedProduct}
+                  openDeleteModal={() => openDeleteModal(orderedProduct.id)}
+                  openWarrantyModal={() => openWarrantyModal(orderedProduct)}
+                  openInsuranceModal={() => openInsuranceModal(orderedProduct)}
+                />
+              </li>
             )}
-          >
-            {!checkoutBreakpoint && <Checkout />}
-          </List>
+          />
+          {!checkoutBreakpoint && <Checkout />}
           {cart.items.length === 0 && (
             <span className="empty-cart">
               Your cart is empty

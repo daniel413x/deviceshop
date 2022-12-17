@@ -17,7 +17,6 @@ function Form() {
   const {
     notifications,
     cart,
-    orders,
   } = useContext(Context);
   const navigate = useNavigate();
   const [pressedSubmit, setPressedSubmit] = useState<boolean>(false);
@@ -77,11 +76,9 @@ function Form() {
     setBlockSubmit(true);
     try {
       const order = await createOrder(form);
-      orders.setConfirmationPageOrder(order);
-      orders.addOrder(order);
       cart.setShippingMethod(undefined);
       cart.setItems([]);
-      navigate(CONFIRMATION_ROUTE);
+      navigate(`${CONFIRMATION_ROUTE}/${order.id}`);
     } catch (error: any) {
       notifications.error(
         error.response.data.message,

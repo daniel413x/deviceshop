@@ -36,6 +36,7 @@ interface OrderItemProps {
   legend: string;
   value: number | string;
   className?: string;
+  image?: string | false;
 }
 
 function OrderItem({
@@ -43,6 +44,7 @@ function OrderItem({
   legend,
   value,
   className,
+  image,
 }: OrderItemProps) {
   const renderAddons = addons && addons.length > 0;
   let renderedPrice;
@@ -52,6 +54,13 @@ function OrderItem({
   }
   return (
     <div className={`order-item ${className}`}>
+      {image && (
+        <img
+          src={`${process.env.REACT_APP_API_URL}${image}`}
+          alt={legend}
+          className="thumbnail"
+        />
+      )}
       <div className="row">
         <span className="name">
           {legend}
@@ -82,6 +91,7 @@ function OrderItem({
 OrderItem.defaultProps = {
   className: '',
   addons: false,
+  image: '',
 };
 
 export default OrderItem;

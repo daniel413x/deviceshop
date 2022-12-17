@@ -37,8 +37,14 @@ function Checkout() {
   return (
     <div className="checkout">
       <div className={`total ${!checkoutLink && 'fill-margin'}`}>
-        Total
-        {cart.items.length > 0 && ' (tax incl.)'}
+        <div className="label">
+          <span>
+            Total
+          </span>
+          <span>
+            {cart.items.length > 0 && ' (tax incl.)'}
+          </span>
+        </div>
         <div className="divider" />
         $
         {total}

@@ -7,8 +7,13 @@ import LoginRegister from '../pages/LoginRegister';
 import Logout from '../pages/Logout';
 import Cart from '../pages/Cart';
 import Checkout from '../pages/Checkout';
+import OrderConfirmation from '../pages/OrderConfirmation';
 
 export const indexAuthRoutes = [
+  {
+    path: `${routes.CART_ROUTE}/${routes.CHECKOUT_ROUTE}/${routes.CONFIRMATION_ROUTE}/:id`,
+    Component: OrderConfirmation,
+  },
   {
     path: `${routes.CART_ROUTE}/${routes.CHECKOUT_ROUTE}`,
     Component: Checkout,

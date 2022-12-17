@@ -3,10 +3,12 @@ import { NavLink, useLocation } from 'react-router-dom';
 
 interface BreadcrumbTrailProps {
   lastString?: string;
+  sliceLastN?: number;
 }
 
 function BreadcrumbTrail({
   lastString,
+  sliceLastN = 0,
 }: BreadcrumbTrailProps) {
   const breadcrumbs = useLocation().pathname.split(/\//).filter(Boolean);
   if (lastString) {
@@ -24,16 +26,17 @@ function BreadcrumbTrail({
           </span>
         </div>
       </li>
-      {breadcrumbs.map((str, i) => {
+      {breadcrumbs.slice(0, breadcrumbs.length - sliceLastN).map((str, i) => {
         let navBack = '';
-        for (let n = 1; n < breadcrumbs.length - i; n += 1) {
-          navBack += '../';
+        for (let n = 0; n < i + 1; n += 1) {
+          navBack += `/${breadcrumbs[n]}`;
         }
-        if (i < breadcrumbs.length - 1) {
+        const finalIndex = i < breadcrumbs.length - 1 - sliceLastN;
+        if (finalIndex) {
           return (
             <li key={str}>
               <div className="breadcrumb">
-                <NavLink to={`${navBack}${str!}`} className="previous">
+                <NavLink to={navBack} className="previous">
                   {str}
                 </NavLink>
                 <span className="angle">
@@ -57,6 +60,7 @@ function BreadcrumbTrail({
 
 BreadcrumbTrail.defaultProps = {
   lastString: '',
+  sliceLastN: 0,
 };
 
 export default BreadcrumbTrail;

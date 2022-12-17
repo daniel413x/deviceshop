@@ -10,6 +10,11 @@ export const fetchOrders = async (): Promise<SequelizeFindAndCountAll<IOrder>> =
   return data;
 };
 
+export const fetchOrder = async (id: string): Promise<IOrder> => {
+  const { data } = await $authHost.get(`api/order/${id}`);
+  return data;
+};
+
 export const createOrder = async (params?: QueryReqCreateOrder): Promise<IOrder> => {
   const { data } = await $authHost.post('api/order', params);
   return data;

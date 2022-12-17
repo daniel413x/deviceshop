@@ -4,13 +4,15 @@ import List from './List';
 import OrderItem from './OrderItem';
 
 interface OrderItemsProps {
-  children?: ReactElement | (ReactElement | string | undefined)[] | string | false | undefined;
+  children?: ReactElement | string | false | undefined | (ReactElement | string | undefined)[];
   items: IOrderedProduct[];
+  showImages?: boolean;
 }
 
 function OrderItems({
   children,
   items,
+  showImages,
 }: OrderItemsProps) {
   return (
     <List
@@ -22,6 +24,7 @@ function OrderItems({
             legend={orderItem.shopproduct.name}
             value={orderItem.price}
             addons={orderItem.addons}
+            image={showImages && orderItem.shopproduct.thumbnail}
           />
         </li>
       ))}
@@ -33,6 +36,7 @@ function OrderItems({
 
 OrderItems.defaultProps = {
   children: '',
+  showImages: false,
 };
 
 export default OrderItems;

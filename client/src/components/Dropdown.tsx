@@ -77,7 +77,7 @@ function Dropdown({
     },
     {
       lookForClasses: ['nav-button'],
-      excludeClasses: ['toggle'],
+      excludeClasses: ['toggle', 'toggle-label', 'icon'],
     },
   );
   useOnInsideClick(
@@ -143,16 +143,16 @@ function Dropdown({
       >
         {dropdownIcon === 'account' && (
           <AccountIcon
-            className="account-icon"
+            className="account-icon icon"
           />
         )}
-        {dropdownIcon === 'triangle' && <TriangleDown />}
+        {dropdownIcon === 'triangle' && <TriangleDown className="triangle-icon icon" />}
         <span className="toggle-label">
           {label}
         </span>
         {dropdownIcon === 'angle' && (
           <AngleIcon
-            className="angle-icon"
+            className="angle-icon icon"
           />
         )}
       </button>

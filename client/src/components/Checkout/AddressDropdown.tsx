@@ -37,7 +37,7 @@ function AddressDropdown({
   }));
   return (
     <Dropdown
-      className="address-dropdown"
+      className={`address-dropdown ${user.addresses.length === 0 && 'blocked'}`}
       label={selectedAddress || 'Saved addresses'}
       dropdownIcon="triangle"
       to={dropdownButtons}
