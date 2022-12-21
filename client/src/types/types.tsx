@@ -120,11 +120,12 @@ export interface ICart {
 export interface IOrder {
   id: string;
   userId: string;
-  status: ('Processing' | 'Shipped' | 'Cancellation Requested' | 'Canceled' | 'Delivered')[];
+  status: ('Processing' | 'Shipped' | 'Cancellation requested' | 'Canceled' | 'Delivered' | 'Return requested')[];
   shippingMethod: IShippingMethod;
   orderItems: IOrderedProduct[];
   total: number;
   orderAddress: IAddress;
+  createdAt: Date;
 }
 
 export interface IAddress {
@@ -217,6 +218,8 @@ export type QueryReqCreateOrderedAddon = Pick<IOrderedAddon, 'price' | 'orderedP
 
 export type QueryReqCreateAddress = IAddressInAddressBook;
 
+export type QueryReqPutOrder = Partial<IOrder>;
+
 export type CCDebitPayment = {
   nameOnCard: string;
   cardNumber: string;
@@ -272,6 +275,7 @@ export type QueryReqFetchMultiple<T> = {
   filteredSearch?: SearchViaFilteredSearch;
   where?: Partial<T>;
   order?: any;
+  distinct?: boolean;
   associationAttributes?: [string[], InclusionAttributes<any>][]; // model alias (like chain selector), attributes to include
 };
 

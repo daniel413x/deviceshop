@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import SideCol from '../components/SideCol';
+import ShopSideCol from '../components/ShopSideCol';
 import BreadcrumbTrail from '../components/BreadcrumbTrail';
 import PageHeader from '../components/PageHeader';
 import Context from '../context/context';
@@ -26,7 +26,7 @@ function Checkout() {
     <div id="checkout">
       {auth && (
       <div className="columned-page">
-        <SideCol />
+        <ShopSideCol />
         <div className="main-col">
           <BreadcrumbTrail />
           <PageHeader

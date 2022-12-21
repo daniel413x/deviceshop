@@ -8,8 +8,17 @@ import Logout from '../pages/Logout';
 import Cart from '../pages/Cart';
 import Checkout from '../pages/Checkout';
 import OrderConfirmation from '../pages/OrderConfirmation';
+import YourOrders from '../pages/YourOrders';
 
 export const indexAuthRoutes = [
+  {
+    path: `${routes.ACCOUNT_ROUTE}/${routes.ORDERS_ROUTE}/:id`,
+    Component: OrderConfirmation,
+  },
+  {
+    path: `${routes.ACCOUNT_ROUTE}/${routes.ORDERS_ROUTE}`,
+    Component: YourOrders,
+  },
   {
     path: `${routes.CART_ROUTE}/${routes.CHECKOUT_ROUTE}/${routes.CONFIRMATION_ROUTE}/:id`,
     Component: OrderConfirmation,
@@ -21,10 +30,6 @@ export const indexAuthRoutes = [
 ];
 
 export const indexPublicRoutes = [
-  // {
-  //   path: routes.ACCOUNT_WILDCARD_ROUTE,
-  //   Component: Account,
-  // },
   {
     path: `${routes.SHOP_ROUTE}/:title`,
     Component: ShopProductPage,
@@ -55,16 +60,16 @@ export const indexPublicRoutes = [
   },
 ];
 
-// export const accountRoutes = [
-//   {
-//     path: routes.ORDERS_ROUTE,
-//     Component: Orders,
-//   },
-//   {
-//     path: routes.INDEX_ROUTE,
-//     Component: Account,
-//   },
-// ];
+export const accountNavButtons = [
+  {
+    to: `/${routes.ACCOUNT_ROUTE}/${routes.ORDERS_ROUTE}`,
+    label: 'Orders',
+  },
+  {
+    to: `/${routes.ACCOUNT_ROUTE}/${routes.CREDENTIALS_ROUTE}`,
+    label: 'Credentials',
+  },
+];
 
 export const nestedNavButtons = [
   {
@@ -153,7 +158,7 @@ export const navbarButtons = [
   },
 ];
 
-export const accountNavButtons = [
+export const navbarAccountButtons = [
   {
     to: routes.ACCOUNT_ROUTE,
     label: 'Main',

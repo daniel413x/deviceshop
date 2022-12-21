@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
-import SideCol from '../components/SideCol';
+import ShopSideCol from '../components/ShopSideCol';
 import BreadcrumbTrail from '../components/BreadcrumbTrail';
 import PageHeader from '../components/PageHeader';
 import Context from '../context/context';
@@ -49,7 +49,7 @@ function OrderConfirmation() {
     <div id="order-confirmation">
       {auth && (
       <div className="columned-page">
-        <SideCol />
+        <ShopSideCol />
         <div className="main-col">
           <div className="left-col">
             <BreadcrumbTrail

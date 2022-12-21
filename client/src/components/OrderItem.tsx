@@ -16,18 +16,16 @@ function Addon({ addon }: AddonProps) {
   } = addon;
   const renderedPrice = formatPrice(convertPriceInt(price));
   return (
-    <li className="addon" key={addon.id}>
-      <div className="row">
-        <span className="name">
-          {name}
-        </span>
-        <div className="dots-divider" />
-        <span className="price">
-          $
-          {renderedPrice}
-        </span>
-      </div>
-    </li>
+    <div className="addon row">
+      <span className="name">
+        {name}
+      </span>
+      <div className="dots-divider" />
+      <span className="price">
+        $
+        {renderedPrice}
+      </span>
+    </div>
   );
 }
 

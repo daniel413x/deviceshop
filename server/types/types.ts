@@ -127,7 +127,7 @@ export interface ICart {
 export interface IOrder {
   id: string;
   userId: string;
-  status: ('Processing' | 'Shipped' | 'Cancellation Requested' | 'Canceled' | 'Delivered')[];
+  status: ('Processing' | 'Shipped' | 'Cancellation requested' | 'Canceled' | 'Delivered' | 'Return requested')[];
 }
 
 export interface IBaseAddress {

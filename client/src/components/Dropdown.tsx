@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ReactComponent as TriangleDown } from '../assets/icons/triangle-down.svg';
-import { ReactComponent as AngleIcon } from '../assets/icons/angleup.svg';
 import { ReactComponent as AccountIcon } from '../assets/icons/account.svg';
 import useKeyPress from '../hooks/useKeyPress';
 import useOnInsideClick from '../hooks/useOnInsideClick';
@@ -8,6 +7,7 @@ import useOnOutsideClick from '../hooks/useOnOutsideClick';
 import { INavButton } from '../types/types';
 import List from './List';
 import NavButton from './NavButton';
+import AngleDownIcon from './AngleDownIcon';
 
 interface DropdownProps {
   to?: string | INavButton[];
@@ -151,7 +151,7 @@ function Dropdown({
           {label}
         </span>
         {dropdownIcon === 'angle' && (
-          <AngleIcon
+          <AngleDownIcon
             className="angle-icon icon"
           />
         )}

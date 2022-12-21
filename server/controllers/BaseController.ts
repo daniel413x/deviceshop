@@ -90,6 +90,9 @@ export default abstract class BaseController<M extends Model> {
         [search.attribute]: { [Op.iRegexp]: search.value },
       };
     }
+    if (req.query.distinct) {
+      params.distinct = true;
+    }
     const data = await this.model.findAndCountAll(params);
     return res.json(data);
   }

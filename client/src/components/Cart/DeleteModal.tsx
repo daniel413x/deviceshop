@@ -34,9 +34,9 @@ function DeleteModal({
       className="delete-cart-item"
       id="delete-cart-item"
     >
-      <span className="body">
+      <div className="body">
         Delete this item from your cart?
-      </span>
+      </div>
       <div className="bottom-buttons">
         <Button
           onClick={deleteItem}

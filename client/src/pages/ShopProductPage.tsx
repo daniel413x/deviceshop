@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import SideCol from '../components/SideCol';
+import ShopSideCol from '../components/ShopSideCol';
 import BreadcrumbTrail from '../components/BreadcrumbTrail';
 import { fetchProduct } from '../http/shopProductAPI';
 import { IShopProduct } from '../types/types';
@@ -37,7 +37,7 @@ function ShopProductPage() {
   return (
     <div id="shop-product-page" className={`${loading && 'loading'}`}>
       <div className="columned-page">
-        <SideCol />
+        <ShopSideCol />
         <div className="main-col">
           <BreadcrumbTrail
             lastString={product?.name}

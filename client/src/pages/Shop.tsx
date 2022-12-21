@@ -1,5 +1,5 @@
 import React, {
-  useContext, useEffect,
+  useContext, useEffect, useRef,
 } from 'react';
 import { observer } from 'mobx-react-lite';
 import { NavLink } from 'react-router-dom';
@@ -11,7 +11,7 @@ import FilterMenu from '../components/Shop/FilterMenu';
 import RemoveFilterButton from '../components/Shop/RemoveFilterButton';
 import SortingButtonsRow from '../components/Shop/SortingButtonsRow';
 import ShopProductCard from '../components/ShopProductCard';
-import SideCol from '../components/SideCol';
+import ShopSideCol from '../components/ShopSideCol';
 import Context from '../context/context';
 import usePagination from '../hooks/usePagination';
 import { shopFilterButtons } from '../utils/arrays';
@@ -20,6 +20,7 @@ import useTrackDimensions from '../hooks/useTrackDimensions';
 import LoadingAnimation from '../components/LoadingAnimation';
 import useQuery from '../hooks/useQuery';
 import useBreakpoints from '../hooks/useBreakpoints';
+import PaginatedItemsCounter from '../components/PaginatedItemsCounter';
 
 function Shop() {
   const { shopPage } = useContext(Context);
@@ -37,11 +38,6 @@ function Shop() {
     searchParamsRecord,
     thereAreSearchParams,
   } = useQuery();
-  const currentCount = shopPage.items.length;
-  let renderedProductCount = currentCount;
-  if (currentCount >= dbProductCount) {
-    renderedProductCount = dbProductCount;
-  }
   const { width: mainColWidth } = useTrackDimensions('main-col');
   const { width } = useBreakpoints();
   const gridGap = 20;
@@ -63,19 +59,22 @@ function Shop() {
   useEffect(() => {
     shopPage.setPage(page);
   }, [page]);
+  const ref = useRef<boolean>(true); // prevent double fetch on render
   useEffect(() => {
+    if (ref.current) {
+      ref.current = false;
+      return;
+    }
     if (thereAreSearchParams) {
       shopPage.setFiltersFromSearchParams(searchParamsRecord);
     } else {
       shopPage.resetFilters();
     }
-    (async () => {
-      await shopPage.fetchAndSetShopProducts();
-    })();
-  }, []);
+    shopPage.fetchAndSetShopProducts();
+  }, [searchParamsRecord]);
   return (
     <div id="shop" className="columned-page">
-      <SideCol />
+      <ShopSideCol />
       <div className="main-col" id="main-col">
         <BreadcrumbTrail />
         <div
@@ -141,15 +140,12 @@ function Shop() {
           className="lower-elements"
           style={{ maxWidth }}
         >
-          <span className="product-count">
-            {renderedProductCount}
-            {' '}
-            of
-            {' '}
-            {dbProductCount}
-            {' '}
-            products
-          </span>
+          <PaginatedItemsCounter
+            page={page}
+            itemsPerPage={itemsPerPage}
+            dbCount={dbProductCount}
+            descriptor="products"
+          />
           <div className="lower-row">
             <Button
               onClick={loadMore}

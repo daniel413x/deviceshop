@@ -26,9 +26,9 @@ function RemoveFilterButton({ specification }: RemoveFilterButtonProps) {
   } = useContext(Context);
   const onClick = () => {
     setClasses('');
-    const timer = setTimeout(async () => {
+    const timer = setTimeout(() => {
       shopPage.removeFilter(id);
-      await shopPage.fetchAndSetShopProducts();
+      // await shopPage.fetchAndSetShopProducts();
       const newSearchParams = shopPage.createSearchParamsRecordFromFilters();
       setSearchParams(newSearchParams);
     }, 220);

@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import Order from '../db/models/Order';
 import BaseController from './BaseController';
 import OrderedProduct from '../db/models/OrderedProduct';
-import ShopProduct from '../db/models/ShopProduct';
 import AddressForOrder from '../db/models/AddressForOrder';
 import { PROCESSING } from '../utils/consts';
 import OrderedShippingMethod from '../db/models/OrderedShippingMethod';
@@ -17,19 +16,9 @@ class OrderController extends BaseController<Order> {
     const { id } = res.locals.user;
     const options = {
       where: {
-        id,
+        userId: id,
       },
-      include: [
-        {
-          model: OrderedProduct,
-          as: 'products',
-          include: [{ model: ShopProduct, as: 'shopproduct' }],
-        },
-        {
-          model: AddressForOrder,
-          as: 'orderAddress',
-        },
-      ],
+      include: inclusionsForOrder,
     };
     this.execFindAndCountAll(req, res, options);
   }

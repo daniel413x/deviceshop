@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import BreadcrumbTrail from '../components/BreadcrumbTrail';
 import PageHeader from '../components/PageHeader';
-import SideCol from '../components/SideCol';
+import ShopSideCol from '../components/ShopSideCol';
 import List from '../components/List';
 import Context from '../context/context';
 import CartItem from '../components/Cart/CartItem';
@@ -53,7 +53,7 @@ function Cart() {
           close={() => setInsuranceCartItem(undefined)}
           category="insurance"
         />
-        <SideCol />
+        <ShopSideCol />
         <div className="main-col">
           <BreadcrumbTrail />
           <PageHeader

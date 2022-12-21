@@ -21,7 +21,15 @@ export default class OrderStore {
     this.orders = [...this.orders, order];
   }
 
+  setOrders(orders: IOrder[]) {
+    this.orders = orders;
+  }
+
   setConfirmationPageOrder(order: IOrder) {
     this.confirmationPageOrder = order;
+  }
+
+  get all() {
+    return this.orders;
   }
 }

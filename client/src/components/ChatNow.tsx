@@ -1,9 +1,15 @@
 import React from 'react';
 import { ReactComponent as Chat } from '../assets/icons/Chat.svg';
 
-function ChatNow() {
+interface ChatNowProps {
+  className?: string;
+}
+
+function ChatNow({
+  className,
+}: ChatNowProps) {
   return (
-    <button className="chat-now" type="button">
+    <button className={`chat-now ${className}`} type="button">
       <span className="need-assitance-text">
         Need assistance?
       </span>
@@ -14,5 +20,9 @@ function ChatNow() {
     </button>
   );
 }
+
+ChatNow.defaultProps = {
+  className: '',
+};
 
 export default ChatNow;

@@ -1,13 +1,15 @@
 import { v4 as uuid } from 'uuid';
 import {
-  addressForOrderForUserWithCartItemsAndOrdersAndReviews,
+  orderForUserWithCartItemsAndOrdersAndReviewsProcessing,
+  orderForUserWithCartItemsAndOrdersAndReviewsCanceled,
+  orderForUserWithCartItemsAndOrdersAndReviewsDelivered,
 } from '../utils/consts';
 
 export default {
   up: (queryInterface) => queryInterface.bulkInsert('AddressForOrder', [
     {
       id: uuid(),
-      orderId: addressForOrderForUserWithCartItemsAndOrdersAndReviews,
+      orderId: orderForUserWithCartItemsAndOrdersAndReviewsProcessing,
       firstName: 'Mccauley',
       lastName: 'Gibbons',
       addressLineOne: '8585 Wisconsin Avenue NW',
@@ -20,7 +22,7 @@ export default {
     },
     {
       id: uuid(),
-      orderId: addressForOrderForUserWithCartItemsAndOrdersAndReviews,
+      orderId: orderForUserWithCartItemsAndOrdersAndReviewsCanceled,
       firstName: 'Mccauley',
       lastName: 'Gibbons',
       addressLineOne: '8585 Wisconsin Avenue NW',
@@ -33,7 +35,7 @@ export default {
     },
     {
       id: uuid(),
-      orderId: addressForOrderForUserWithCartItemsAndOrdersAndReviews,
+      orderId: orderForUserWithCartItemsAndOrdersAndReviewsDelivered,
       firstName: 'Mccauley',
       lastName: 'Gibbons',
       addressLineOne: '8585 Wisconsin Avenue NW',

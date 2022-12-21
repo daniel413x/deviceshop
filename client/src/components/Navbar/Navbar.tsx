@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import logoMedium from '../../assets/logos/logo-medium.png';
 import logoSmall from '../../assets/logos/logo-small.png';
 import {
-  accountNavButtons,
+  navbarAccountButtons,
   navbarButtons,
 } from '../../utils/arrays';
 import { CART_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from '../../utils/consts';
@@ -76,7 +76,7 @@ function Navbar() {
         {user.isRegistered && (
           <Dropdown
             label="Account"
-            to={accountNavButtons}
+            to={navbarAccountButtons}
             dropdownIcon="account"
           />
         )}

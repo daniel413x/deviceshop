@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { SearchParamsRecord } from '../types/types';
 
@@ -11,14 +12,9 @@ interface UsePaginationReturn {
 
 const useQuery = (): UsePaginationReturn => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const search = searchParams.toString();
-  const thereAreSearchParams = search.length > 0;
-  let searchParamsRecord: any = {};
-  if (!thereAreSearchParams) {
-    searchParamsRecord = {};
-  } else {
+  const createNewSearchParamsRecord = () => {
     const queryString = searchParams.toString();
-    searchParamsRecord = JSON.parse(`{"${
+    const newSearchParamsRecord = JSON.parse(`{"${
       decodeURI(queryString)
         .replace(/"/g, '\\"')
         .replace(/\+/g, ' ')
@@ -26,17 +22,30 @@ const useQuery = (): UsePaginationReturn => {
         .replace(/=/g, '":"')
         .toLowerCase()
     }"}`);
-  }
+    return newSearchParamsRecord;
+  };
+  const [searchParamsRecord, setSearchParamsRecord] = useState<any>({});
+  const search = searchParams.toString();
+  const thereAreSearchParams = search.length > 0;
   const removeSearchParams = (params: string | string[]) => {
+    const nextSearchParamsRecord = { ...searchParamsRecord };
     if (Array.isArray(params)) {
       params.forEach((string) => {
-        delete searchParamsRecord[string];
+        delete nextSearchParamsRecord[string];
       });
     } else {
-      delete searchParamsRecord[params];
+      delete nextSearchParamsRecord[params];
     }
-    setSearchParams({ ...searchParamsRecord });
+    setSearchParams({ ...nextSearchParamsRecord });
   };
+  useEffect(() => {
+    if (!thereAreSearchParams) {
+      setSearchParamsRecord({});
+    } else {
+      const newSearchParamsRecord = createNewSearchParamsRecord();
+      setSearchParamsRecord(newSearchParamsRecord);
+    }
+  }, [searchParams]);
   return {
     searchParamsRecord,
     thereAreSearchParams,

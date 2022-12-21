@@ -7,7 +7,7 @@ import { toPlural } from '../utils/functions';
 import Dropdown from './Dropdown';
 import List from './List';
 
-function SideCol() {
+function ShopSideCol() {
   const [loadingTypes, setLoadingTypes] = useState<boolean>(true);
   const [loadingBrands, setLoadingBrands] = useState<boolean>(true);
   const [types, setTypes] = useState<IType[]>([]);
@@ -74,4 +74,4 @@ function SideCol() {
   );
 }
 
-export default SideCol;
+export default ShopSideCol;

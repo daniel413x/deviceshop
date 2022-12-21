@@ -4,7 +4,6 @@ import React, {
 import { observer } from 'mobx-react-lite';
 import { fetchFilteredSpecifications } from '../../http/specificationAPI';
 import { Filter, SpecificationWithDeviceCount } from '../../types/types';
-import { ReactComponent as AngleIcon } from '../../assets/icons/angleup.svg';
 import List from '../List';
 import useOnOutsideClick from '../../hooks/useOnOutsideClick';
 import Context from '../../context/context';
@@ -13,6 +12,7 @@ import Button from '../Button';
 import FilterCheckboxButton from './FilterCheckboxButton';
 import useQuery from '../../hooks/useQuery';
 import { makeSlug } from '../../utils/functions';
+import AngleDownIcon from '../AngleDownIcon';
 
 interface FilterMenuProps {
   label?: string;
@@ -59,10 +59,10 @@ function FilterMenu({
       setSpecifications([]);
     }
   }, [shopPage.activeFilters]);
-  const submit = async (e: FormEvent) => {
+  const submit = (e: FormEvent) => {
     e.preventDefault();
     shopPage.toggleFilters();
-    await shopPage.fetchAndSetShopProducts();
+    // await shopPage.fetchAndSetShopProducts();
     const newSearchParams = shopPage.createSearchParamsRecordFromFilters();
     setSearchParams(newSearchParams);
   };
@@ -83,9 +83,7 @@ function FilterMenu({
         <span>
           {label || specificationKey}
         </span>
-        <AngleIcon
-          className="angle-icon"
-        />
+        <AngleDownIcon />
       </button>
       <form
         className={`form-wrapper ${toggled && 'toggled'}`}

@@ -20,7 +20,7 @@ class Order extends BaseModel<Order> implements IOrder {
 
   total!: number;
 
-  status!: ('Processing' | 'Shipped' | 'Cancellation Requested' | 'Canceled' | 'Delivered')[];
+  status!: ('Processing' | 'Shipped' | 'Cancellation requested' | 'Canceled' | 'Delivered' | 'Return requested')[];
 
   static associate(models: any) {
     Order.belongsTo(models.User, {

@@ -2,7 +2,7 @@ import React from 'react';
 import { IAddress } from '../types/types';
 
 interface AddressProps {
-  address: IAddress;
+  address: Omit<IAddress, 'id' | 'userId'>;
   email?: string;
 }
 
