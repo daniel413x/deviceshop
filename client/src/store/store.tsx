@@ -7,6 +7,7 @@ import CartStore from './CartStore';
 import NotificationStore from './NotificationStore';
 import ModalStore from './ModalStore';
 import OrderStore from './OrderStore';
+import AddressStore from './AddressStore';
 
 const store = {
   notifications: new NotificationStore(),
@@ -18,6 +19,7 @@ const store = {
   cart: new CartStore(),
   orders: new OrderStore(),
   modals: new ModalStore(),
+  addresses: new AddressStore(),
 };
 
 export default store;

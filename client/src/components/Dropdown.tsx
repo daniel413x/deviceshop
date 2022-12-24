@@ -162,7 +162,7 @@ function Dropdown({
         items={to as []}
         renderAs={({ to: embeddedTo, label: embeddedLabel, callback: embeddedCallback }, index) => (
           <li
-            key={embeddedLabel}
+            key={`${embeddedLabel}${index}`}
             className={`${highlight === index && 'highlight'}`}
           >
             <Dropdown

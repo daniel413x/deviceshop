@@ -3,7 +3,7 @@
   --side-margins-non-widescreen: 5rem;
   --styled-border-radius: 20px;
   --navbar-height: 82px;
-  --footer-height: 364px;
+  --footer-height: 367.56px;
   --primary-dark-light: #888888;
   --inactive-element: rgba(152, 157, 165, 0.33);
   --indigo-light: #989DA5;
@@ -406,6 +406,10 @@ button {
 .button.warn:hover {
   background-color: var(--warn-red);
   color: #fff;
+}
+
+.button.warn:hover svg path, .button.warn:hover svg rect {
+  fill: #fff;
 }
 
 .button.blank {
@@ -995,6 +999,8 @@ form.checkout-style .labeled-input input {
   all: inherit;
   display: flex;
   grid-gap: .5rem;
+  position: relative;
+  flex-direction: row;
 }
 
 .labeled-checkbox-button .checkbox-div {
@@ -1275,10 +1281,15 @@ form.checkout-style .labeled-input input {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--bg-light-bluegray);
+  background-color: var(--bg-light-gray);
   padding: 0 1.5rem 0 1rem;
   border-bottom: 1px solid var(--divider-gray);
-  min-height: 75px;
+  min-height: 60px;
+  text-transform: uppercase;
+}
+
+.modal.warn .window-header {
+  background-color: var(--warn-red);
 }
 
 .modal .window-header .left-col {
@@ -1308,6 +1319,11 @@ form.checkout-style .labeled-input input {
   opacity: 0;
   border-left: 8px solid var(--primary-accent);
   padding: 0;
+  box-shadow: var(--card-box-shadow);
+}
+
+.modal.warn .window {
+  border-left: 8px solid var(--warn-red);
 }
 
 .modal.handle-overflow .window {
@@ -1332,6 +1348,10 @@ form.checkout-style .labeled-input input {
 
 .modal .window .body {
   padding: 1.5rem 2rem 2rem 2rem;
+}
+
+.modal.warn .window .body {
+  color: var(--warn-red);
 }
 
 .modal .window .body h2 {
@@ -1419,6 +1439,11 @@ form.checkout-style .labeled-input input {
   flex-direction: column;
   grid-gap: 0.75rem;
   padding-left: 0.75rem;
+}
+
+.modal.edit-field .labeled-input .label {
+  color: var(--primary-text);
+  font-weight: 300;
 }
 
 .close-button {
@@ -1627,6 +1652,49 @@ form.checkout-style .labeled-input input {
   font-size: 0.75rem;
   font-weight: 300;
   color: var(--primary-text);
+}
+
+#checkout .shipping-fields .address-buttons-row {
+  margin-bottom: 1rem;
+  display: flex;
+}
+
+.border-buttons-row .button {
+  border-bottom: 1px solid var(--primary-accent);
+  position: relative;
+  transition: all 0.1s linear;
+  padding: 0.95rem;
+}
+
+.border-buttons-row .button.selected {
+  box-shadow: inset 0px -2px 0px 0px var(--primary-accent);
+}
+
+.border-buttons-row .button.selected:focus {
+  box-shadow: inset 0px -8px 0px 0px var(--primary-accent-light);
+}
+
+.address-form {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 1rem;
+}
+
+.address-form .top-buttons {
+  min-height: 68.38px;
+  display: flex;
+  padding-bottom: 1rem;
+  flex-direction: column;
+  grid-gap: 2rem;
+  justify-content: center;
+}
+
+.address-form .top-buttons .dropdown.wrapper {
+  display: block;
+}
+
+.address-form .default-checkbox {
+  margin-top: 1rem;
 }
 
 /* pages */
@@ -2898,26 +2966,6 @@ form.checkout-style .labeled-input input {
   grid-gap: 1rem;
 }
 
-#checkout .shipping-fields .address-buttons-row {
-  margin-bottom: 1rem;
-  display: flex;
-}
-
-#checkout .shipping-fields .address-buttons-row .button {
-  border-bottom: 1px solid var(--primary-accent);
-  position: relative;
-  transition: all 0.1s linear;
-  padding: 0.95rem;
-}
-
-#checkout .shipping-fields .address-buttons-row .button.selected {
-  box-shadow: inset 0px -2px 0px 0px var(--primary-accent);
-}
-
-#checkout .shipping-fields .address-buttons-row .button.selected:focus {
-  box-shadow: inset 0px -8px 0px 0px var(--primary-accent-light);
-}
-
 #checkout .shipping-fields .address-dropdown .toggle-label {
   height: 21px;
   max-width: 120.33px;
@@ -2926,6 +2974,10 @@ form.checkout-style .labeled-input input {
   -webkit-box-orient: vertical;
   word-break:break-all;
   overflow: hidden;
+}
+
+#checkout .shipping-fields .shipping-method-label {
+  padding-top: 1rem;
 }
 
 #checkout .payment-fields {
@@ -3075,6 +3127,65 @@ form.checkout-style .labeled-input input {
 
 #your-orders .chat-now.mobile {
   margin: 2rem auto;
+}
+
+#credentials .editable-field-ul {
+  margin-top: 25px;
+}
+
+#credentials .editable-field {
+  width: 100%;
+  max-width: 550px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--divider-gray-light);
+  margin-top: -1px;
+  padding: 0.75rem 1.25rem;
+}
+
+#credentials .editable-field .field-value-col {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 0.75rem;
+}
+
+#credentials .editable-field .field-value-col .field {
+  font-weight: 600;
+}
+
+#credentials .editable-field .field-value-col .value {
+  font-weight: 300;
+}
+
+#credentials .editable-field .button {
+  padding: 0.625rem;
+}
+
+#addresses .main-col {
+  max-width: 645px;
+}
+
+#addresses form {
+  margin-top: 2rem;
+}
+
+#addresses form .submit-button {
+  margin-top: 35px;
+}
+
+#addresses .delete-addresses {
+  margin-top: 35px;
+}
+
+#addresses .delete-addresses .delete-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin-top: -2px;
+  padding: 0.75rem;
+  grid-gap: 1rem;
 }
 
 #footer {

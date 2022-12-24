@@ -1,10 +1,9 @@
 import React, {
   forwardRef,
-  ReactElement,
   ReactNode,
   RefObject,
 } from 'react';
-import { RequireAll } from '../types/types';
+import { Children, RequireAll } from '../types/types';
 
 type StartItems<S> = {
   startItems: S[] | undefined;
@@ -22,7 +21,7 @@ type ListProps<C, S, E> = {
   className?: string;
   items: C[];
   renderAs: (list: C, index?: number) => ReactNode;
-  children?: ReactElement | string | false | undefined | (ReactElement | string | undefined)[];
+  children?: Children;
   id?: string;
 } & OptionalProps<S, E>;
 

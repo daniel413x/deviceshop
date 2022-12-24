@@ -23,7 +23,7 @@ router.post(
 router.put(
   '/:id',
   checkRoleMiddleware(USER),
-  (req, res, next) => OrderController.changeStatus(req, res, next),
+  (req, res, next) => OrderController.edit(req, res, next),
 );
 router.delete(
   '/:id',

@@ -1,10 +1,10 @@
-import React, { ReactElement } from 'react';
-import { IOrderedProduct } from '../types/types';
+import React from 'react';
+import { Children, IOrderedProduct } from '../types/types';
 import List from './List';
 import OrderItem from './OrderItem';
 
 interface OrderItemsProps {
-  children?: ReactElement | string | false | undefined | (ReactElement | string | undefined)[];
+  children?: Children;
   items: IOrderedProduct[];
   showImages?: boolean;
 }

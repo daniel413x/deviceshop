@@ -11,7 +11,14 @@ class AddressInAddressBookController extends BaseController<AddressInAddressBook
     this.execFindAndCountAll(req, res);
   }
 
-  create(req: Request, res: Response) {
+  async create(req: Request, res: Response) {
+    const { id: userId } = res.locals.user;
+    if (req.body.isDefault) {
+      const previousDefault = await AddressInAddressBook.findAll({ where: { isDefault: true } });
+      if (previousDefault) {
+        await AddressInAddressBook.update({ isDefault: false }, { where: { userId } });
+      }
+    }
     this.execCreate(req, res);
   }
 

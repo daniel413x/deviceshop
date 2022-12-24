@@ -1,6 +1,5 @@
 import { observer } from 'mobx-react-lite';
 import React, {
-  ReactElement,
   useContext,
   useEffect,
   useRef,
@@ -10,14 +9,16 @@ import ReactDom from 'react-dom';
 import Context from '../context/context';
 import useOnOutsideClick from '../hooks/useOnOutsideClick';
 import useTrackDimensions from '../hooks/useTrackDimensions';
+import { Children } from '../types/types';
 
 interface ModalProps {
   show: any;
   close: () => void;
-  children?: ReactElement | (ReactElement | string)[] | string;
+  children?: Children;
   className?: string;
   size?: 'small' | 'medium' | 'large';
   id: string;
+  modalStyle?: 'warn';
 }
 
 function Modal({
@@ -27,6 +28,7 @@ function Modal({
   className,
   size,
   id,
+  modalStyle,
 }: ModalProps) {
   const [handleOverflow, setHandleOverflow] = useState<boolean>(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -53,7 +55,7 @@ function Modal({
     }
   }, [windowWidth, windowHeight, ref.current?.scrollHeight]);
   return ReactDom.createPortal(
-    <div className={`modal ${(firstInQueue && show) && 'show'} ${className} ${size} ${handleOverflow && 'handle-overflow'}`}>
+    <div className={`modal ${(firstInQueue && show) && 'show'} ${className} ${size} ${handleOverflow && 'handle-overflow'} ${modalStyle}`}>
       <div className="overlay" />
       <div
         className="window"
@@ -70,6 +72,7 @@ Modal.defaultProps = {
   children: false,
   className: '',
   size: '',
+  modalStyle: '',
 };
 
 export default observer(Modal);

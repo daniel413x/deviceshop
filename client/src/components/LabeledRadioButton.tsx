@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import useOnClickOutside from '../hooks/useOnOutsideClick';
 
-interface LabeledCheckboxButtonProps {
+interface LabeledRadioButtonProps {
   label: string;
   name: string;
   boolean: boolean;
@@ -15,7 +15,7 @@ interface LabeledCheckboxButtonProps {
   value: any;
 }
 
-function LabeledCheckboxButton({
+function LabeledRadioButton({
   label,
   boolean,
   name,
@@ -25,7 +25,7 @@ function LabeledCheckboxButton({
   onClick,
   warn,
   value,
-}: LabeledCheckboxButtonProps) {
+}: LabeledRadioButtonProps) {
   const [active, setActive] = useState<boolean>(false);
   const [boxShadow, setBoxShadow] = useState<boolean>(false);
   const ref = useRef<HTMLButtonElement>(null);
@@ -77,10 +77,10 @@ function LabeledCheckboxButton({
   );
 }
 
-LabeledCheckboxButton.defaultProps = {
+LabeledRadioButton.defaultProps = {
   light: false,
   className: '',
   warn: false,
 };
 
-export default LabeledCheckboxButton;
+export default LabeledRadioButton;

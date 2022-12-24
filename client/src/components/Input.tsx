@@ -77,7 +77,7 @@ Input.defaultProps = {
   optional: false,
   type: '',
   name: '',
-  id: '',
+  id: false,
 };
 
 export default Input;

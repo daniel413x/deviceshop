@@ -7,12 +7,13 @@ import List from '../components/List';
 import Context from '../context/context';
 import CartItem from '../components/Cart/CartItem';
 import RecentlyViewedProducts from '../components/RecentlyViewedProducts';
-import DeleteModal from '../components/Cart/DeleteModal';
 import AddonModal from '../components/Cart/AddonModal';
 import { IGuestAddedProduct, IOrderedProduct } from '../types/types';
 import useBreakpoints from '../hooks/useBreakpoints';
 import Checkout from '../components/Cart/Checkout';
 import ChatNow from '../components/ChatNow';
+import ConfirmationModal from '../components/ConfirmationModal';
+import { deleteOrderedProduct } from '../http/orderedProductAPI';
 
 function Cart() {
   const [deletedId, setDeletedId] = useState<string>('');
@@ -20,6 +21,7 @@ function Cart() {
   const [insuranceCartItem, setInsuranceCartItem] = useState<IOrderedProduct | IGuestAddedProduct>();
   const {
     cart,
+    user,
   } = useContext(Context);
   const { width } = useBreakpoints();
   const checkoutBreakpoint = width >= 1203;
@@ -32,12 +34,24 @@ function Cart() {
   const openInsuranceModal = (item: IOrderedProduct | IGuestAddedProduct) => {
     setInsuranceCartItem(item);
   };
+  const deleteItem = async (id: string) => {
+    if (user.isGuest) {
+      const guestItems: IOrderedProduct[] = JSON.parse(localStorage.getItem('guestItems')!);
+      localStorage.setItem('guestItems', JSON.stringify(guestItems.filter((guestItem) => guestItem.id !== id)));
+      cart.removeItem(id);
+      return;
+    }
+    await deleteOrderedProduct(id);
+    cart.removeItem(id);
+  };
   return (
     <div id="cart">
       <div className="columned-page">
-        <DeleteModal
-          id={deletedId}
+        <ConfirmationModal
+          show={deletedId}
           close={() => setDeletedId('')}
+          callback={() => deleteItem(deletedId)}
+          promptText="Delete this item from your cart?"
         />
         <AddonModal
           id={warrantyCartItem?.id as string}

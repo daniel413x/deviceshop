@@ -38,7 +38,7 @@ const getReviewCounts = [
         FROM "Review"
     WHERE 
         "Review"."shopProductId" = "ShopProduct"."id"
-)`),
+    )`),
   'reviewCounts',
 ];
 

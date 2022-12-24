@@ -125,3 +125,7 @@ export function validateEmail(string: string): boolean {
 export function validatePassword(string: string): boolean {
   return /(?=^\S{6,256}$)^.+$/i.test(string);
 }
+
+export function unCamelCase(string: string): string {
+  return string.split(/([A-Z][a-z]*)/).join(' ').toLowerCase().replace(/^\D/, (l) => l.toUpperCase());
+}

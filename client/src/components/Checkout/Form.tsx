@@ -97,7 +97,6 @@ function Form() {
         pressedSubmit={pressedSubmit}
         setPressedSubmit={setPressedSubmit}
       />
-      <div />
       <Button className={`submit-button ${blockSubmit && 'blocked'}`} type="submit">
         Submit
       </Button>

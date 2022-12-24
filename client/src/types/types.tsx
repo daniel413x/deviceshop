@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, ReactElement } from 'react';
 
 export type RequireAll<T> = Required<T> | Partial<Record<keyof T, undefined>>;
 
@@ -9,6 +9,8 @@ type Only<T, U> = {
 };
 
 export type Either<T, U> = Only<T, U> | Only<U, T>;
+
+export type PartiallyOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 export type IterableAttributes<T> = { [ key in keyof T ]: any };
 
@@ -142,7 +144,7 @@ export interface IAddress {
 }
 
 export interface IAddressInAddressBook extends IAddress {
-  default: boolean;
+  isDefault?: boolean;
 }
 
 export interface IShopElement {
@@ -216,9 +218,11 @@ export type QueryReqCreateAddon = Omit<IOrderedAddon, 'id'>;
 
 export type QueryReqCreateOrderedAddon = Pick<IOrderedAddon, 'price' | 'orderedProductId' | 'addonId' | 'category'>;
 
-export type QueryReqCreateAddress = IAddressInAddressBook;
+export type QueryReqCreateAddress = Omit<IAddressInAddressBook, 'id'>;
 
 export type QueryReqPutOrder = Partial<IOrder>;
+
+export type QueryReqPutUser = Partial<IUser>;
 
 export type CCDebitPayment = {
   nameOnCard: string;
@@ -255,6 +259,8 @@ export type Filter = {
   key: string;
   value: string;
 };
+
+export type Children = ReactElement | string | false | undefined | (ReactElement | string | false | undefined)[];
 
 export type SearchParamsRecord = {
   [param: string]: string;

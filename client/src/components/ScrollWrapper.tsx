@@ -1,8 +1,9 @@
-import React, { ReactElement, useLayoutEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { Children } from '../types/types';
 
 interface ScrollWrapperProps {
-  children: ReactElement | ReactElement[];
+  children: Children;
 }
 
 function ScrollWrapper({ children }: ScrollWrapperProps) {

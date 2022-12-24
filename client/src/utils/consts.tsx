@@ -4,6 +4,7 @@ export const ADMIN_ROUTE = '/admin';
 export const COMPANY_ROUTE = 'company';
 export const ACCOUNT_ROUTE = 'account';
 export const CREDENTIALS_ROUTE = 'credentials';
+export const ADDRESSES_ROUTE = 'addresses';
 export const ORDERS_ROUTE = 'orders';
 export const COMPANY_WILDCARD_ROUTE = 'company/*';
 export const ABOUT_ROUTE = 'about';

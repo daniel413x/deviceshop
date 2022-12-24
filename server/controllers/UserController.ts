@@ -28,6 +28,7 @@ const generateJwt = ({
   lastName,
   avatar,
   name,
+  phoneNumber,
 }: any, expiresIn?: string) => jwt.sign(
   {
     id,
@@ -38,6 +39,7 @@ const generateJwt = ({
     roles,
     avatar,
     name,
+    phoneNumber,
   },
   process.env.S_KEY!,
   {

@@ -8,6 +8,7 @@ interface UseQueriedItemsProps<T> {
   fetchAPI: (query: QueryReqFetchMultiple<T>) => Promise<SequelizeFindAndCountAll<T>>;
   concatItems?: boolean;
   concurrentlySetQuery?: boolean;
+  initialSorting?: string;
 }
 
 interface UseQueriedItemsReturn<T> {
@@ -28,10 +29,11 @@ function useQueriedItems<T>({
   itemsPerPage,
   fetchAPI,
   concurrentlySetQuery,
+  initialSorting,
 }: UseQueriedItemsProps<T>): UseQueriedItemsReturn<T> {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [sorting, setSorting] = useState<string>('');
+  const [sorting, setSorting] = useState<string>(initialSorting || '');
   const [dbCount, setDbProductCount] = useState<number>(0);
   const {
     page,

@@ -33,6 +33,7 @@ function OrdersControl({
     dbCount,
     sorting,
   } = useQueriedItems<IOrder>({
+    initialSorting: 'byNewest',
     fetchAPI,
     itemsPerPage,
     concatItems: true,

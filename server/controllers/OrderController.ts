@@ -14,7 +14,7 @@ class OrderController extends BaseController<Order> {
 
   async get(req: Request, res: Response) {
     const { id } = res.locals.user;
-    const options = {
+    const options: any = {
       where: {
         userId: id,
       },
@@ -68,7 +68,7 @@ class OrderController extends BaseController<Order> {
     return res.json(returnedOrder);
   }
 
-  async changeStatus(req: Request, res: Response, next: NextFunction) {
+  async edit(req: Request, res: Response, next: NextFunction) {
     return this.execValidateUserAndUpdate(req, res, next);
   }
 

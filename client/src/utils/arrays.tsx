@@ -9,8 +9,18 @@ import Cart from '../pages/Cart';
 import Checkout from '../pages/Checkout';
 import OrderConfirmation from '../pages/OrderConfirmation';
 import YourOrders from '../pages/YourOrders';
+import Credentials from '../pages/Credentials';
+import Addresses from '../pages/Addresses';
 
 export const indexAuthRoutes = [
+  {
+    path: `${routes.ACCOUNT_ROUTE}/${routes.ADDRESSES_ROUTE}`,
+    Component: Addresses,
+  },
+  {
+    path: `${routes.ACCOUNT_ROUTE}/${routes.CREDENTIALS_ROUTE}`,
+    Component: Credentials,
+  },
   {
     path: `${routes.ACCOUNT_ROUTE}/${routes.ORDERS_ROUTE}/:id`,
     Component: OrderConfirmation,
@@ -68,6 +78,10 @@ export const accountNavButtons = [
   {
     to: `/${routes.ACCOUNT_ROUTE}/${routes.CREDENTIALS_ROUTE}`,
     label: 'Credentials',
+  },
+  {
+    to: `/${routes.ACCOUNT_ROUTE}/${routes.ADDRESSES_ROUTE}`,
+    label: 'Addresses',
   },
 ];
 

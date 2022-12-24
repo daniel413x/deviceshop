@@ -11,8 +11,13 @@ export const fetchAddresses = async (queryParams?: QueryReqFetchMultiple<IAddres
   return data;
 };
 
-export const createAddress = async (itemToAdd?: QueryReqCreateAddress): Promise<IAddressInAddressBook> => {
-  const { data } = await $authHost.post('api/addressbook', itemToAdd);
+export const createAddress = async (body?: QueryReqCreateAddress): Promise<IAddressInAddressBook> => {
+  const { data } = await $authHost.post('api/addressbook', body);
+  return data;
+};
+
+export const editAddress = async (id: string, body?: QueryReqCreateAddress): Promise<IAddressInAddressBook> => {
+  const { data } = await $authHost.put(`api/addressbook/${id}`, body);
   return data;
 };
 

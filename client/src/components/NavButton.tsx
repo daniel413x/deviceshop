@@ -1,12 +1,12 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { INavButton } from '../types/types';
+import { Children, INavButton } from '../types/types';
 
 type NavButtonStyles = 'match-button' | 'secondary';
 
 interface NavButtonProps {
   to: string | INavButton[];
-  children: ReactElement | (ReactElement | string)[] | string;
+  children?: Children;
   className?: string;
   buttonStyle?: NavButtonStyles | NavButtonStyles[];
 }
@@ -27,6 +27,7 @@ function NavButton({
 NavButton.defaultProps = {
   className: '',
   buttonStyle: '',
+  children: false,
 };
 
 export default NavButton;

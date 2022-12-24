@@ -56,10 +56,10 @@ export default abstract class BaseController<M extends Model> {
   }
 
   async execFindAndCountAll(req: Request, res: Response, options?: FindAndCountOptions<M>) {
+    // options is from controllers
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 22;
     const offset = page * limit - limit;
-    const byNewest = req.query.byNewest as string;
     const order: any[] = [];
     let attributes;
     if (req.query.attributes) {
@@ -77,8 +77,13 @@ export default abstract class BaseController<M extends Model> {
       attributes,
       ...options,
     };
-    if (byNewest) {
-      params.order = [[col('createdAt'), 'DESC']];
+    if (req.query.order) {
+      // order options that can be applied to any model go here
+      const orderOptions = JSON.parse(req.query.order as string);
+      const byNewest = orderOptions.byNewest as string;
+      if (byNewest) {
+        params.order = [...params.order as [], [col('createdAt'), 'DESC']];
+      }
     }
     if (req.query.where) {
       params.where = JSON.parse(req.query.where as string);
@@ -148,6 +153,6 @@ export default abstract class BaseController<M extends Model> {
 
   async execValidateUserAndDestroy(req: Request, res: Response, next: NextFunction) {
     this.validateUser(req, res, next);
-    return this.execUpdate(req, res);
+    return this.execDestroy(req, res);
   }
 }

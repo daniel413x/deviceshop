@@ -1,11 +1,12 @@
-import React, { ReactElement, useState } from 'react';
+import React, { useState } from 'react';
 import { ReactComponent as TriangleDown } from '../../assets/icons/triangle-down.svg';
+import { Children } from '../../types/types';
 import Button from '../Button';
 
 interface CollapsibleInfoProps {
   header: string;
   className?: string;
-  children: ReactElement | (ReactElement | string)[] | string;
+  children: Children;
 }
 
 function CollapsibleInfo({

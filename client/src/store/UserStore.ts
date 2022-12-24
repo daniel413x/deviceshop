@@ -46,12 +46,18 @@ export default class UserStore implements IUser {
       username,
       avatar,
       email,
+      firstName,
+      lastName,
+      phoneNumber,
     } = obj;
     this.roles = roles;
     this.id = id;
     this.username = username;
     this.avatar = avatar;
     this.email = email;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.phoneNumber = phoneNumber;
   }
 
   unset() {

@@ -7,6 +7,7 @@ import ShopPageStore from '../store/ShopPageStore';
 import CartStore from '../store/CartStore';
 import ModalStore from '../store/ModalStore';
 import OrderStore from '../store/OrderStore';
+import AddressStore from '../store/AddressStore';
 
 interface ContextProps {
   notifications: NotificationStore;
@@ -17,6 +18,7 @@ interface ContextProps {
   reviews: ReviewStore;
   shopPage: ShopPageStore;
   modals: ModalStore;
+  addresses: AddressStore;
 }
 
 const Context = createContext<ContextProps>({
@@ -28,6 +30,7 @@ const Context = createContext<ContextProps>({
   cart: new CartStore(),
   modals: new ModalStore(),
   orders: new OrderStore(),
+  addresses: new AddressStore(),
 });
 
 export default Context;

@@ -39,7 +39,7 @@ Button.defaultProps = {
   type: 'button',
   title: '',
   className: '',
-  id: '',
+  id: undefined,
   children: false,
   onClick: () => null,
   buttonStyle: 'primary',
