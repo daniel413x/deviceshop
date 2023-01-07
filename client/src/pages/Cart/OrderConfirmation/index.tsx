@@ -1,22 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
-import ShopSideCol from '../components/ShopSideCol';
-import BreadcrumbTrail from '../components/BreadcrumbTrail';
-import PageHeader from '../components/PageHeader';
-import Context from '../context/context';
-import NavButton from '../components/NavButton';
-import { ACCOUNT_ROUTE, ORDERS_ROUTE } from '../utils/consts';
-import OrderItems from '../components/OrderItems';
-import ChatNow from '../components/ChatNow';
-import { ReactComponent as TrackOrder } from '../assets/icons/TrackOrder.svg';
-import { ReactComponent as CheckMark } from '../assets/icons/CheckMark.svg';
-import logoLarge from '../assets/logos/logo-large.png';
-import OrderItem from '../components/OrderItem';
-import { IOrder } from '../types/types';
-import { fetchOrder } from '../http/orderAPI';
-import ShippingInfo from '../components/OrderConfirmation/ShippingInfo';
-import useBreakpoints from '../hooks/useBreakpoints';
+import ShopSideCol from '../../../components/ShopSideCol';
+import BreadcrumbTrail from '../../../components/BreadcrumbTrail';
+import PageHeader from '../../../components/PageHeader';
+import Context from '../../../context/context';
+import NavButton from '../../../components/NavButton';
+import { ACCOUNT_ROUTE, ORDERS_ROUTE } from '../../../utils/consts';
+import OrderItems from '../../../components/OrderItems';
+import ChatNow from '../../../components/ChatNow';
+import { ReactComponent as TrackOrder } from '../../../assets/icons/TrackOrder.svg';
+import { ReactComponent as CheckMark } from '../../../assets/icons/CheckMark.svg';
+import logoLarge from '../../../assets/logos/logo-large.png';
+import OrderItem from '../../../components/OrderItem';
+import { IOrder } from '../../../types/types';
+import { fetchOrder } from '../../../http/orderAPI';
+import ShippingInfo from '../../../components/OrderConfirmation/ShippingInfo';
+import useBreakpoints from '../../../hooks/useBreakpoints';
 
 function OrderConfirmation() {
   const [auth, setAuth] = useState<boolean>(false);

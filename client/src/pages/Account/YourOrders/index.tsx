@@ -1,11 +1,11 @@
 import React from 'react';
-import BreadcrumbTrail from '../components/BreadcrumbTrail';
-import PageHeader from '../components/PageHeader';
-import AccountSideCol from '../components/Account/AccountSideCol';
-import useBreakpoints from '../hooks/useBreakpoints';
-import ChatNow from '../components/ChatNow';
-import { fetchOrders } from '../http/orderAPI';
-import OrdersControl from '../components/OrdersControl';
+import BreadcrumbTrail from '../../../components/BreadcrumbTrail';
+import PageHeader from '../../../components/PageHeader';
+import AccountSideCol from '../../../components/Account/AccountSideCol';
+import useBreakpoints from '../../../hooks/useBreakpoints';
+import ChatNow from '../../../components/ChatNow';
+import { fetchOrders } from '../../../http/orderAPI';
+import OrdersControl from '../../../components/OrdersControl';
 
 function YourOrders() {
   const { width } = useBreakpoints();

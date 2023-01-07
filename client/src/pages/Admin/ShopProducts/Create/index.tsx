@@ -1,16 +1,16 @@
 import React, { useContext, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { observer } from 'mobx-react-lite';
-import ShopSideCol from '../components/ShopSideCol';
-import BreadcrumbTrail from '../components/BreadcrumbTrail';
-import { IShopProduct } from '../types/types';
-import TopInfoRow from '../components/Admin/ShopProducts/Create/TopInfoRow';
-import Specifications from '../components/Admin/ShopProducts/Create/Specifications';
-import CollapsibleInfo from '../components/CollapsibleInfo';
-import EditableField from '../components/EditableField';
-import Context from '../context/context';
-import FormSubmissionOverlay from '../components/Admin/ShopProducts/Create/FormSubmissionOverlay';
-import { fetchProduct } from '../http/shopProductAPI';
+import ShopSideCol from '../../../../components/ShopSideCol';
+import BreadcrumbTrail from '../../../../components/BreadcrumbTrail';
+import { IShopProduct } from '../../../../types/types';
+import TopInfoRow from '../../../../components/Admin/ShopProducts/Create/TopInfoRow';
+import Specifications from '../../../../components/Admin/ShopProducts/Create/Specifications';
+import CollapsibleInfo from '../../../../components/CollapsibleInfo';
+import EditableField from '../../../../components/EditableField';
+import Context from '../../../../context/context';
+import FormSubmissionOverlay from '../../../../components/Admin/ShopProducts/Create/FormSubmissionOverlay';
+import { fetchProduct } from '../../../../http/shopProductAPI';
 
 const Description = observer(() => {
   const {

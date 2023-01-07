@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react';
-import BreadcrumbTrail from '../components/BreadcrumbTrail';
-import PageHeader from '../components/PageHeader';
-import AccountSideCol from '../components/Account/AccountSideCol';
-import EditFieldModal from '../components/Account/Credentials/EditFieldModal';
-import Context from '../context/context';
-import List from '../components/List';
-import Field from '../components/Account/Credentials/Field';
+import BreadcrumbTrail from '../../../components/BreadcrumbTrail';
+import PageHeader from '../../../components/PageHeader';
+import AccountSideCol from '../../../components/Account/AccountSideCol';
+import EditFieldModal from '../../../components/Account/Credentials/EditFieldModal';
+import Context from '../../../context/context';
+import List from '../../../components/List';
+import Field from '../../../components/Account/Credentials/Field';
 
 function Credentials() {
   const {

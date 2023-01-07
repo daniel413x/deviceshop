@@ -4,7 +4,7 @@ import {
   indexAdminRoutes,
   indexAuthRoutes,
   indexPublicRoutes,
-} from './utils/arrays';
+} from './paths/paths';
 import Context from './context/context';
 import AppRouter from './components/routers/AppRouter';
 import Navbar from './components/Navbar/Navbar';

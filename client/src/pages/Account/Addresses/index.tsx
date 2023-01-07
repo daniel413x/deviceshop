@@ -1,14 +1,14 @@
 import React, { FormEvent, useContext, useState } from 'react';
-import BreadcrumbTrail from '../components/BreadcrumbTrail';
-import PageHeader from '../components/PageHeader';
-import AccountSideCol from '../components/Account/AccountSideCol';
-import Context from '../context/context';
-import AddressForm from '../components/AddressForm';
-import BorderButtonsRow from '../components/BorderButtonsRow';
-import Button from '../components/Button';
-import { QueryReqCreateAddress } from '../types/types';
-import { createAddress, editAddress } from '../http/addressInAddressBookAPI';
-import DeleteAddresses from '../components/Account/Addresses/DeleteAddresses';
+import BreadcrumbTrail from '../../../components/BreadcrumbTrail';
+import PageHeader from '../../../components/PageHeader';
+import AccountSideCol from '../../../components/Account/AccountSideCol';
+import Context from '../../../context/context';
+import AddressForm from '../../../components/AddressForm';
+import BorderButtonsRow from '../../../components/BorderButtonsRow';
+import Button from '../../../components/Button';
+import { QueryReqCreateAddress } from '../../../types/types';
+import { createAddress, editAddress } from '../../../http/addressInAddressBookAPI';
+import DeleteAddresses from '../../../components/Account/Addresses/DeleteAddresses';
 
 function Addresses() {
   const {

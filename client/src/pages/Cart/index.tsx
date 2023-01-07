@@ -1,19 +1,19 @@
 import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import BreadcrumbTrail from '../components/BreadcrumbTrail';
-import PageHeader from '../components/PageHeader';
-import ShopSideCol from '../components/ShopSideCol';
-import List from '../components/List';
-import Context from '../context/context';
-import CartItem from '../components/Cart/CartItem';
-import RecentlyViewedProducts from '../components/RecentlyViewedProducts';
-import AddonModal from '../components/Cart/AddonModal';
-import { IGuestAddedProduct, IOrderedProduct } from '../types/types';
-import useBreakpoints from '../hooks/useBreakpoints';
-import Checkout from '../components/Cart/Checkout';
-import ChatNow from '../components/ChatNow';
-import ConfirmationModal from '../components/ConfirmationModal';
-import { deleteOrderedProduct } from '../http/orderedProductAPI';
+import BreadcrumbTrail from '../../components/BreadcrumbTrail';
+import PageHeader from '../../components/PageHeader';
+import ShopSideCol from '../../components/ShopSideCol';
+import List from '../../components/List';
+import Context from '../../context/context';
+import CartItem from '../../components/Cart/CartItem';
+import RecentlyViewedProducts from '../../components/RecentlyViewedProducts';
+import AddonModal from '../../components/Cart/AddonModal';
+import { IGuestAddedProduct, IOrderedProduct } from '../../types/types';
+import useBreakpoints from '../../hooks/useBreakpoints';
+import Checkout from '../../components/Cart/Checkout';
+import ChatNow from '../../components/ChatNow';
+import ConfirmationModal from '../../components/ConfirmationModal';
+import { deleteOrderedProduct } from '../../http/orderedProductAPI';
 
 function Cart() {
   const [deletedId, setDeletedId] = useState<string>('');

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import ShopSideCol from '../components/ShopSideCol';
-import BreadcrumbTrail from '../components/BreadcrumbTrail';
-import { fetchProduct } from '../http/shopProductAPI';
-import { IShopProduct } from '../types/types';
-import TopInfoRow from '../components/ShopProductPage/TopInfoRow';
-import Specifications from '../components/Specifications';
-import CollapsibleInfo from '../components/CollapsibleInfo';
-import Reviews from '../components/ShopProductPage/Reviews';
-import RecentlyViewedProducts from '../components/RecentlyViewedProducts';
-import { FRONT_PAGE_ROUTE } from '../utils/consts';
+import ShopSideCol from '../../components/ShopSideCol';
+import BreadcrumbTrail from '../../components/BreadcrumbTrail';
+import { fetchProduct } from '../../http/shopProductAPI';
+import { IShopProduct } from '../../types/types';
+import TopInfoRow from '../../components/ShopProductPage/TopInfoRow';
+import Specifications from '../../components/Specifications';
+import CollapsibleInfo from '../../components/CollapsibleInfo';
+import Reviews from '../../components/ShopProductPage/Reviews';
+import RecentlyViewedProducts from '../../components/RecentlyViewedProducts';
+import { FRONT_PAGE_ROUTE } from '../../utils/consts';
 
 function ShopProductPage() {
   const [loading, setLoading] = useState<boolean>(true);

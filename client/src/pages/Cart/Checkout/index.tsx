@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import ShopSideCol from '../components/ShopSideCol';
-import BreadcrumbTrail from '../components/BreadcrumbTrail';
-import PageHeader from '../components/PageHeader';
-import Context from '../context/context';
-import NavButton from '../components/NavButton';
-import { CART_ROUTE } from '../utils/consts';
-import Form from '../components/Checkout/Form';
-import CartItems from '../components/Checkout/CartItems';
+import ShopSideCol from '../../../components/ShopSideCol';
+import BreadcrumbTrail from '../../../components/BreadcrumbTrail';
+import PageHeader from '../../../components/PageHeader';
+import Context from '../../../context/context';
+import NavButton from '../../../components/NavButton';
+import { CART_ROUTE } from '../../../utils/consts';
+import Form from '../../../components/Checkout/Form';
+import CartItems from '../../../components/Checkout/CartItems';
 
 function Checkout() {
   const [auth, setAuth] = useState<boolean>(false);
