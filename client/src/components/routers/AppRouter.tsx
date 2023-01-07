@@ -10,15 +10,24 @@ import { IRouterRoute } from '../../types/types';
 interface AppRouterProps {
   authedRoutes?: IRouterRoute[];
   publicRoutes?: IRouterRoute[];
+  adminRoutes?: IRouterRoute[];
 }
 
 function AppRouter({
   publicRoutes,
   authedRoutes,
+  adminRoutes,
 }: AppRouterProps) {
   const { user } = useContext(Context);
   return (
     <Routes>
+      {user.isAdmin && adminRoutes?.map(({ path, Component }) => (
+        <Route
+          key={path}
+          path={path}
+          element={<Component key={`${path}`} />}
+        />
+      ))}
       {user.isRegistered && authedRoutes?.map(({ path, Component }) => (
         <Route
           key={path}
@@ -40,6 +49,7 @@ function AppRouter({
 AppRouter.defaultProps = {
   publicRoutes: [],
   authedRoutes: [],
+  adminRoutes: [],
 };
 
 export default observer(AppRouter);

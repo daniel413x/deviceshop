@@ -58,15 +58,15 @@ export function convertPriceInt(price: number | string, discount?: number | stri
   return calculatedPrice;
 }
 
-export function formatPrice(price: number): string {
-  const stringPrice = price.toString();
+export function formatPrice(price: number, discount?: number): string {
+  const stringPrice = (discount ? price - (price * discount) : price).toString(); // discount! assumes conversion from int taken care of
   if (!/\./.test(stringPrice)) {
     return `${stringPrice}.00`;
   }
   if (!/\d+\.\d{1}/.test(stringPrice)) {
-    return `${price.toFixed(2)}.0`;
+    return `${Number(stringPrice).toFixed(2)}.0`;
   }
-  return price.toFixed(2);
+  return Number(stringPrice).toFixed(2);
 }
 
 export function getMaxPage(itemsInDb: number, itemsPerPage: number) {
@@ -83,6 +83,26 @@ export function toPlural(string: string): string {
   return `${string}s`;
 }
 
+export function sortCategories(categories: ISpecification[][]): ISpecification[][] {
+  return categories
+    .slice()
+    .sort((a, b) => {
+      if (a[0].category === 'General information') {
+        return -1;
+      }
+      if (b[0].category === 'General information') {
+        return 1;
+      }
+      if (a[0].category === 'Key specifications') {
+        return -1;
+      }
+      if (b[0].category === 'Key specifications') {
+        return 1;
+      }
+      return 0;
+    });
+}
+
 export function categorizeSpecifications(specifications: ISpecification[]): ISpecification[][] {
   const uniqueCategories: string[] = [];
   specifications.forEach(({ category }) => {
@@ -90,15 +110,18 @@ export function categorizeSpecifications(specifications: ISpecification[]): ISpe
       uniqueCategories.push(category);
     }
   });
-  return uniqueCategories.map((uniqueCategory) => {
-    const arr: ISpecification[] = [];
-    specifications.forEach((spec) => {
-      if (spec.category === uniqueCategory) {
-        arr.push(spec);
-      }
-    });
-    return arr;
-  });
+  return sortCategories(
+    uniqueCategories
+      .map((uniqueCategory) => {
+        const arr: ISpecification[] = [];
+        specifications.forEach((spec) => {
+          if (spec.category === uniqueCategory) {
+            arr.push(spec);
+          }
+        });
+        return arr;
+      }),
+  );
 }
 
 export function dateMonthYear(string: string): string {
@@ -128,4 +151,16 @@ export function validatePassword(string: string): boolean {
 
 export function unCamelCase(string: string): string {
   return string.split(/([A-Z][a-z]*)/).join(' ').toLowerCase().replace(/^\D/, (l) => l.toUpperCase());
+}
+
+export function selectEnd(domObjById: any): void {
+  const selection = document.getSelection();
+  const range = document.createRange();
+  if (domObjById.lastChild?.nodeType === 3) {
+    range.setStart(domObjById?.lastChild, domObjById.lastChild.nodeValue!.length);
+  } else {
+    range.setStart(domObjById, domObjById.childNodes.length);
+  }
+  selection?.removeAllRanges();
+  selection?.addRange(range);
 }

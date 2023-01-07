@@ -5,7 +5,7 @@ import AccountSideCol from '../components/Account/AccountSideCol';
 import EditFieldModal from '../components/Account/Credentials/EditFieldModal';
 import Context from '../context/context';
 import List from '../components/List';
-import EditableField from '../components/Account/Credentials/EditableField';
+import Field from '../components/Account/Credentials/Field';
 
 function Credentials() {
   const {
@@ -54,11 +54,11 @@ function Credentials() {
             header="Your account details"
           />
           <List
-            className="editable-field-ul"
+            className="field-ul"
             items={boxes}
             renderAs={((box) => (
               <li key={box.field}>
-                <EditableField
+                <Field
                   field={box.field}
                   value={box.value}
                   openEditFieldModal={() => openEditFieldModal(box.field, box.value)}

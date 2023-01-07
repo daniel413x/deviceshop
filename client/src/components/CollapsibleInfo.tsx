@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { ReactComponent as TriangleDown } from '../../assets/icons/triangle-down.svg';
-import { Children } from '../../types/types';
-import Button from '../Button';
+import { ReactComponent as TriangleDown } from '../assets/icons/triangle-down.svg';
+import { Children } from '../types/types';
+import Button from './Button';
 
 interface CollapsibleInfoProps {
   header: string;
@@ -30,7 +30,7 @@ function CollapsibleInfo({
           {header}
         </h4>
       </Button>
-      <div className={`info ${collapsed && 'collapsed'}`}>
+      <div className={`content ${collapsed && 'collapsed'}`}>
         {children}
       </div>
     </div>

@@ -6,6 +6,7 @@ interface ButtonProps {
   type?: 'button' | 'submit' | 'reset' | undefined;
   className?: string;
   onClick?: (...args: any[]) => void;
+  onMouseDown?: (...args: any[]) => void;
   children?: ReactElement | (ReactElement | string)[] | string;
   buttonStyle?: ButtonStyles | ButtonStyles[];
   title?: string;
@@ -16,6 +17,7 @@ function Button({
   type,
   className,
   onClick,
+  onMouseDown,
   children,
   buttonStyle,
   title,
@@ -28,6 +30,7 @@ function Button({
     // eslint-disable-next-line react/button-has-type
       type={type}
       onClick={onClick}
+      onMouseDown={onMouseDown}
       id={id}
     >
       {children}
@@ -42,6 +45,7 @@ Button.defaultProps = {
   id: undefined,
   children: false,
   onClick: () => null,
+  onMouseDown: () => null,
   buttonStyle: 'primary',
 };
 

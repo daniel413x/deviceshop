@@ -14,7 +14,7 @@ import {
   FindOptions,
 } from '../types/types';
 import { ADMIN } from '../utils/consts';
-import { assignBodyAndProcessImages } from '../utils/functions';
+import { assignBodyAndWriteAndUpdateFiles } from '../utils/functions';
 
 export default abstract class BaseController<M extends Model> {
   model: ModelStatic<Model>;
@@ -105,7 +105,7 @@ export default abstract class BaseController<M extends Model> {
   async execCreate(req: Request, res: Response, options?: FindAndCountOptions<M>) {
     let form = req.body;
     if (req.files) {
-      form = assignBodyAndProcessImages(req);
+      form = assignBodyAndWriteAndUpdateFiles(req);
     }
     let data = await this.model.create(form);
     if (options) {
@@ -135,7 +135,7 @@ export default abstract class BaseController<M extends Model> {
     const { id } = req.params;
     let form = req.body;
     if (req.files) {
-      form = assignBodyAndProcessImages(req);
+      form = assignBodyAndWriteAndUpdateFiles(req);
     }
     await this.model.update(form, { where: { id } });
     return res.status(204).end();

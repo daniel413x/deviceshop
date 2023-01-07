@@ -78,6 +78,7 @@ export const shopProductAttributes: ModelAttributes<ShopProduct> = {
   name: {
     allowNull: false,
     type: DataTypes.STRING,
+    // unique: true,
   },
   price: {
     allowNull: false,

@@ -14,7 +14,7 @@ export default class BrandStore {
     makeAutoObservable(this);
   }
 
-  setBrands(fetchedData: SequelizeFindAndCountAll<IBrand>) {
+  set(fetchedData: SequelizeFindAndCountAll<IBrand>) {
     this.brands = fetchedData.rows;
     this.itemsInDb = fetchedData.count;
   }
@@ -22,5 +22,9 @@ export default class BrandStore {
   findBrand(string: string) {
     const returnedBrand = this.brands.find((brand) => brand.name === string);
     return returnedBrand;
+  }
+
+  get all() {
+    return this.brands;
   }
 }

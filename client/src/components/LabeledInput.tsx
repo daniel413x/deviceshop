@@ -1,4 +1,5 @@
 import React from 'react';
+import useInputIncomplete from '../hooks/useInputIncomplete';
 import Input, { InputProps } from './Input';
 
 interface LabeledInputProps extends InputProps {
@@ -20,10 +21,19 @@ function LabeledInput({
   type,
   name,
   id,
-  optional,
+  className,
+  warnCondition,
 }: LabeledInputProps) {
+  const {
+    warn,
+  } = useInputIncomplete({
+    input,
+    setPressedSubmit,
+    pressedSubmit,
+    condition: warnCondition,
+  });
   return (
-    <div className="labeled-input">
+    <div className={`labeled-input ${warn && 'warn'} ${className}`}>
       <label htmlFor={id} className="label">
         {label}
         {' '}
@@ -36,11 +46,8 @@ function LabeledInput({
       <Input
         input={input}
         setInput={setInput}
-        setPressedSubmit={setPressedSubmit}
-        pressedSubmit={pressedSubmit}
         placeholder={placeholder}
         textarea={textarea}
-        optional={optional}
         name={name}
         type={type}
         id={id}

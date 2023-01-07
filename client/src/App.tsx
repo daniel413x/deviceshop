@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import {
+  indexAdminRoutes,
   indexAuthRoutes,
   indexPublicRoutes,
 } from './utils/arrays';
@@ -10,22 +11,45 @@ import Navbar from './components/Navbar/Navbar';
 import { stillAuthed } from './http/userAPI';
 import Footer from './components/Footer/Footer';
 import ScrollWrapper from './components/ScrollWrapper';
-import { fetchTypes } from './http/typeAPI';
 import Notifications from './components/Notifications/Notifications';
 import { GUEST } from './utils/consts';
+import { fetchBrands } from './http/brandAPI';
+import { fetchTypes } from './http/typeAPI';
 
 function App() {
   const {
     user,
     cart,
+    brands,
     types,
+    notifications,
   } = useContext(Context);
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
     (async () => {
       try {
+        if (brands.all.length === 0) {
+          const fetchedBrands = await fetchBrands();
+          brands.set(fetchedBrands);
+        }
+      } catch (error: any) {
+        notifications.error(
+          error.response.data.message,
+        );
+      }
+    })();
+    (async () => {
+      try {
         const fetchedTypes = await fetchTypes();
-        types.setTypes(fetchedTypes);
+        types.set(fetchedTypes);
+      } catch (error: any) {
+        notifications.error(
+          error.response.data.message,
+        );
+      }
+    })();
+    (async () => {
+      try {
         const registeredToken = localStorage.getItem('registeredToken');
         if (registeredToken) {
           const { user: fetchedUser, cart: fetchedCart } = await stillAuthed();
@@ -64,6 +88,7 @@ function App() {
           <AppRouter
             publicRoutes={indexPublicRoutes}
             authedRoutes={indexAuthRoutes}
+            adminRoutes={indexAdminRoutes}
           />
         </div>
         <Footer />

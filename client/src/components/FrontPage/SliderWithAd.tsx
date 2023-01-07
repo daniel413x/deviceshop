@@ -36,7 +36,7 @@ function SliderWithAd() {
         </NavLink>
       )}
       <SliderComponent
-        items={sliderImages}
+        propImages={sliderImages}
         autoplay
       />
     </div>

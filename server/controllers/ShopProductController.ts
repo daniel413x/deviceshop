@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { NextFunction, Request, Response } from 'express';
 import {
   col,
@@ -5,13 +6,18 @@ import {
   literal,
   Op,
 } from 'sequelize';
+import path from 'path';
 import ShopProduct from '../db/models/ShopProduct';
 import BaseController from './BaseController';
 import Brand from '../db/models/Brand';
 import Type from '../db/models/Type';
 import Specification from '../db/models/Specification';
-import { FilteredSearchParams, FindAndCountOptions, SearchViaSearchbarParams } from '../types/types';
+import {
+  FilteredSearchParams, FindAndCountOptions, ISpecification, SearchViaSearchbarParams,
+} from '../types/types';
 import Review from '../db/models/Review';
+import { assignBodyAndWriteAndUpdateFiles, calcIntPrices, toFilename } from '../utils/functions';
+import ApiError from '../error/ApiError';
 
 const includeAll = [
   {
@@ -182,12 +188,117 @@ class ShopProductController extends BaseController<ShopProduct> {
     return this.execFindOneByParams(req, res, next, options);
   }
 
-  create(req: Request, res: Response) {
-    this.execCreate(req, res);
+  async create(req: Request, res: Response, next: NextFunction) {
+    if (!req.files) {
+      return next(ApiError.badRequest('Attribute "images" missing or empty'));
+    }
+    const body = assignBodyAndWriteAndUpdateFiles(req); // create product images
+    const form = {
+      ...body,
+      specifications: null,
+    };
+    const thumbnail = form.images[0];
+    form.thumbnail = thumbnail;
+    const {
+      price,
+      discountedPrice,
+    } = calcIntPrices(form.price, form.discount);
+    form.price = price;
+    form.discountedPrice = discountedPrice;
+    form.rating = 0;
+    form.numberSold = 0;
+    const newProduct = await ShopProduct.create(form);
+    const newProductSpecifications: ISpecification[] = [];
+    if (body.specifications) {
+      const specifications = JSON.parse(body.specifications);
+      await Promise.all(specifications.map(async (specification) => {
+        const newSpecification = await Specification.create({
+          key: specification.key,
+          value: specification.value,
+          category: specification.category,
+          shopProductId: newProduct.id,
+          typeId: newProduct.typeId,
+        });
+        newProductSpecifications.push(newSpecification);
+      }));
+    }
+    return res.json({ newProduct, newProductSpecifications });
+    // this.execCreate(req, res);
   }
 
-  edit(req: Request, res: Response) {
-    this.execUpdate(req, res);
+  async edit(req: Request, res: Response, next: NextFunction) {
+    // going to need to check deletedImages vs updatedProduct.images first--if you delete every image and just have 0 images then throw error
+    const { id: productId } = req.params;
+    let updatedProduct = await ShopProduct.findByPk(productId);
+    let {
+      images,
+    } = updatedProduct;
+    if (req.body.deletedImages) {
+      const deletedImages = JSON.parse(req.body.deletedImages)
+        .map((deletedImage) => toFilename(deletedImage)); // images may arrive as whole URLs
+      images = updatedProduct.images
+        .filter((image) => deletedImages
+          .indexOf(image) === -1);
+      const imagesEmpty = images.length === 0;
+      if (imagesEmpty) {
+        return next(ApiError.badRequest('Attribute "images" cannot be empty'));
+      }
+      const directory = path.resolve(__dirname, '..', 'static');
+      deletedImages.forEach((image) => {
+        const fileName = toFilename(image);
+        fs.readdir(directory, (error, files) => {
+          if (error) throw error;
+          for (let f = 0; f < files.length; f += 1) {
+            if (files[f] === fileName) {
+              fs.unlink(path.join(directory, files[f]), (err) => {
+                if (err) throw err;
+              });
+              break;
+            }
+          }
+        });
+      });
+    }
+    const body = assignBodyAndWriteAndUpdateFiles(req, images);
+    const form = {
+      ...body,
+      specifications: null,
+      deletedImages: null,
+    };
+    if (req.files) {
+      const thumbnail = form.images[0];
+      form.thumbnail = thumbnail;
+    }
+    const {
+      price,
+      discountedPrice,
+    } = calcIntPrices(form.price, form.discount);
+    form.price = price;
+    form.discountedPrice = discountedPrice;
+    updatedProduct = await updatedProduct.update(form);
+    const specifications = JSON.parse(body.specifications);
+    Specification.destroy({
+      where: {
+        id: {
+          [Op.notIn]: specifications.map(({ id }) => id), // all of a product's specifications are sent in an array for PUT reqs. delete filters specificarions from that array. specifications not in the array are deleted
+        },
+        shopProductId: updatedProduct.id,
+      },
+    });
+    await Promise.all((specifications as ISpecification[]).map(async ({
+      key, value, category, id,
+    }) => {
+      await Specification.update({
+        key,
+        value,
+        category,
+      }, {
+        where: {
+          id,
+        },
+      });
+    }));
+    return res.json(updatedProduct);
   }
 
   delete(req: Request, res: Response) {

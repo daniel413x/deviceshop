@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import logoMedium from '../../assets/logos/logo-medium.png';
 import logoSmall from '../../assets/logos/logo-small.png';
@@ -9,7 +9,7 @@ import {
 } from '../../utils/arrays';
 import { CART_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from '../../utils/consts';
 import { ReactComponent as AccountIcon } from '../../assets/icons/account.svg';
-import Search from './Search';
+import Search from '../Search';
 import { fetchProducts } from '../../http/shopProductAPI';
 import { IShopProduct, QueryReqFetchMultipleShopProducts } from '../../types/types';
 import SearchResult from './SearchResult';
@@ -19,12 +19,14 @@ import Dropdown from '../Dropdown';
 import List from '../List';
 import Context from '../../context/context';
 import NavButton from '../NavButton';
+import { makeSlug } from '../../utils/functions';
 
 function Navbar() {
   const {
     user,
     cart,
   } = useContext(Context);
+  const navigate = useNavigate();
   const { width } = useBreakpoints();
   const [searchResults, setSearchResults] = useState<IShopProduct[]>([]);
   const searchParams: QueryReqFetchMultipleShopProducts = {
@@ -33,6 +35,10 @@ function Navbar() {
       value: '', // server controller method for ShopProducts is configured to to search model Specification according to these parameters and match associated ShopProducts
     },
     limit: 5,
+  };
+  const navigateCallback = (product: IShopProduct) => {
+    const slug = makeSlug(product.name);
+    navigate(`${SHOP_ROUTE}/${slug}`);
   };
   const cartCount = cart.items.length || 0;
   const showCartAsGuest = cartCount > 0;
@@ -88,6 +94,8 @@ function Navbar() {
           Result={SearchResult}
           endItemsInResults={[{ label: 'Shop more', to: SHOP_ROUTE, className: 'shop-more-link' }]}
           EndItem={EndItem}
+          placeholder="Search shop"
+          callback={navigateCallback}
         />
       </div>
     </nav>

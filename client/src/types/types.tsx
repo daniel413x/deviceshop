@@ -174,6 +174,12 @@ export interface IShippingMethod {
   name: string;
 }
 
+export interface INavButton {
+  to?: string | INavButton[];
+  label: string;
+  callback?: () => void;
+}
+
 export type SpecificationWithDeviceCount = Omit<ISpecification, 'category' | 'shopProductId' | 'typeId'> & {
   count: number;
 };
@@ -182,15 +188,11 @@ export type SpecificationColumn = Omit<ISpecification, 'value' | 'key' | 'shopPr
   values: string[];
 };
 
-export type Cache<T> = {
-  [number: number]: T[],
+export type Image = {
+  url: string;
+  file: any;
+  replaces?: string;
 };
-
-export interface INavButton {
-  to?: string | INavButton[];
-  label: string;
-  callback?: () => void;
-}
 
 export type QueryReqFetchOne<T> = {
   attributes?: T;
@@ -220,9 +222,19 @@ export type QueryReqCreateOrderedAddon = Pick<IOrderedAddon, 'price' | 'orderedP
 
 export type QueryReqCreateAddress = Omit<IAddressInAddressBook, 'id'>;
 
+export type QueryReqCreateShopProduct = Omit<IShopProduct, 'id' | 'type' | 'brand' | 'reviews' | 'rating' | 'numberSold' | 'discountedPrice' | 'thumbnail' | 'images'> & {
+  images: Image[];
+  deletedImages: string[];
+};
+
 export type QueryReqPutOrder = Partial<IOrder>;
 
 export type QueryReqPutUser = Partial<IUser>;
+
+export type QueryResPostShopProduct = {
+  newProductSpecifications: ISpecification[];
+  newProduct: IShopProduct;
+};
 
 export type CCDebitPayment = {
   nameOnCard: string;

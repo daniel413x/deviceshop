@@ -13,7 +13,7 @@ import {
 import { USER } from '../utils/consts';
 import User from '../db/models/User';
 import BaseController from './BaseController';
-import { assignBodyAndProcessImages } from '../utils/functions';
+import { assignBodyAndWriteAndUpdateFiles } from '../utils/functions';
 import Cart from '../db/models/Cart';
 import OrderedProduct from '../db/models/OrderedProduct';
 import { inclusionsForCart } from '../utils/inclusions';
@@ -107,7 +107,7 @@ class UserController extends BaseController<User> {
   async create(req: Request, res: Response, next: NextFunction) {
     let userForm;
     if (req.files) {
-      userForm = assignBodyAndProcessImages(req);
+      userForm = assignBodyAndWriteAndUpdateFiles(req);
     } else {
       userForm = req.body;
     }
@@ -205,7 +205,7 @@ class UserController extends BaseController<User> {
   async edit(req: Request, res: Response) {
     let updatedVals;
     if (req.files) {
-      updatedVals = assignBodyAndProcessImages(req);
+      updatedVals = assignBodyAndWriteAndUpdateFiles(req);
     } else {
       updatedVals = req.body;
     }

@@ -1,23 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import ShopSideCol from '../components/ShopSideCol';
 import BreadcrumbTrail from '../components/BreadcrumbTrail';
 import { fetchProduct } from '../http/shopProductAPI';
 import { IShopProduct } from '../types/types';
 import TopInfoRow from '../components/ShopProductPage/TopInfoRow';
-import Specifications from '../components/ShopProductPage/Specifications';
-import CollapsibleInfo from '../components/ShopProductPage/CollapsibleInfo';
+import Specifications from '../components/Specifications';
+import CollapsibleInfo from '../components/CollapsibleInfo';
 import Reviews from '../components/ShopProductPage/Reviews';
 import RecentlyViewedProducts from '../components/RecentlyViewedProducts';
+import { FRONT_PAGE_ROUTE } from '../utils/consts';
 
 function ShopProductPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [product, setProduct] = useState<IShopProduct>();
+  const navigate = useNavigate();
   const { title } = useParams();
   useEffect(() => {
     (async () => {
       try {
         const fetchedProduct = await fetchProduct(title as string);
+        if (!fetchedProduct) {
+          navigate(FRONT_PAGE_ROUTE);
+          return;
+        }
         setProduct(fetchedProduct);
         const { id } = fetchedProduct;
         if (!localStorage.getItem('recentlyViewedIds')) {
@@ -33,9 +39,9 @@ function ShopProductPage() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [title]);
   return (
-    <div id="shop-product-page" className={`${loading && 'loading'}`}>
+    <div id="shop-product-page" className={`shop-product-page ${loading && 'loading'}`}>
       <div className="columned-page">
         <ShopSideCol />
         <div className="main-col">
@@ -51,7 +57,9 @@ function ShopProductPage() {
           <CollapsibleInfo
             header="Description"
           >
-            {product.description}
+            <span className="description">
+              {product.description}
+            </span>
           </CollapsibleInfo>
           )}
           {product && (

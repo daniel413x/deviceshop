@@ -14,7 +14,7 @@ export default class TypeStore {
     makeAutoObservable(this);
   }
 
-  setTypes(fetchedData: SequelizeFindAndCountAll<IType>) {
+  set(fetchedData: SequelizeFindAndCountAll<IType>) {
     this.types = fetchedData.rows;
     this.itemsInDb = fetchedData.count;
   }
@@ -22,5 +22,9 @@ export default class TypeStore {
   findType(string: string) {
     const returnedType = this.types.find((type) => type.name === string);
     return returnedType;
+  }
+
+  get all() {
+    return this.types;
   }
 }

@@ -101,7 +101,7 @@ function OrderConfirmation() {
               <span className="track-your-order">
                 Track your order on your
                 {' '}
-                <NavLink className="account-navlink" to={`/${ACCOUNT_ROUTE}`}>
+                <NavLink className="account-navlink" to={`/${ACCOUNT_ROUTE}/${ORDERS_ROUTE}`}>
                   account page
                 </NavLink>
               </span>

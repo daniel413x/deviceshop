@@ -4,8 +4,6 @@ import Context from '../../context/context';
 import { IShopProduct } from '../../types/types';
 import { listProductAttributes } from '../../utils/functions';
 import SliderComponent from '../SliderComponent';
-import { ReactComponent as CircleCheck } from '../../assets/icons/CircleCheck.svg';
-import { ReactComponent as CircleWarning } from '../../assets/icons/CircleWarning.svg';
 import { ReactComponent as ShoppingCart } from '../../assets/icons/ShoppingCart.svg';
 import Button from '../Button';
 import DiscountTag from '../DiscountTag';
@@ -13,6 +11,7 @@ import RatingBadge from './RatingBadge';
 import { createOrderedProduct } from '../../http/orderedProductAPI';
 import { gray } from '../../utils/consts';
 import PriceTags from '../PriceTags';
+import AvailabilityLabel from './AvailabilityLabel';
 
 interface TopInfoRowProps {
   product: IShopProduct;
@@ -104,7 +103,7 @@ function TopInfoRow({
   return (
     <div className="top-info-row">
       <SliderComponent
-        items={imageUrls}
+        propImages={imageUrls}
         instant
       />
       <div className="right-col">
@@ -127,22 +126,9 @@ function TopInfoRow({
           rating={rating}
           reviewsLength={reviews.length}
         />
-        {stock && (
-        <div className="availability-label">
-          <CircleCheck className="icon" />
-          <span className="rating">
-            {`${stock} in stock`}
-          </span>
-        </div>
-        )}
-        {!stock && (
-        <div className="availability-label">
-          <CircleWarning className="icon" />
-          <span className="rating">
-            out of stock
-          </span>
-        </div>
-        )}
+        <AvailabilityLabel
+          stock={stock}
+        />
         <Button
           className={`add-to-cart ${pressedSubmit && 'blocked'}`}
           onClick={addToCart}

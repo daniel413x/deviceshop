@@ -13,6 +13,15 @@ export interface IBaseModel {
   updatedAt?: Date;
 }
 
+export interface ISpecification {
+  id: string;
+  category: string;
+  key: string;
+  value: string;
+  shopProductId: string;
+  typeId: string;
+}
+
 export interface IShopProduct {
   id: string;
   name: string;
@@ -73,15 +82,6 @@ export interface IOrderedProduct {
 
 export interface IGuestAddedProduct extends Pick<IOrderedProduct, 'addons'> {
   shopproduct: IShopProduct;
-}
-
-export interface ISpecification {
-  id: string;
-  category: string;
-  key: string;
-  value: string;
-  shopProductId: string;
-  typeId: string;
 }
 
 export interface IType {

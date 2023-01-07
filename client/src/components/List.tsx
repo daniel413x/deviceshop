@@ -37,9 +37,9 @@ const List = forwardRef(<C, S, E>({
   renderEndItemsAs,
 }: ListProps<C, S, E>, ref: any) => (
   <ul className={`${className}`} id={id} ref={ref}>
-    {startItems?.map(renderStartItemsAs!)}
+    {startItems && startItems.map(renderStartItemsAs!)}
     {items.map(renderAs)}
-    {endItems?.map(renderEndItemsAs!)}
+    {endItems && endItems.map(renderEndItemsAs!)}
     {children}
   </ul>
   ));

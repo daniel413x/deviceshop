@@ -2,22 +2,22 @@ import React from 'react';
 import { unCamelCase } from '../../../utils/functions';
 import Button from '../../Button';
 
-interface EditableFieldProps {
+interface FieldProps {
   field: string;
   value?: string;
   openEditFieldModal: (editedFieldName: string, previousVal: string) => void;
 }
 
-function EditableField({
+function Field({
   field,
   value,
   openEditFieldModal,
-}: EditableFieldProps) {
+}: FieldProps) {
   const fieldReadable = unCamelCase(field);
   return (
-    <div className="editable-field">
+    <div className="field">
       <div className="field-value-col">
-        <span className="field">
+        <span className="key">
           {fieldReadable}
         </span>
         <span className="value">
@@ -33,8 +33,8 @@ function EditableField({
   );
 }
 
-EditableField.defaultProps = {
+Field.defaultProps = {
   value: '',
 };
 
-export default EditableField;
+export default Field;

@@ -11,6 +11,19 @@ import OrderConfirmation from '../pages/OrderConfirmation';
 import YourOrders from '../pages/YourOrders';
 import Credentials from '../pages/Credentials';
 import Addresses from '../pages/Addresses';
+import CreateShopProduct from '../pages/CreateShopProduct';
+import createProductPlaceholder from '../assets/images/create-product-placeholder.png';
+
+export const indexAdminRoutes = [
+  {
+    path: `${routes.ADMIN_ROUTE}/${routes.SHOP_PRODUCTS_ROUTE}/${routes.EDIT_ROUTE}/:title`,
+    Component: CreateShopProduct,
+  },
+  {
+    path: `${routes.ADMIN_ROUTE}/${routes.SHOP_PRODUCTS_ROUTE}/${routes.CREATE_ROUTE}`,
+    Component: CreateShopProduct,
+  },
+];
 
 export const indexAuthRoutes = [
   {
@@ -229,4 +242,8 @@ export const footerLinkSections = [
     label: 'Shop',
     links: shopNavButtons,
   },
+];
+
+export const createProductPlaceholders = [
+  createProductPlaceholder,
 ];

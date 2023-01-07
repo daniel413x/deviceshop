@@ -14,7 +14,7 @@ interface DropdownProps {
   label: string;
   callback?: () => void;
   dropdownIcon?: 'angle' | 'triangle' | 'account';
-  colorStyle?: 'gray' | 'accent' | 'white';
+  colorStyle?: 'gray' | 'accent' | 'white' | 'accent-secondary';
   className?: string;
 }
 

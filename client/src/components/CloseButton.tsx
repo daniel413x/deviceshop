@@ -11,7 +11,7 @@ function CloseButton({
   return (
     <button
       className="close-button"
-      onClick={callback}
+      onMouseDown={callback}
       type="button"
     >
       <Close />

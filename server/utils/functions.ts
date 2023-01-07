@@ -2,42 +2,55 @@ import { Request } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import { UploadedFile } from 'express-fileupload';
+import { fileExtensionRegex } from './consts';
 
-// eslint-disable-next-line import/prefer-default-export
-export function assignBodyAndProcessImages(req: Request) {
+export function toFilename(string: string) {
+  const splitName = string.split('/');
+  return splitName[splitName.length - 1];
+}
+
+export function assignBodyAndWriteAndUpdateFiles(req: Request, updatedArr?: string[]) {
   const { body, files } = req;
+  body.images = updatedArr || []; // default assignment assumes model has string[] attribute to store images
+  if (!files) {
+    return body;
+  }
   const filesKeys = Object.keys(files);
   for (let k = 0; k < filesKeys.length; k += 1) {
-    if (/img/.test(filesKeys[k])) {
-      const imgProperty = filesKeys[k].substring(3).replace(/^\D/, (c) => c.toLowerCase());
-      const fileName = `${uuidv4()}.jpg`;
-      body[imgProperty] = fileName;
-      const img = files[filesKeys[k]] as UploadedFile;
-      img.mv(path.resolve(__dirname, '..', 'static', fileName));
-      break;
+    const file = files[filesKeys[k]] as UploadedFile;
+    const fileExtension = file.name.match(fileExtensionRegex)[0];
+    let fileName = toFilename(filesKeys[k]);
+    let create = true;
+    if (fileExtension === 'png' || fileExtension === 'jpg' || fileExtension === 'jpeg') {
+      if (updatedArr) { // block checks if file can be overwritten in /static
+        for (let i = 0; i < body.images.length; i += 1) {
+          const updateImage = body.images[i] === fileName;
+          if (updateImage) {
+            file.mv(path.resolve(__dirname, '..', 'static', fileName));
+            create = false;
+            break;
+          }
+        }
+      }
+      if (create) {
+        fileName = `${uuidv4()}.${fileExtension}`;
+        body.images = [...body.images, fileName];
+        file.mv(path.resolve(__dirname, '..', 'static', fileName));
+      }
     }
+    // if (fileExtension === ...) {...
   }
   return body;
 }
 
-export function calcItemPrice(price: number, discount?: number) {
-  let returnedPrice = price;
+export function calcIntPrices(dollarPrice: number | string, discount?: number | string) {
+  const price = Number(dollarPrice) * 100;
+  let discountedPrice = Number(dollarPrice) * 100;
   if (discount) {
-    returnedPrice = ((price) * (1000 - (discount * 1000)));
-    returnedPrice *= 0.001;
+    discountedPrice -= (price * (Number(discount) / 100));
   }
-  return returnedPrice.toFixed(2);
-}
-
-export function calcTotal(arr: any) {
-  let total = 0;
-  if (arr.length === 0) {
-    return total;
-  }
-  arr.forEach((foodItem) => {
-    const { quantity, discount, price } = foodItem;
-    const itemTotal = calcItemPrice(price! * quantity!, discount);
-    total += Number(itemTotal) * 1000;
-  });
-  return total * 0.001;
+  return {
+    price,
+    discountedPrice,
+  };
 }

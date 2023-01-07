@@ -14,16 +14,16 @@ function PriceTags({
   const discountedPrice = formatPrice(convertPriceInt(price, discount));
   return (
     <div className={`price-tags ${discount && 'with-discount'}`}>
+      {discount && (
       <span className="undiscounted-price">
         $
         {undiscountedPrice}
       </span>
-      {discount && (
-        <span className="discounted-price">
-          $
-          {discountedPrice}
-        </span>
       )}
+      <span className="discounted-price">
+        $
+        {discountedPrice}
+      </span>
     </div>
   );
 }

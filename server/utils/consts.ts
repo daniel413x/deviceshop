@@ -7,6 +7,7 @@ export const CANCELLATION_REQUESTED = 'Cancellation requested';
 export const RETURN_REQUESTED = 'Return requested';
 export const CANCELED = 'Canceled';
 export const DELIVERED = 'Delivered';
+export const fileExtensionRegex = (/(?<=\.)([a-zA-Z]+)(?:[.]{1}[a-zA-Z]+)*$/);
 
 // for env=test only
 export const userWithAdmin = 'fd55ac8a-3b88-41a4-b142-08edb0509e58';

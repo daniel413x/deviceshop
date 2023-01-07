@@ -1,19 +1,29 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, {
+  ChangeEvent,
+  forwardRef,
+  RefObject,
+  useRef,
+} from 'react';
+import { ReactComponent as EditIcon } from '../assets/icons/Edit.svg';
+import useInputIncomplete from '../hooks/useInputIncomplete';
+import Button from './Button';
 
 export interface InputProps {
   input: string;
   setInput: (e: string) => void;
   setPressedSubmit?: (boolean: boolean) => void;
   pressedSubmit?: boolean;
+  className?: string;
   name?: string;
   placeholder?: string;
   textarea?: boolean;
   type?: 'password' | 'input' | 'email';
   id?: string;
-  optional?: boolean;
+  inputStyle?: 'matchSpan';
+  warnCondition?: boolean;
 }
 
-function Input({
+const Input = forwardRef(({
   input,
   setInput,
   name,
@@ -23,61 +33,90 @@ function Input({
   textarea,
   id,
   type,
-  optional,
-}: InputProps) {
-  const [incomplete, setIncomplete] = useState<boolean>(false);
-  const removeWarning = () => {
-    if (incomplete && setPressedSubmit) {
-      setIncomplete(false);
-      setPressedSubmit(false);
-    }
-  };
+  inputStyle,
+  className,
+  warnCondition,
+}: InputProps, focusRef: any) => {
+  const {
+    warn,
+    removeWarning,
+  } = useInputIncomplete({
+    input,
+    setPressedSubmit,
+    pressedSubmit,
+    condition: warnCondition,
+  });
   const changeInput = (e: ChangeEvent<HTMLInputElement>) => {
-    removeWarning();
     setInput(e.target.value);
   };
   const changeTextarea = (e: ChangeEvent<HTMLTextAreaElement>) => {
     removeWarning();
     setInput(e.target.value);
   };
-  useEffect(() => {
-    if (!optional && pressedSubmit && !input) {
-      setIncomplete(true);
-    }
-  }, [pressedSubmit]);
-  return textarea ? (
-    <textarea
-      className={`textarea ${incomplete && 'warn'}`}
-      placeholder={placeholder}
-      value={input}
-      onChange={(e) => changeTextarea(e)}
-      id={id}
-      onClick={() => removeWarning()}
-      name={name}
-    />
-  ) : (
+  const defaultFocusRef = useRef<HTMLInputElement>(null);
+  const focusValueField = () => {
+    defaultFocusRef.current?.focus();
+  };
+  const BaseJSX = (
     <input
-      className={`input ${incomplete && 'warn'}`}
+      className={`input ${warn && 'warn'} ${inputStyle === 'matchSpan' && 'emulate-span'}`}
       placeholder={placeholder}
       value={input}
       onChange={(e) => changeInput(e)}
-      onClick={() => removeWarning()}
+      onFocus={() => removeWarning()}
       type={type}
       name={name}
       id={id}
+      ref={focusRef || defaultFocusRef}
     />
   );
-}
+  if (inputStyle === 'matchSpan') {
+    return (
+      <div className={`span-input-wrapper ${className}`}>
+        <span className="relative-span">
+          <span>
+            {input}
+          </span>
+          {BaseJSX}
+        </span>
+        <Button
+          buttonStyle="blank"
+          onClick={focusValueField}
+          className="edit-button"
+        >
+          <EditIcon />
+        </Button>
+      </div>
+    );
+  }
+  if (textarea) {
+    return (
+      <textarea
+        className={`textarea ${warn && 'warn'}`}
+        placeholder={placeholder}
+        value={input}
+        onChange={(e) => changeTextarea(e)}
+        id={id}
+        onFocus={() => removeWarning()}
+        name={name}
+        ref={focusRef}
+      />
+    );
+  }
+  return BaseJSX;
+});
 
 Input.defaultProps = {
-  setPressedSubmit: false,
+  setPressedSubmit: undefined,
   pressedSubmit: false,
-  placeholder: false,
+  warnCondition: false,
+  placeholder: '',
   textarea: false,
-  optional: false,
-  type: '',
+  className: '',
+  type: undefined,
   name: '',
-  id: false,
+  id: '',
+  inputStyle: undefined,
 };
 
-export default Input;
+export default Input as (props: InputProps & { focusRef?: RefObject<HTMLInputElement> }) => JSX.Element;

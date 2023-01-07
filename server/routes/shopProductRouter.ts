@@ -16,12 +16,12 @@ router.get(
 router.post(
   '/',
   checkRoleMiddleware(ADMIN),
-  (req, res) => ShopProductController.create(req, res),
+  (req, res, next) => ShopProductController.create(req, res, next),
 );
 router.put(
-  '/',
+  '/:id',
   checkRoleMiddleware(ADMIN),
-  (req, res) => ShopProductController.edit(req, res),
+  (req, res, next) => ShopProductController.edit(req, res, next),
 );
 router.delete(
   '/:id',

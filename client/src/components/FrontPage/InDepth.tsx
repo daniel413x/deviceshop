@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
 import SectionHeader from './SectionHeader';
 import { IShopProduct, ISpecification } from '../../types/types';
 import { fetchProducts } from '../../http/shopProductAPI';
@@ -116,7 +117,10 @@ ProductCol.defaultProps = {
 };
 
 function InDepth() {
-  const { types } = useContext(Context);
+  const {
+    types,
+    notifications,
+  } = useContext(Context);
   const [loading, setLoading] = useState<boolean>(true);
   const [firstItem, setFirstItem] = useState<IShopProduct>();
   const [secondItem, setSecondItem] = useState<IShopProduct>();
@@ -143,7 +147,11 @@ function InDepth() {
           setFirstItem(products.rows[firstItemIndex]);
           setSecondItem(products.rows[secondItemIndex]);
         }
-      } catch (err: any) {
+      } catch (error: any) {
+        notifications.error(
+          error.response.data.message,
+        );
+      } finally {
         setLoading(false);
       }
     })();
@@ -171,4 +179,4 @@ function InDepth() {
   );
 }
 
-export default InDepth;
+export default observer(InDepth);
