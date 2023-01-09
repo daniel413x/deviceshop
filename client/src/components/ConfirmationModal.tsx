@@ -1,19 +1,22 @@
 import React from 'react';
 import Button from './Button';
+import CloseButton from './CloseButton';
 import Modal from './Modal';
 
 interface ConfirmationModalProps {
   show: any;
   callback: (...args: any[]) => void;
   close: () => void;
-  promptText: string;
+  prompt: string;
+  title?: string;
 }
 
 function ConfirmationModal({
   show,
   close,
   callback,
-  promptText,
+  prompt,
+  title,
 }: ConfirmationModalProps) {
   const confirm = () => {
     callback();
@@ -27,8 +30,18 @@ function ConfirmationModal({
       id="confirmation-modal"
       modalStyle="warn"
     >
+      {title && (
+        <div className="window-header">
+          <div className="left-col">
+            {title}
+          </div>
+          <CloseButton
+            callback={close}
+          />
+        </div>
+      )}
       <div className="body">
-        {promptText}
+        {prompt}
       </div>
       <div className="bottom-buttons">
         <Button
@@ -47,5 +60,9 @@ function ConfirmationModal({
     </Modal>
   );
 }
+
+ConfirmationModal.defaultProps = {
+  title: '',
+};
 
 export default ConfirmationModal;

@@ -11,6 +11,7 @@ import YourOrders from '../pages/Account/YourOrders';
 import Credentials from '../pages/Account/Credentials';
 import Addresses from '../pages/Account/Addresses';
 import CreateShopProduct from '../pages/Admin/ShopProducts/Create';
+import ShopProducts from '../pages/Admin/ShopProducts';
 
 export const indexAdminRoutes = [
   {
@@ -19,7 +20,7 @@ export const indexAdminRoutes = [
   },
   {
     path: `${routes.ADMIN_ROUTE}/${routes.SHOP_PRODUCTS_ROUTE}`,
-    Component: CreateShopProduct,
+    Component: ShopProducts,
   },
   {
     path: `${routes.ADMIN_ROUTE}/${routes.SHOP_PRODUCTS_ROUTE}/${routes.CREATE_ROUTE}`,

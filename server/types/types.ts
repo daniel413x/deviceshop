@@ -171,7 +171,7 @@ export type Filter = Omit<ISpecification, 'id' | 'category' | 'typeId' | 'shopPr
 
 export type FilteredSearchParams = { specifications: { key: string, value: string }[]; };
 
-export type SearchViaSearchbarParams = { value: string };
+export type SearchViaSearchbarParams = { value: string }; // delete
 
 // eslint-disable-next-line no-unused-vars
 export type IterableAttributes<T> = { [ key in keyof T ]: any };

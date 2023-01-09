@@ -31,9 +31,7 @@ function Navbar() {
   const [searchResults, setSearchResults] = useState<IShopProduct[]>([]);
   const searchParams: QueryReqFetchMultipleShopProducts = {
     attributes: ['name', 'id', 'thumbnail'],
-    searchbar: {
-      value: '', // server controller method for ShopProducts is configured to to search model Specification according to these parameters and match associated ShopProducts
-    },
+    searchbar: '', // server controller method for ShopProducts is configured to to search model Specification according to these parameters and match associated ShopProducts,
     limit: 5,
   };
   const navigateCallback = (product: IShopProduct) => {
@@ -88,7 +86,7 @@ function Navbar() {
         )}
         <Search
           searchParams={searchParams}
-          searchHandler={fetchProducts}
+          fetchHandler={fetchProducts}
           results={searchResults}
           setResults={setSearchResults}
           Result={SearchResult}

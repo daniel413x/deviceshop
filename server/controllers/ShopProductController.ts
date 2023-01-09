@@ -13,7 +13,7 @@ import Brand from '../db/models/Brand';
 import Type from '../db/models/Type';
 import Specification from '../db/models/Specification';
 import {
-  FilteredSearchParams, FindAndCountOptions, ISpecification, SearchViaSearchbarParams,
+  FilteredSearchParams, FindAndCountOptions, ISpecification,
 } from '../types/types';
 import Review from '../db/models/Review';
 import { assignBodyAndWriteAndUpdateFiles, calcIntPrices, toFilename } from '../utils/functions';
@@ -59,8 +59,8 @@ class ShopProductController extends BaseController<ShopProduct> {
     };
     options.distinct = true;
     if (req.query.searchbar) {
-      const search = JSON.parse(req.query.searchbar as string) as SearchViaSearchbarParams;
-      const searchTerms = search.value.split(' ');
+      const search = req.query.searchbar as string;
+      const searchTerms = search.split(' ');
       const searchParams = searchTerms.map((value) => ({
         value: { [Op.iRegexp]: value },
       }));
@@ -166,6 +166,10 @@ class ShopProductController extends BaseController<ShopProduct> {
         options.order = [[col('price'), 'ASC']];
       }
     }
+    // options.where = {
+    //   ...options.where,
+    //   deleted: false,
+    // };
     this.execFindAndCountAll(req, res, options);
   }
 
@@ -223,11 +227,9 @@ class ShopProductController extends BaseController<ShopProduct> {
       }));
     }
     return res.json({ newProduct, newProductSpecifications });
-    // this.execCreate(req, res);
   }
 
   async edit(req: Request, res: Response, next: NextFunction) {
-    // going to need to check deletedImages vs updatedProduct.images first--if you delete every image and just have 0 images then throw error
     const { id: productId } = req.params;
     let updatedProduct = await ShopProduct.findByPk(productId);
     let {
@@ -301,7 +303,15 @@ class ShopProductController extends BaseController<ShopProduct> {
     return res.json(updatedProduct);
   }
 
-  delete(req: Request, res: Response) {
+  async delete(req: Request, res: Response) {
+    const {
+      id: shopProductId,
+    } = req.params;
+    await Specification.destroy({
+      where: {
+        shopProductId,
+      },
+    });
     this.execDestroy(req, res);
   }
 }

@@ -289,7 +289,7 @@ export type QueryReqFetchMultiple<T> = {
   page?: number;
   limit?: number;
   attributes?: InclusionAttributes<T>;
-  searchbar?: SearchViaSearchbar;
+  searchbar?: string;
   filteredSearch?: SearchViaFilteredSearch;
   where?: Partial<T>;
   order?: any;

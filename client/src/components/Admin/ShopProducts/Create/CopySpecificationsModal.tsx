@@ -60,9 +60,7 @@ function CopySpecificationsModal({
   };
   const searchParams: QueryReqFetchMultipleShopProducts = {
     attributes: ['name', 'id', 'thumbnail'],
-    searchbar: {
-      value: '',
-    },
+    searchbar: '',
     limit: 5,
   };
   const generate = () => {
@@ -97,7 +95,7 @@ function CopySpecificationsModal({
         <div className="left-col">
           <Search
             searchParams={searchParams}
-            searchHandler={fetchProducts}
+            fetchHandler={fetchProducts}
             results={searchResults}
             callback={searchResultClickCallback}
             setResults={setSearchResults}

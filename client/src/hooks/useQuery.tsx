@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { SearchParamsRecord } from '../types/types';
 
-interface UsePaginationReturn {
+interface UseQueryReturn {
   searchParamsRecord: SearchParamsRecord;
   thereAreSearchParams: boolean;
   searchParams: URLSearchParams;
@@ -10,8 +10,8 @@ interface UsePaginationReturn {
   removeSearchParams: (params: string | string[]) => void;
 }
 
-const useQuery = (): UsePaginationReturn => {
-  const [searchParams, setSearchParams] = useSearchParams();
+const useQuery = (searchParamsObj?: SearchParamsRecord): UseQueryReturn => {
+  const [searchParams, setSearchParams] = useSearchParams(searchParamsObj);
   const createNewSearchParamsRecord = () => {
     const queryString = searchParams.toString();
     const newSearchParamsRecord = JSON.parse(`{"${

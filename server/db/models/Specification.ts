@@ -40,7 +40,6 @@ export const specificationAttributes: ModelAttributes<Specification> = {
     type: DataTypes.STRING,
   },
   shopProductId: {
-    allowNull: false,
     type: DataTypes.UUID,
     references: {
       model: 'ShopProduct',

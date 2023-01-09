@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { QueryReqFetchMultiple, SequelizeFindAndCountAll } from '../types/types';
+import { QueryReqFetchMultiple, SearchParamsRecord, SequelizeFindAndCountAll } from '../types/types';
 import usePagination from './usePagination';
 import useQuery from './useQuery';
 
@@ -23,6 +23,8 @@ interface UseQueriedItemsReturn<T> {
   pageLimit: number;
   dbCount: number;
   setItems: (items: any[]) => void;
+  setSearchParams: (obj: SearchParamsRecord) => void;
+  fetch: () => void;
 }
 
 function useQueriedItems<T>({
@@ -47,6 +49,7 @@ function useQueriedItems<T>({
   });
   const {
     searchParamsRecord,
+    setSearchParams,
     thereAreSearchParams,
   } = useQuery();
   const createQuery: () => QueryReqFetchMultiple<T> = () => {
@@ -117,6 +120,8 @@ function useQueriedItems<T>({
     pageLimit,
     dbCount,
     sorting,
+    setSearchParams,
+    fetch,
   };
 }
 

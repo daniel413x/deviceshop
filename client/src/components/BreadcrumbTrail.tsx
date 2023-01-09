@@ -4,11 +4,13 @@ import { NavLink, useLocation } from 'react-router-dom';
 interface BreadcrumbTrailProps {
   lastString?: string;
   sliceLastN?: number;
+  blockedLinks?: string[];
 }
 
 function BreadcrumbTrail({
   lastString,
   sliceLastN = 0,
+  blockedLinks = [],
 }: BreadcrumbTrailProps) {
   const breadcrumbs = useLocation().pathname.split(/\//).filter(Boolean);
   if (lastString) {
@@ -36,7 +38,7 @@ function BreadcrumbTrail({
           return (
             <li key={str}>
               <div className="breadcrumb">
-                <NavLink to={navBack} className="previous">
+                <NavLink to={navBack} className={`previous ${blockedLinks.indexOf(str) >= 0 && 'blocked'}`}>
                   {str}
                 </NavLink>
                 <span className="angle">
@@ -61,6 +63,7 @@ function BreadcrumbTrail({
 BreadcrumbTrail.defaultProps = {
   lastString: '',
   sliceLastN: 0,
+  blockedLinks: [],
 };
 
 export default BreadcrumbTrail;

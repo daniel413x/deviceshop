@@ -51,7 +51,7 @@ function Cart() {
           show={deletedId}
           close={() => setDeletedId('')}
           callback={() => deleteItem(deletedId)}
-          promptText="Delete this item from your cart?"
+          prompt="Delete this item from your cart?"
         />
         <AddonModal
           id={warrantyCartItem?.id as string}

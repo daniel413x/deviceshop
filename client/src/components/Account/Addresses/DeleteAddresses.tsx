@@ -40,7 +40,7 @@ function DeleteAddresses() {
         show={deletedId}
         callback={execDeleteAddress}
         close={() => setDeletedId('')}
-        promptText="Delete this address?"
+        prompt="Delete this address?"
       />
       <List
         className="list"

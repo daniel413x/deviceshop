@@ -88,11 +88,21 @@ export default abstract class BaseController<M extends Model> {
     if (req.query.where) {
       params.where = JSON.parse(req.query.where as string);
     }
-    if (req.query.search) {
-      const search = JSON.parse(req.query.search as string) as { attribute: string, value: string };
+    // if (req.query.search) {
+    //   const search = JSON.parse(req.query.search as string) as { attribute: string, value: string };
+    //   params.where = {
+    //     ...params.where,
+    //     [search.attribute]: { [Op.iRegexp]: search.value },
+    //   };
+    // }
+    if (req.query.searchAttribute && req.query.searchValue) {
+      const {
+        searchAttribute,
+        searchValue,
+      } = req.query;
       params.where = {
         ...params.where,
-        [search.attribute]: { [Op.iRegexp]: search.value },
+        [searchAttribute as string]: { [Op.iRegexp]: searchValue },
       };
     }
     if (req.query.distinct) {

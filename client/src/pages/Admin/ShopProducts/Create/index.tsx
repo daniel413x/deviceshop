@@ -11,6 +11,7 @@ import EditableField from '../../../../components/EditableField';
 import Context from '../../../../context/context';
 import FormSubmissionOverlay from '../../../../components/Admin/ShopProducts/Create/FormSubmissionOverlay';
 import { fetchProduct } from '../../../../http/shopProductAPI';
+import { EDIT_ROUTE } from '../../../../utils/consts';
 
 const Description = observer(() => {
   const {
@@ -58,7 +59,9 @@ function CreateShopProduct() {
       <div className="columned-page">
         <ShopSideCol />
         <div className="main-col">
-          <BreadcrumbTrail />
+          <BreadcrumbTrail
+            blockedLinks={[EDIT_ROUTE]}
+          />
           <TopInfoRow />
           <Description />
           <CollapsibleInfo

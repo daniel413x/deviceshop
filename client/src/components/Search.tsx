@@ -9,29 +9,41 @@ import React, {
 import useKeyPress from '../hooks/useKeyPress';
 import useOnOutsideClick from '../hooks/useOnOutsideClick';
 import List from './List';
-import { IShopProduct, QueryReqFetchMultiple, SequelizeFindAndCountAll } from '../types/types';
+import {
+  Either,
+  IShopProduct,
+  QueryReqFetchMultiple,
+  SearchParamsRecord,
+  SequelizeFindAndCountAll,
+} from '../types/types';
 import { ReactComponent as MagnifyingGlass } from '../assets/icons/MagnifyingGlass.svg';
 import LoadingAnimation from './LoadingAnimation';
+import useQuery from '../hooks/useQuery';
 
-interface SearchProps<T> {
-  searchHandler: (params: QueryReqFetchMultiple<T>) => Promise<SequelizeFindAndCountAll<IShopProduct>>;
-  searchParams: QueryReqFetchMultiple<T>;
+type EitherRenderProps<T> = Either<{
+  dontRenderResults: boolean; // not rendering results via this component assumes outside rendering with help of an outside hook/component/setSearchParams, etc.
+}, {
+  Result: any;
   results: any[];
   setResults: (arr: any[]) => void;
-  Result: any;
+  searchParams: QueryReqFetchMultiple<T>;
+  fetchHandler: (params: QueryReqFetchMultiple<T>) => Promise<SequelizeFindAndCountAll<IShopProduct>>;
+}>;
+
+type SearchProps<T> = {
   callback?: (arg: any) => void;
   className?: string;
   placeholder?: string;
   endItemsInResults?: any[];
   EndItem?: any;
-  dontRenderResults?: false;
-}
+  setSearchParams?: (obj: SearchParamsRecord) => void;
+} & EitherRenderProps<T>;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Search = forwardRef(<T, A>({
   className,
   placeholder,
-  searchHandler,
+  fetchHandler,
   results,
   callback,
   setResults,
@@ -40,6 +52,7 @@ const Search = forwardRef(<T, A>({
   EndItem,
   searchParams,
   dontRenderResults,
+  setSearchParams,
 }: SearchProps<T>, ref: any) => {
   const [highlight, setHighlight] = useState<number>(0);
   const [idle, setIdle] = useState<boolean>(true);
@@ -49,6 +62,9 @@ const Search = forwardRef(<T, A>({
   const [hideResults, setHideResults] = useState<boolean>(false);
   const [boxShadow, setBoxShadow] = useState<boolean>(false);
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | undefined>();
+  const {
+    searchParamsRecord,
+  } = useQuery();
   const upPress = useKeyPress('ArrowUp');
   const downPress = useKeyPress('ArrowDown');
   const enterPress = useKeyPress('Enter');
@@ -56,10 +72,10 @@ const Search = forwardRef(<T, A>({
   useOnOutsideClick(outsideClickRef, () => {
     setHideResults(true);
   });
-  const highlightLimit = results.length + (endItemsInResults?.length || 0) - 1;
-  const noResults = results.length === 0;
+  const highlightLimit = !results ? 0 : results.length + (endItemsInResults?.length || 0) - 1;
+  const noResults = !results ? 0 : results.length === 0;
   const noResultsAfterSearch = !idle && input && !loading && noResults;
-  const showResults = !idle && (input || loading || results.length > 0) && !hideResults;
+  const showResults = !results ? false : !idle && (input || loading || results.length > 0) && !hideResults;
   const showLoading = noResults && loading;
   const onFocus = () => {
     setFocused(true);
@@ -81,16 +97,16 @@ const Search = forwardRef(<T, A>({
     try {
       setLoading(true);
       const params = { ...searchParams };
-      params.searchbar!.value = terms;
-      const res = await searchHandler(params);
-      setResults(res.rows);
+      params.searchbar! = terms;
+      const res = await fetchHandler!(params);
+      setResults!(res.rows);
     } finally {
       setLoading(false);
     }
   };
   const changeInput = (e: ChangeEvent<HTMLInputElement> | null) => {
     const { value } = e!.target;
-    if (value === '') {
+    if (setResults && value === '') {
       setResults([]);
       setInput('');
       return;
@@ -100,9 +116,14 @@ const Search = forwardRef(<T, A>({
   const resetState = () => {
     setInput('');
     setHideResults(true);
-    setResults([]);
+    setResults!([]);
   };
+  const noFirstRenderRef = useRef<boolean>(true); // prevents overwriting address bar search terms on first render
   useEffect(() => {
+    if (noFirstRenderRef.current) {
+      noFirstRenderRef.current = false;
+      return;
+    }
     if (input === '' && focused) {
       setHighlight(0);
       setHideResults(false);
@@ -114,12 +135,17 @@ const Search = forwardRef(<T, A>({
       clearTimeout(searchTimeout);
     }
     const timeout = setTimeout(() => {
+      if (setSearchParams) {
+        setSearchParams({ ...searchParamsRecord, searchbar: input });
+      }
       if (input === '') {
         setIdle(true);
         return;
       }
       setIdle(false);
-      search(input);
+      if (fetchHandler) {
+        search(input);
+      }
     }, 250);
     setSearchTimeout(timeout);
   }, [input]);
@@ -154,7 +180,7 @@ const Search = forwardRef(<T, A>({
     if (!focused || !input) {
       return;
     }
-    if (results.length && enterPress) {
+    if (results?.length && enterPress) {
       setHideResults(true);
       if (callback) {
         callback(results[highlight]);
@@ -198,26 +224,28 @@ const Search = forwardRef(<T, A>({
           <span>No results</span>
         </div>
         )}
-        <List
-          items={results}
-          renderAs={((result, index) => (
-            <li className={index === highlight ? 'highlight' : undefined} key={result.id}>
-              <Result
-                result={result}
-                callback={callback}
-                resetState={resetState}
-              />
-            </li>
-          ))}
-          endItems={noResults ? [] : endItemsInResults}
-          renderEndItemsAs={(endItem, index) => (
-            <li className={index! + results.length === highlight ? 'highlight' : undefined} key={index! + results.length}>
-              <EndItem
-                endItem={endItem}
-              />
-            </li>
-          )}
-        />
+        {results && (
+          <List
+            items={results}
+            renderAs={((result, index) => (
+              <li className={index === highlight ? 'highlight' : undefined} key={result.id}>
+                <Result
+                  result={result}
+                  callback={callback}
+                  resetState={resetState}
+                />
+              </li>
+            ))}
+            endItems={noResults ? [] : endItemsInResults}
+            renderEndItemsAs={(endItem, index) => (
+              <li className={index! + results.length === highlight ? 'highlight' : undefined} key={index! + results.length}>
+                <EndItem
+                  endItem={endItem}
+                />
+              </li>
+            )}
+          />
+        )}
       </div>
       )}
     </div>
@@ -229,8 +257,8 @@ Search.defaultProps = {
   placeholder: '',
   endItemsInResults: undefined,
   EndItem: false,
-  dontRenderResults: false,
   callback: undefined,
+  setSearchParams: undefined,
 };
 
 export default Search as <T>(props: SearchProps<T> & { ref?: RefObject<HTMLInputElement> }) => JSX.Element;

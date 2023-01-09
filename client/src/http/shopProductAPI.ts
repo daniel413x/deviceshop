@@ -28,3 +28,8 @@ export const updateProduct = async (id: string, form: FormData): Promise<IShopPr
   const { data } = await $authHost.put(`api/shopproduct/${id}`, form);
   return data;
 };
+
+export const deleteProduct = async (id: string): Promise<void> => {
+  const { data } = await $authHost.delete(`api/shopproduct/${id}`);
+  return data;
+};

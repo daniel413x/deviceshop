@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { getMaxPage } from '../utils/functions';
+import useQuery from './useQuery';
 
 interface UsePaginationProps {
   itemsPerPage: number;
@@ -22,16 +22,20 @@ const usePagination = ({
   itemsInDb,
   concurrentlySetQuery,
 }: UsePaginationProps): UsePaginationReturn => {
-  const [searchParams, setSearchParams] = useSearchParams(concurrentlySetQuery ? { page: '1' } : {});
+  const {
+    searchParams,
+    setSearchParams,
+    searchParamsRecord,
+  } = useQuery(concurrentlySetQuery ? { page: '1' } : {});
   const pageFromQuery = Number(searchParams.get('page')) || 1;
   const [page, setPage] = useState<number>(1);
   const [pageLimit, setPageLimit] = useState<number>(1);
   const [pageLimitReached, setPageLimitReached] = useState<boolean>(false);
   const changePage = (number: number) => {
-    const newPage = number > pageLimit || number < 1 ? 1 : number;
+    const newPage = number > pageLimit || number < 1 ? pageLimit : number;
     setPage(newPage);
     if (concurrentlySetQuery) {
-      setSearchParams({ page: number.toString() });
+      setSearchParams({ ...searchParamsRecord, page: number.toString() });
     }
   };
   const nextPage = () => changePage(page + 1);
@@ -44,7 +48,11 @@ const usePagination = ({
     }
   }, [page, pageLimit, pageFromQuery]);
   useEffect(() => {
-    setPageLimit(getMaxPage(itemsInDb, itemsPerPage));
+    const newPageLimit = getMaxPage(itemsInDb, itemsPerPage);
+    setPageLimit(newPageLimit);
+    if (page > newPageLimit) {
+      changePage(newPageLimit);
+    }
   }, [itemsInDb, itemsPerPage]);
   useEffect(() => { // accounts for back/forward browser buttons
     if (page !== pageFromQuery) {
