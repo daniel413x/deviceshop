@@ -12,19 +12,38 @@ import Credentials from '../pages/Account/Credentials';
 import Addresses from '../pages/Account/Addresses';
 import CreateShopProduct from '../pages/Admin/ShopProducts/Create';
 import ShopProducts from '../pages/Admin/ShopProducts';
+import Admin from '../pages/Admin';
+import Account from '../pages/Account';
+import Orders from '../pages/Admin/Orders';
 
 export const indexAdminRoutes = [
   {
+    path: `${routes.ADMIN_ROUTE}/${routes.ORDERS_ROUTE}`,
+    Component: Orders,
+  },
+  {
+    path: `${routes.ADMIN_ROUTE}/${routes.ORDERS_ROUTE}/${routes.UNSHIPPED}`,
+    Component: Orders,
+  },
+  {
     path: `${routes.ADMIN_ROUTE}/${routes.SHOP_PRODUCTS_ROUTE}/${routes.EDIT_ROUTE}/:title`,
     Component: CreateShopProduct,
+  },
+  {
+    path: `${routes.ADMIN_ROUTE}/${routes.SHOP_PRODUCTS_ROUTE}/${routes.CREATE_ROUTE}`,
+    Component: CreateShopProduct,
+  },
+  {
+    path: `${routes.ADMIN_ROUTE}/${routes.SHOP_PRODUCTS_ROUTE}/${routes.DELETED_ROUTE}`,
+    Component: ShopProducts,
   },
   {
     path: `${routes.ADMIN_ROUTE}/${routes.SHOP_PRODUCTS_ROUTE}`,
     Component: ShopProducts,
   },
   {
-    path: `${routes.ADMIN_ROUTE}/${routes.SHOP_PRODUCTS_ROUTE}/${routes.CREATE_ROUTE}`,
-    Component: CreateShopProduct,
+    path: `${routes.ADMIN_ROUTE}`,
+    Component: Admin,
   },
 ];
 
@@ -44,6 +63,10 @@ export const indexAuthRoutes = [
   {
     path: `${routes.ACCOUNT_ROUTE}/${routes.ORDERS_ROUTE}`,
     Component: YourOrders,
+  },
+  {
+    path: `${routes.ACCOUNT_ROUTE}`,
+    Component: Account,
   },
   {
     path: `${routes.CART_ROUTE}/${routes.CHECKOUT_ROUTE}/${routes.CONFIRMATION_ROUTE}/:id`,

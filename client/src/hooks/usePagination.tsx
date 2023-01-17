@@ -39,7 +39,7 @@ const usePagination = ({
     }
   };
   const nextPage = () => changePage(page + 1);
-  const prevPage = () => changePage(page + 1);
+  const prevPage = () => changePage(page - 1);
   useEffect(() => {
     if (page === pageLimit) {
       setPageLimitReached(true);
@@ -50,7 +50,7 @@ const usePagination = ({
   useEffect(() => {
     const newPageLimit = getMaxPage(itemsInDb, itemsPerPage);
     setPageLimit(newPageLimit);
-    if (page > newPageLimit) {
+    if (newPageLimit > 0 && page > newPageLimit) {
       changePage(newPageLimit);
     }
   }, [itemsInDb, itemsPerPage]);

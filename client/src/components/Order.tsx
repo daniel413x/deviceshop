@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { IOrder } from '../types/types';
+import { Either, IOrder } from '../types/types';
 import { dateMonthYear } from '../utils/functions';
 import Button from './Button';
 import OrderItems from './OrderItems';
@@ -11,18 +11,24 @@ import {
   CANCELED, CANCELLATION_REQUESTED, DELIVERED, PROCESSING, RETURN_REQUESTED, SHIPPED,
 } from '../utils/consts';
 
-interface OrderProps {
-  order: IOrder;
+type OrderEitherProps = Either<
+{
+  setNewStatusOrder: (order: IOrder) => void;
+},
+{
   setCanceledOrder: (order: IOrder) => void;
   setReturnedOrderId: (id: string) => void;
-  adminButtons?: boolean;
-}
+}>;
+
+type OrderProps = {
+  order: IOrder;
+} & OrderEitherProps;
 
 function Order({
   order,
   setCanceledOrder,
   setReturnedOrderId,
-  adminButtons,
+  setNewStatusOrder,
 }: OrderProps) {
   const [showAddress, setShowAddress] = useState<boolean>(false);
   const {
@@ -118,36 +124,42 @@ function Order({
           className="total"
         />
       </OrderItems>
-      {adminButtons ? (
-        <div className={`buttons-row ${orderCanceled && 'blocked'}`} />
-      ) : (
-        <div className={`buttons-row ${orderCanceled && 'blocked'}`}>
-          <Button>
-            Contact
+      <div className={`buttons-row ${orderCanceled && 'blocked'}`}>
+        {setNewStatusOrder && ( // admin only
+          <Button
+            onClick={() => setNewStatusOrder!(order)}
+            buttonStyle="secondary"
+          >
+            Change status
           </Button>
-          {orderDelivered ? (
+        )}
+        {(setReturnedOrderId && setCanceledOrder) && ( // customer only
+          orderDelivered ? (
             <Button
-              onClick={() => setReturnedOrderId(id)}
+              onClick={() => setReturnedOrderId!(id)}
+              buttonStyle="secondary"
             >
               Return order
             </Button>
           ) : (
             <Button
-              onClick={() => setCanceledOrder(order)}
+              onClick={() => setCanceledOrder!(order)}
+              buttonStyle="secondary"
               className={`${orderCancellationRequested && 'blocked'}`}
             >
               Cancel order
             </Button>
-          )}
-        </div>
-      )}
+          )
+        )}
+        <Button
+          buttonStyle="secondary"
+        >
+          Contact
+        </Button>
+      </div>
       <div className="divider" />
     </div>
   );
 }
-
-Order.defaultProps = {
-  adminButtons: false,
-};
 
 export default Order;

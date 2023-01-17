@@ -60,7 +60,7 @@ function CopySpecificationsModal({
   };
   const searchParams: QueryReqFetchMultipleShopProducts = {
     attributes: ['name', 'id', 'thumbnail'],
-    searchbar: '',
+    search: '',
     limit: 5,
   };
   const generate = () => {

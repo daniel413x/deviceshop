@@ -58,6 +58,7 @@ export interface IShopProduct {
   rating: string;
   numberSold: number;
   stock: number;
+  flags: string[];
 }
 
 export interface IAddon {
@@ -119,10 +120,12 @@ export interface ICart {
   cartItems: IOrderedProduct[];
 }
 
+export type OrderStatusStrings = ('Processing' | 'Shipped' | 'Cancellation requested' | 'Canceled' | 'Delivered' | 'Return requested');
+
 export interface IOrder {
   id: string;
   userId: string;
-  status: ('Processing' | 'Shipped' | 'Cancellation requested' | 'Canceled' | 'Delivered' | 'Return requested')[];
+  status: OrderStatusStrings[];
   shippingMethod: IShippingMethod;
   orderItems: IOrderedProduct[];
   total: number;
@@ -272,7 +275,7 @@ export type Filter = {
   value: string;
 };
 
-export type Children = ReactElement | string | false | undefined | (ReactElement | string | false | undefined)[];
+export type Children = ReactElement | string | false | undefined | number | (ReactElement | string | false | undefined | number)[];
 
 export type SearchParamsRecord = {
   [param: string]: string;
@@ -286,10 +289,12 @@ export type QueryFilterSpecifications = {
 export type QueryReqOrderedProduct = Omit<IOrderedProduct, 'id' | 'createdAt' | 'shopproduct' | 'addons'>;
 
 export type QueryReqFetchMultiple<T> = {
+  countOnly?: boolean;
   page?: number;
   limit?: number;
   attributes?: InclusionAttributes<T>;
-  searchbar?: string;
+  search?: string;
+  searchAttribute?: string;
   filteredSearch?: SearchViaFilteredSearch;
   where?: Partial<T>;
   order?: any;
@@ -297,10 +302,22 @@ export type QueryReqFetchMultiple<T> = {
   associationAttributes?: [string[], InclusionAttributes<any>][]; // model alias (like chain selector), attributes to include
 };
 
-export type QueryReqFetchMultipleShopProducts = QueryReqFetchMultiple<IShopProduct> & {
+type FetchShopProductsProps = {
   byMostSold?: boolean;
   byLowestPrice?: boolean;
+  deleted?: boolean;
 };
+
+export type QueryReqFetchMultipleShopProducts = QueryReqFetchMultiple<IShopProduct> & FetchShopProductsProps;
+
+type FetchOrdersProps = {
+  canceled?: boolean;
+  unshipped?: boolean;
+};
+
+export type QueryReqFetchMultipleOrders = QueryReqFetchMultiple<IOrder> & FetchOrdersProps;
+
+export type QueryReqFetchMultipleAny<T> = QueryReqFetchMultiple<T> & FetchShopProductsProps & FetchOrdersProps;
 
 export type SequelizeFindAndCountAll<T> = {
   rows: T[];

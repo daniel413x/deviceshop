@@ -35,11 +35,17 @@ function PageControl({
   return (
     <div className="page-control">
       <button
-        className={`arrow-button ${page === 1 && 'blocked-alt'}`}
+        className={`arrow-button back ${page === 1 && 'blocked-alt'}`}
         type="button"
         onClick={() => changePage(page - 1)}
       >
-        ← Back
+        <span>
+          ←
+        </span>
+        <span>
+          {' '}
+          Back
+        </span>
       </button>
       <div className="number-buttons">
         {generatedNumberButtons.map((p) => (
@@ -54,11 +60,17 @@ function PageControl({
         ))}
       </div>
       <button
-        className={`arrow-button ${pageLimitReached && 'blocked-alt'}`}
+        className={`arrow-button forward ${pageLimitReached && 'blocked-alt'}`}
         type="button"
         onClick={() => changePage(page + 1)}
       >
-        Forward →
+        <span>
+          Forward
+          {' '}
+        </span>
+        <span>
+          →
+        </span>
       </button>
     </div>
   );

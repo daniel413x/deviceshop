@@ -1,8 +1,11 @@
 export const ADMIN = 'ADMIN';
 export const GUEST = 'GUEST';
 export const USER = 'USER';
+export const NEW = 'New';
+export const DELETED = 'Deleted';
 export const PROCESSING = 'Processing';
 export const SHIPPED = 'Shipped';
+export const UNSHIPPED = 'Unshipped';
 export const CANCELLATION_REQUESTED = 'Cancellation requested';
 export const RETURN_REQUESTED = 'Return requested';
 export const CANCELED = 'Canceled';

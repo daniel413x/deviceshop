@@ -1,42 +1,58 @@
 import React, {
+  useContext,
+  useEffect,
   useState,
 } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
 import BreadcrumbTrail from '../../../components/BreadcrumbTrail';
 import List from '../../../components/List';
 import PageHeader from '../../../components/PageHeader';
 import Search from '../../../components/Search';
-import ShopSideCol from '../../../components/ShopSideCol';
-import { deleteProduct, fetchProducts } from '../../../http/shopProductAPI';
+import {
+  deleteProduct,
+  fetchProducts,
+  updateProduct,
+} from '../../../http/shopProductAPI';
 import { IShopProduct } from '../../../types/types';
 import { ReactComponent as AddIcon } from '../../../assets/icons/Add.svg';
 import { ReactComponent as EditIcon } from '../../../assets/icons/Edit.svg';
 import { ReactComponent as TrashIcon } from '../../../assets/icons/Trash.svg';
-import { CREATE_ROUTE, EDIT_ROUTE } from '../../../utils/consts';
-import { makeSlug } from '../../../utils/functions';
+import {
+  ADMIN_ROUTE,
+  CREATE_ROUTE,
+  DELETED,
+  DELETED_ROUTE,
+  EDIT_ROUTE,
+  SHOP_PRODUCTS_ROUTE,
+} from '../../../utils/consts';
+import { convertPriceInt, formatPrice, makeSlug } from '../../../utils/functions';
 import PaginatedItemsCounter from '../../../components/PaginatedItemsCounter';
 import PageControl from '../../../components/PageControl';
 import useQueriedItems from '../../../hooks/useQueriedItems';
 import IconButton from '../../../components/IconButton';
 import IconNavlink from '../../../components/IconNavlink';
 import ConfirmationModal from '../../../components/ConfirmationModal';
+import Context from '../../../context/context';
+import FilterLink from '../../../components/Admin/ShopProducts/FilterLink';
+import AdminSideCol from '../../../components/Admin/AdminSideCol';
 
 interface SearchResultProps {
-  result: IShopProduct;
-  setDeletedId: (id: string) => void;
+  product: IShopProduct;
+  setDeletedProduct: (product: IShopProduct) => void;
 }
 
-function SearchResult({ result, setDeletedId }: SearchResultProps) {
+function SearchResult({ product, setDeletedProduct }: SearchResultProps) {
   const {
     thumbnail,
-    id,
     name,
     stock,
     discountedPrice,
     type: {
       name: typeName,
     },
-  } = result;
+  } = product;
+  const formattedPrice = formatPrice(convertPriceInt(discountedPrice));
   return (
     <div className="search-result">
       <NavLink
@@ -63,7 +79,7 @@ function SearchResult({ result, setDeletedId }: SearchResultProps) {
             </span>
             &#183;
             <span>
-              {`Price: ${discountedPrice}`}
+              {`Price: $${formattedPrice}`}
             </span>
           </div>
         </div>
@@ -76,7 +92,7 @@ function SearchResult({ result, setDeletedId }: SearchResultProps) {
         />
         <IconButton
           className="trash-icon"
-          onClick={() => setDeletedId(id)}
+          onClick={() => setDeletedProduct(product)}
           Icon={TrashIcon}
           iconStyle="warn"
         />
@@ -87,7 +103,15 @@ function SearchResult({ result, setDeletedId }: SearchResultProps) {
 
 function ShopProducts() {
   const itemsPerPage = 10;
-  const [deletedId, setDeletedId] = useState<string>('');
+  const { adminShopProducts } = useContext(Context);
+  const {
+    publicProductsCount, deletedProductsCount,
+  } = adminShopProducts;
+  const setDeletedProductsCount = adminShopProducts.setDeletedProductsCount.bind(adminShopProducts);
+  const setPublicProductsCount = adminShopProducts.setPublicProductsCount.bind(adminShopProducts);
+  const [deletedProduct, setDeletedProduct] = useState<IShopProduct>();
+  const { pathname } = useLocation();
+  const deletedProductsPage = pathname.includes(DELETED_ROUTE);
   const {
     items: products,
     fetchPageNumber,
@@ -103,22 +127,47 @@ function ShopProducts() {
     itemsPerPage,
     concatItems: true,
     concurrentlySetQuery: true,
+    queryProps: deletedProductsPage ? {
+      deleted: true,
+    } : undefined,
   });
-  const confirmDelete = async () => {
-    await deleteProduct(deletedId);
+  const deleteAction = async () => {
+    if (deletedProductsPage) {
+      await deleteProduct(deletedProduct!.id);
+      setDeletedProductsCount(deletedProductsCount - 1);
+    } else {
+      await updateProduct(deletedProduct!.id, {
+        flags: [...deletedProduct!.flags, DELETED],
+      });
+      setPublicProductsCount(publicProductsCount - 1);
+      setDeletedProductsCount(deletedProductsCount + 1);
+    }
     fetch();
   };
+  useEffect(() => {
+    (async () => {
+      const fetchedPublicProductsCount = await fetchProducts({
+        countOnly: true,
+      } as any);
+      setPublicProductsCount(fetchedPublicProductsCount.count);
+      const fetchedDeletedProductsCount = await fetchProducts({
+        countOnly: true,
+        deleted: true,
+      } as any);
+      setDeletedProductsCount(fetchedDeletedProductsCount.count);
+    })();
+  }, []);
   return (
-    <div id="shop-products">
+    <div id="shop-products" className="admin-search-page">
       <ConfirmationModal
-        show={deletedId}
-        close={() => setDeletedId('')}
-        title={`Delete product ${deletedId}`}
-        prompt="A deleted product's data cannot be restored."
-        callback={() => confirmDelete()}
+        show={deletedProduct}
+        close={() => setDeletedProduct(undefined)}
+        title={`${deletedProductsPage ? 'Permanantly d' : 'D'}elete product ${deletedProduct?.id.slice(0, 8)}(…)?`}
+        prompt={`${deletedProductsPage ? 'A product\'s data cannot be restored after it has been deleted from the recycling bin.' : 'Product will be moved to the recycling bin.'}`}
+        callback={() => deleteAction()}
       />
       <div className="columned-page">
-        <ShopSideCol />
+        <AdminSideCol />
         <div className="main-col">
           <BreadcrumbTrail />
           <PageHeader
@@ -126,10 +175,20 @@ function ShopProducts() {
             noDiv
             noEllipses
           />
-          <Search
-            dontRenderResults
-            setSearchParams={setSearchParams}
-          />
+          <div className="upper-row">
+            <Search
+              dontRenderResults
+              setSearchParams={setSearchParams}
+            />
+            <FilterLink
+              label={`Public (${publicProductsCount})`}
+              to={`/${ADMIN_ROUTE}/${SHOP_PRODUCTS_ROUTE}`}
+            />
+            <FilterLink
+              label={`Deleted (${deletedProductsCount})`}
+              to={`/${ADMIN_ROUTE}/${SHOP_PRODUCTS_ROUTE}/${DELETED_ROUTE}`}
+            />
+          </div>
           <List
             className="search-results-ul"
             items={products}
@@ -137,12 +196,13 @@ function ShopProducts() {
             renderAs={(product) => (
               <li key={product.id}>
                 <SearchResult
-                  result={product}
-                  setDeletedId={setDeletedId}
+                  product={product}
+                  setDeletedProduct={setDeletedProduct}
                 />
               </li>
             )}
           >
+            {!deletedProductsPage && (
             <li key="create-link">
               <NavLink
                 to={CREATE_ROUTE}
@@ -153,7 +213,7 @@ function ShopProducts() {
                     <AddIcon />
                   </div>
                   <div className="text-col">
-                    New device
+                    New product
                   </div>
                 </div>
                 <div className="icons-col blocked">
@@ -171,7 +231,7 @@ function ShopProducts() {
                 </div>
               </NavLink>
             </li>
-
+            )}
           </List>
           <PaginatedItemsCounter
             page={page}
@@ -191,4 +251,4 @@ function ShopProducts() {
   );
 }
 
-export default ShopProducts;
+export default observer(ShopProducts);

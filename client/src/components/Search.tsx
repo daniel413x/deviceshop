@@ -97,7 +97,7 @@ const Search = forwardRef(<T, A>({
     try {
       setLoading(true);
       const params = { ...searchParams };
-      params.searchbar! = terms;
+      params.search! = terms;
       const res = await fetchHandler!(params);
       setResults!(res.rows);
     } finally {
@@ -136,7 +136,7 @@ const Search = forwardRef(<T, A>({
     }
     const timeout = setTimeout(() => {
       if (setSearchParams) {
-        setSearchParams({ ...searchParamsRecord, searchbar: input });
+        setSearchParams({ ...searchParamsRecord, search: input });
       }
       if (input === '') {
         setIdle(true);

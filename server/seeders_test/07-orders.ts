@@ -12,6 +12,7 @@ import {
   secondUserWithAReview,
   thirdUserWithAReview,
   userWithCartItemsAndOrdersAndReviews,
+  SHIPPED,
 } from '../utils/consts';
 
 export default {
@@ -33,7 +34,7 @@ export default {
       total: 80000,
     },
     {
-      status: [DELIVERED],
+      status: [PROCESSING, SHIPPED, DELIVERED],
       id: orderForUserWithCartItemsAndOrdersAndReviewsDelivered,
       userId: userWithCartItemsAndOrdersAndReviews,
       createdAt: new Date(),
@@ -41,7 +42,7 @@ export default {
       total: 240000,
     },
     {
-      status: [DELIVERED],
+      status: [PROCESSING, SHIPPED, DELIVERED],
       id: orderForSecondUserWithAReview,
       userId: secondUserWithAReview,
       createdAt: new Date(),
@@ -49,7 +50,7 @@ export default {
       total: 80000,
     },
     {
-      status: [DELIVERED],
+      status: [PROCESSING, SHIPPED, DELIVERED],
       id: orderForThirdUserWithAReview,
       userId: thirdUserWithAReview,
       createdAt: new Date(),
@@ -57,7 +58,7 @@ export default {
       total: 80000,
     },
     {
-      status: [DELIVERED],
+      status: [PROCESSING, SHIPPED, DELIVERED],
       id: orderForFourthUserWithAReview,
       userId: fourthUserWithAReview,
       createdAt: new Date(),

@@ -18,6 +18,7 @@ import {
 import Review from '../db/models/Review';
 import { assignBodyAndWriteAndUpdateFiles, calcIntPrices, toFilename } from '../utils/functions';
 import ApiError from '../error/ApiError';
+import { DELETED } from '../utils/consts';
 
 const includeAll = [
   {
@@ -58,8 +59,8 @@ class ShopProductController extends BaseController<ShopProduct> {
       include: includeAll,
     };
     options.distinct = true;
-    if (req.query.searchbar) {
-      const search = req.query.searchbar as string;
+    if (req.query.search) {
+      const search = req.query.search as string;
       const searchTerms = search.split(' ');
       const searchParams = searchTerms.map((value) => ({
         value: { [Op.iRegexp]: value },
@@ -101,7 +102,7 @@ class ShopProductController extends BaseController<ShopProduct> {
       options.where = {
         id: matchedIds,
       };
-      delete req.query.searchbar;
+      delete req.query.search;
     }
     if (req.query.filteredSearch) {
       const search = JSON.parse(req.query.filteredSearch as string) as FilteredSearchParams;
@@ -166,10 +167,23 @@ class ShopProductController extends BaseController<ShopProduct> {
         options.order = [[col('price'), 'ASC']];
       }
     }
-    // options.where = {
-    //   ...options.where,
-    //   deleted: false,
-    // };
+    options.where = {
+      ...options.where,
+      [Op.not]: {
+        flags: {
+          [Op.contains]: [DELETED],
+        },
+      },
+    };
+    if (req.query.deleted) {
+      options.where = {
+        ...options.where,
+        flags: {
+          [Op.contains]: [DELETED],
+        },
+      };
+      delete options.where[Op.not];
+    }
     this.execFindAndCountAll(req, res, options);
   }
 
@@ -264,42 +278,46 @@ class ShopProductController extends BaseController<ShopProduct> {
     const body = assignBodyAndWriteAndUpdateFiles(req, images);
     const form = {
       ...body,
-      specifications: null,
-      deletedImages: null,
+      specifications: undefined,
+      deletedImages: undefined,
     };
     if (req.files) {
       const thumbnail = form.images[0];
       form.thumbnail = thumbnail;
     }
-    const {
-      price,
-      discountedPrice,
-    } = calcIntPrices(form.price, form.discount);
-    form.price = price;
-    form.discountedPrice = discountedPrice;
+    if (form.price || form.discount) {
+      const {
+        price,
+        discountedPrice,
+      } = calcIntPrices(form.price, form.discount);
+      form.price = price;
+      form.discountedPrice = discountedPrice;
+    }
     updatedProduct = await updatedProduct.update(form);
-    const specifications = JSON.parse(body.specifications);
-    Specification.destroy({
-      where: {
-        id: {
-          [Op.notIn]: specifications.map(({ id }) => id), // all of a product's specifications are sent in an array for PUT reqs. delete filters specificarions from that array. specifications not in the array are deleted
-        },
-        shopProductId: updatedProduct.id,
-      },
-    });
-    await Promise.all((specifications as ISpecification[]).map(async ({
-      key, value, category, id,
-    }) => {
-      await Specification.update({
-        key,
-        value,
-        category,
-      }, {
+    if (req.body.specifications) {
+      const specifications = JSON.parse(body.specifications);
+      Specification.destroy({
         where: {
-          id,
+          id: {
+            [Op.notIn]: specifications.map(({ id }) => id), // all of a product's specifications are sent in an array for PUT reqs. delete filters specificarions from that array. specifications not in the array are deleted
+          },
+          shopProductId: updatedProduct.id,
         },
       });
-    }));
+      await Promise.all((specifications as ISpecification[]).map(async ({
+        key, value, category, id,
+      }) => {
+        await Specification.update({
+          key,
+          value,
+          category,
+        }, {
+          where: {
+            id,
+          },
+        });
+      }));
+    }
     return res.json(updatedProduct);
   }
 

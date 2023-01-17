@@ -1,11 +1,22 @@
+import {
+  col,
+  fn,
+  Op,
+} from 'sequelize';
 import { NextFunction, Request, Response } from 'express';
 import Order from '../db/models/Order';
 import BaseController from './BaseController';
 import OrderedProduct from '../db/models/OrderedProduct';
 import AddressForOrder from '../db/models/AddressForOrder';
-import { PROCESSING } from '../utils/consts';
+import {
+  CANCELED,
+  DELIVERED,
+  PROCESSING,
+  SHIPPED,
+} from '../utils/consts';
 import OrderedShippingMethod from '../db/models/OrderedShippingMethod';
 import { inclusionsForOrder } from '../utils/inclusions';
+import { FindAndCountOptions } from '../types/types';
 
 class OrderController extends BaseController<Order> {
   constructor() {
@@ -21,6 +32,56 @@ class OrderController extends BaseController<Order> {
       include: inclusionsForOrder,
     };
     this.execFindAndCountAll(req, res, options);
+  }
+
+  async admin(req: Request, res: Response) {
+    const options: FindAndCountOptions<Order> = {
+      include: inclusionsForOrder,
+      order: [
+        fn('array_positions', col('status'), CANCELED),
+        fn('array_positions', col('status'), DELIVERED),
+        fn('array_positions', col('status'), SHIPPED),
+        fn('array_positions', col('status'), PROCESSING),
+      ],
+    };
+    if (req.query.unshipped) {
+      options.where = {
+        ...options.where,
+        [Op.and]: [
+          {
+            [Op.not]: {
+              status: {
+                [Op.contains]: [CANCELED],
+              },
+            },
+          },
+          {
+            [Op.not]: {
+              status: {
+                [Op.contains]: [SHIPPED],
+              },
+            },
+          },
+        ],
+      };
+    }
+    if (req.query.search) {
+      const {
+        search,
+      } = req.query;
+      const orders = await Order.findAndCountAll(options);
+      const filteredOrders = orders.rows.filter((order) => {
+        if (order.id.includes(search as string)) {
+          return true;
+        }
+        return false;
+      });
+      return res.json({
+        ...orders,
+        rows: filteredOrders,
+      });
+    }
+    return this.execFindAndCountAll(req, res, options);
   }
 
   async getOne(req: Request, res: Response, next: NextFunction) {

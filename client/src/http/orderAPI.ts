@@ -2,13 +2,18 @@ import {
   QueryReqCreateOrder,
   IOrder,
   SequelizeFindAndCountAll,
-  QueryReqFetchMultiple,
+  QueryReqFetchMultipleOrders,
   QueryReqPutOrder,
 } from '../types/types';
 import { $authHost } from './index';
 
-export const fetchOrders = async (queryParams?: QueryReqFetchMultiple<IOrder>): Promise<SequelizeFindAndCountAll<IOrder>> => {
+export const fetchOrders = async (queryParams?: QueryReqFetchMultipleOrders): Promise<SequelizeFindAndCountAll<IOrder>> => {
   const { data } = await $authHost.get('api/order', { params: queryParams });
+  return data;
+};
+
+export const fetchOrdersAdmin = async (queryParams?: QueryReqFetchMultipleOrders): Promise<SequelizeFindAndCountAll<IOrder>> => {
+  const { data } = await $authHost.get('api/order/admin', { params: queryParams });
   return data;
 };
 

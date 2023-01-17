@@ -1,20 +1,20 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { accountSideColLinks } from '../../utils/arrays';
+import { adminSideColLinks } from '../../utils/arrays';
 import Dropdown from '../Dropdown';
 import List from '../List';
 
-function AccountSideCol() {
+function AdminSideCol() {
   const { pathname } = useLocation();
-  const showInMobile = pathname === '/account';
+  const showInMobile = pathname === '/admin';
   return (
     <div className={`side-col ${showInMobile && 'show'}`}>
       <div className="labeled-col">
         <span className="label">
-          Your account
+          Admin
         </span>
         <List
-          items={accountSideColLinks}
+          items={adminSideColLinks}
           renderAs={({ to, label }) => (
             <li key={`${to}_navButton`}>
               <div className="divider" />
@@ -30,4 +30,4 @@ function AccountSideCol() {
   );
 }
 
-export default AccountSideCol;
+export default AdminSideCol;

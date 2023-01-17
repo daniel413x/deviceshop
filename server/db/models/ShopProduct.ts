@@ -25,6 +25,8 @@ class ShopProduct extends BaseModel<ShopProduct> implements IShopProduct {
 
   numberSold!: number;
 
+  flags!: string[];
+
   stock!: number;
 
   typeId!: string;
@@ -74,6 +76,11 @@ export const shopProductAttributes: ModelAttributes<ShopProduct> = {
   thumbnail: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  flags: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: false,
+    defaultValue: [],
   },
   name: {
     allowNull: false,

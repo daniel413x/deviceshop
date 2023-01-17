@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
-import { QueryReqFetchMultiple, SearchParamsRecord, SequelizeFindAndCountAll } from '../types/types';
+import { QueryReqFetchMultipleAny, SearchParamsRecord, SequelizeFindAndCountAll } from '../types/types';
 import usePagination from './usePagination';
 import useQuery from './useQuery';
 
 interface UseQueriedItemsProps<T> {
   itemsPerPage: number;
-  fetchAPI: (query: QueryReqFetchMultiple<T>) => Promise<SequelizeFindAndCountAll<T>>;
+  fetchAPI: (query: QueryReqFetchMultipleAny<T>) => Promise<SequelizeFindAndCountAll<T>>;
   concatItems?: boolean;
   concurrentlySetQuery?: boolean;
   initialSorting?: string;
+  queryProps?: QueryReqFetchMultipleAny<T>;
 }
 
 interface UseQueriedItemsReturn<T> {
@@ -32,6 +33,7 @@ function useQueriedItems<T>({
   fetchAPI,
   concurrentlySetQuery,
   initialSorting,
+  queryProps,
 }: UseQueriedItemsProps<T>): UseQueriedItemsReturn<T> {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -52,7 +54,7 @@ function useQueriedItems<T>({
     setSearchParams,
     thereAreSearchParams,
   } = useQuery();
-  const createQuery: () => QueryReqFetchMultiple<T> = () => {
+  const createQuery: () => QueryReqFetchMultipleAny<T> = () => {
     const query: any = {
       limit: itemsPerPage,
       page,
@@ -60,6 +62,7 @@ function useQueriedItems<T>({
         [sorting]: true,
       },
       distinct: true,
+      ...queryProps,
     };
     if (thereAreSearchParams) {
       const noMutate = { ...searchParamsRecord };

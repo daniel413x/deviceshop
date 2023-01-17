@@ -9,7 +9,7 @@ interface ScrollWrapperProps {
 function ScrollWrapper({ children }: ScrollWrapperProps) {
   const location = useLocation();
   useLayoutEffect(() => {
-    if (location.pathname === '/blog'/* && window.scrollY <= 325 */) {
+    if (location.pathname === '/admin/shopproducts' || location.pathname === '/admin/shopproducts/deleted'/* && window.scrollY <= 325 */) {
       return;
     }
     document.documentElement.scrollTo(0, 0);

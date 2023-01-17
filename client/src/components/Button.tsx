@@ -1,4 +1,5 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
+import { Children } from '../types/types';
 
 type ButtonStyles = 'primary' | 'secondary' | 'warn' | 'blank' | 'accent-gray' | 'match-navlink';
 
@@ -7,7 +8,7 @@ interface ButtonProps {
   className?: string;
   onClick?: (...args: any[]) => void;
   onMouseDown?: (...args: any[]) => void;
-  children?: ReactElement | (ReactElement | string)[] | string;
+  children?: Children;
   buttonStyle?: ButtonStyles | ButtonStyles[];
   title?: string;
   id?: string;

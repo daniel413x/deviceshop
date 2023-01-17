@@ -1,8 +1,7 @@
-/* eslint-disable no-multiple-empty-lines */
 import * as routes from './consts';
 import createProductPlaceholder from '../assets/images/create-product-placeholder.png';
 
-export const accountNavButtons = [
+export const accountSideColLinks = [
   {
     to: `/${routes.ACCOUNT_ROUTE}/${routes.ORDERS_ROUTE}`,
     label: 'Orders',
@@ -14,6 +13,21 @@ export const accountNavButtons = [
   {
     to: `/${routes.ACCOUNT_ROUTE}/${routes.ADDRESSES_ROUTE}`,
     label: 'Addresses',
+  },
+];
+
+export const adminSideColLinks = [
+  {
+    to: `/${routes.ADMIN_ROUTE}/${routes.ORDERS_ROUTE}`,
+    label: 'Orders',
+  },
+  {
+    to: `/${routes.ADMIN_ROUTE}/${routes.SHOP_PRODUCTS_ROUTE}`,
+    label: 'Products',
+  },
+  {
+    to: `/${routes.ADMIN_ROUTE}/${routes.MESSAGES_ROUTE}`,
+    label: 'Messages',
   },
 ];
 

@@ -105,8 +105,8 @@ export default {
     },
     {
       email: 'fourthuserwithareview@deviceshop.com',
-      firstName: '',
-      lastName: '',
+      firstName: 'Asmara',
+      lastName: 'Permatasari',
       username: 'asmara95',
       password: await hashPassword(),
       avatar: 'test-user-4.jpg',

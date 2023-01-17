@@ -1,4 +1,5 @@
 import { v4 as uuid } from 'uuid';
+import { NEW } from '../utils/consts';
 import {
   apple,
   samsung,
@@ -62,6 +63,7 @@ for (let n = 0; n <= 12; n += 1) {
     createdAt: new Date(),
     updatedAt: new Date(),
     id: smartphoneId,
+    flags: [NEW],
   };
   if (n === 0) {
     smartphone.rating = 5;
@@ -85,6 +87,7 @@ for (let n = 0; n <= 12; n += 1) {
     createdAt: new Date(),
     updatedAt: new Date(),
     id: laptopId,
+    flags: [NEW],
   };
   const accessory = {
     thumbnail: 'test-product-filler-thumbnail.png',
@@ -102,6 +105,7 @@ for (let n = 0; n <= 12; n += 1) {
     createdAt: new Date(),
     updatedAt: new Date(),
     id: accessoryId,
+    flags: [NEW],
   };
   const tablet = {
     thumbnail: 'test-product-filler-thumbnail.png',
@@ -119,6 +123,7 @@ for (let n = 0; n <= 12; n += 1) {
     createdAt: new Date(),
     updatedAt: new Date(),
     id: tabletId,
+    flags: [NEW],
   };
   smartphonesIds.push(smartphoneId);
   smartphones.push(smartphone);

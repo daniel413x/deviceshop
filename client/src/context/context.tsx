@@ -10,6 +10,8 @@ import ModalStore from '../store/ModalStore';
 import OrderStore from '../store/OrderStore';
 import AddressStore from '../store/AddressStore';
 import CreateProductPageStore from '../store/CreateProductPageStore';
+import AdminShopProductsStore from '../store/AdminShopProductsStore';
+import AdminOrdersStore from '../store/AdminOrdersStore';
 
 interface ContextProps {
   notifications: NotificationStore;
@@ -23,6 +25,8 @@ interface ContextProps {
   modals: ModalStore;
   addresses: AddressStore;
   createProductPage: CreateProductPageStore;
+  adminShopProducts: AdminShopProductsStore;
+  adminOrders: AdminOrdersStore;
 }
 
 const Context = createContext<ContextProps>({
@@ -37,6 +41,8 @@ const Context = createContext<ContextProps>({
   orders: new OrderStore(),
   addresses: new AddressStore(),
   createProductPage: new CreateProductPageStore(),
+  adminShopProducts: new AdminShopProductsStore(),
+  adminOrders: new AdminOrdersStore(),
 });
 
 export default Context;

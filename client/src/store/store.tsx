@@ -9,6 +9,8 @@ import ModalStore from './ModalStore';
 import OrderStore from './OrderStore';
 import AddressStore from './AddressStore';
 import CreateProductPageStore from './CreateProductPageStore';
+import AdminShopProductsStore from './AdminShopProductsStore';
+import AdminOrders from './AdminOrdersStore';
 
 const store = {
   notifications: new NotificationStore(),
@@ -22,6 +24,8 @@ const store = {
   modals: new ModalStore(),
   addresses: new AddressStore(),
   createProductPage: new CreateProductPageStore(),
+  adminShopProducts: new AdminShopProductsStore(),
+  adminOrders: new AdminOrders(),
 };
 
 export default store;

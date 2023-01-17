@@ -843,10 +843,11 @@ form.checkout-style .labeled-input input {
 }
 
 .price-tags .undiscounted-price, .price-tags .discounted-price {
-  background-color: var(--primary-bluegray-light);
-  border-radius: 15px;
+  background-color: #fff;
+  border-radius: 3px;
   padding: 0.25rem 0.625rem;
   position: relative;
+  border: 1px solid var(--primary-text-light);
 }
 
 .price-tags .discounted-price {
@@ -857,7 +858,7 @@ form.checkout-style .labeled-input input {
 
 .price-tags .undiscounted-price {
   color: var(--primary-dark-light);
-  font-weight: 500;
+  font-weight: 300;
   position: relative;
 }
 
@@ -1000,6 +1001,9 @@ form.checkout-style .labeled-input input {
 @media (max-width: 767px) {  
   .side-col {
     display: none;
+  }
+  .side-col.show {
+    display: initial;
   }
 }
 
@@ -1526,7 +1530,7 @@ form.checkout-style .labeled-input input {
 }
 
 .modal.request-cancellation .labeled-radio-button .label {
-  font-size: 0.875rem
+  font-size: 0.875rem;
 }
 
 .modal.request-cancellation .radio-button-ul {
@@ -1594,7 +1598,14 @@ form.checkout-style .labeled-input input {
 }
 
 .modal.creation-success-modal .body img {
-  max-width: 335px
+  max-width: 335px;
+}
+
+.modal.new-status-modal .checkboxes-ul {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  grid-gap: 1rem;
 }
 
 .close-button {
@@ -1774,6 +1785,26 @@ form.checkout-style .labeled-input input {
 .page-control .arrow-button {
   padding-left: 1rem;
   padding-right: 1rem;
+  font-size: 0.875rem;
+}
+
+.page-control .arrow-button:focus-visible {
+  outline: 1px solid black;
+}
+
+@media (max-width: 575px) {
+  .page-control .arrow-button.forward {
+    display: flex;
+    flex-wrap: wrap-reverse;
+  }
+}
+
+@media (max-width: 575px) {
+  .page-control .arrow-button.back {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
 }
 
 .page-control .number-buttons {
@@ -1782,6 +1813,10 @@ form.checkout-style .labeled-input input {
 
 .page-control .number-buttons .number-button {
   padding: 0.625rem 0.938rem;
+}
+
+.page-control .number-buttons .number-button:focus-visible {
+  outline: 1px solid black;
 }
 
 .page-control .number-buttons .number-button.current-page {
@@ -2986,7 +3021,7 @@ form.checkout-style .labeled-input input {
 
 #login-and-register .switch-link {
   text-decoration: underline;
-  color: var(--primary-accent)
+  color: var(--primary-accent);
 }
 
 #login-and-register .breadcrumb-trail {
@@ -3437,22 +3472,40 @@ form.checkout-style .labeled-input input {
   grid-gap: 1rem;
 }
 
-#shop-products .searchbox {
-  margin-bottom: 1.5rem;
+@media (max-width: 768px) {
+   #admin .side-col {
+     margin-top: 1rem;
+  }
 }
 
-#shop-products .searchbox input {
+.admin-search-page .main-col {
+  max-width: 645px;
+}
+
+.admin-search-page .upper-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  grid-gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.admin-search-page .searchbox input {
   border: 1px solid var(--bg-light-bluegray);
   max-width: unset;
 }
 
-#shop-products .search-results-ul {
+.admin-search-page .search-results-ul {
   display: flex;
   flex-direction: column;
   min-height: 1022.810px;
 }
 
-#shop-products .search-result {
+.admin-search-page .search-result.create-product-link .text-col {
+  width: 220px;
+}
+
+.admin-search-page .search-result {
   display: flex;
   padding: 1rem 1.25rem;
   border: 1px solid var(--bg-light-gray);
@@ -3462,7 +3515,7 @@ form.checkout-style .labeled-input input {
   font-size: 0.875rem;
 }
 
-#shop-products .search-result:hover::before {
+.admin-search-page .search-result:hover::before {
   position: absolute;
   top: 0;
   left: 0;
@@ -3472,13 +3525,13 @@ form.checkout-style .labeled-input input {
   background-color: var(--primary-accent);
 }
 
-#shop-products .search-result .info-col {
+.admin-search-page .search-result .info-col {
   display: flex;
   align-items: center;
   grid-gap: 0.35rem;
 }
 
-#shop-products .search-result .info-col .img-col {
+.admin-search-page .search-result .info-col .img-col {
   display: flex;
   align-items: center;
     justify-content: center;
@@ -3486,48 +3539,69 @@ form.checkout-style .labeled-input input {
   width: 60px;
 }
 
-#shop-products .search-result .info-col .img-col img {
+.admin-search-page .search-result .info-col .img-col img {
   height: 60px;
   width: 60px;
   display: flex;
   align-items: center;
 }
 
-#shop-products .search-result .info-col .text-col {
+.admin-search-page .search-result .info-col .text-col {
   display: flex;
   flex-direction: column;
   grid-gap: 1rem;
 }
 
-#shop-products .search-result .info-col .text-col .name {
-  font-weight: 400;
-}
-
-#shop-products .search-result .info-col .text-col .lower-row {
+.admin-search-page .search-result .info-col .text-col .lower-row {
   display: flex;
   grid-gap: 0.5rem;
   font-weight: 300;
 }
 
-#shop-products .search-result .icons-col {
+.admin-search-page .search-result .icons-col {
   display: flex;
   align-items: center;
 }
 
-#shop-products .search-result .icons-col .trash-icon svg {
+@media (max-width: 600px) {  
+  .admin-search-page .search-result {
+    flex-wrap: wrap;
+  }
+}
+
+.admin-search-page .search-result .icons-col .trash-icon svg {
   width: 17px;
 }
 
-#shop-products .search-result .icons-col .edit-icon svg {
+.admin-search-page .search-result .icons-col .edit-icon svg {
   top: 51%;
 }
 
-#shop-products .paginated-items-counter {
+.admin-search-page .search-result .icons-col .edit-icon svg path {
+  fill: var(--primary-text-light);
+}
+
+.admin-search-page .filter-link {
+  font-size: 0.875rem;
+}
+
+.admin-search-page .paginated-items-counter {
   margin-top: 45px;
   text-align: center;
   width: 100%;
   display: block;
+}
 
+.admin-search-page .paginated-items-counter {
+  margin-top: 45px;
+  text-align: center;
+  width: 100%;
+  display: block;
+}
+
+#admin-orders .search-results-ul {
+  margin-top: 35px;
+  grid-gap: 3rem;
 }
 
 #create-shop-product .discount-tag-wrapper {
@@ -3703,11 +3777,11 @@ form.checkout-style .labeled-input input {
 }
 
 #create-shop-product .form-submission-overlay .line.two .form-field.images {
-  width: 25%
+  width: 25%;
 }
 
 #create-shop-product .form-submission-overlay .line.two .form-field.name {
-  width: 75%
+  width: 75%;
 }
 
 #create-shop-product .form-submission-overlay .line.three>* {

@@ -11,6 +11,11 @@ router.get(
   (req, res) => OrderController.get(req, res),
 );
 router.get(
+  '/admin',
+  checkRoleMiddleware(ADMIN),
+  (req, res) => OrderController.admin(req, res),
+);
+router.get(
   '/:id',
   checkRoleMiddleware(USER),
   (req, res, next) => OrderController.getOne(req, res, next),

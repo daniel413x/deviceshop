@@ -7,7 +7,9 @@ import {
   navbarAccountButtons,
   navbarButtons,
 } from '../../utils/arrays';
-import { CART_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from '../../utils/consts';
+import {
+  ADMIN_ROUTE, CART_ROUTE, LOGIN_ROUTE, SHOP_ROUTE,
+} from '../../utils/consts';
 import { ReactComponent as AccountIcon } from '../../assets/icons/account.svg';
 import Search from '../Search';
 import { fetchProducts } from '../../http/shopProductAPI';
@@ -31,7 +33,7 @@ function Navbar() {
   const [searchResults, setSearchResults] = useState<IShopProduct[]>([]);
   const searchParams: QueryReqFetchMultipleShopProducts = {
     attributes: ['name', 'id', 'thumbnail'],
-    searchbar: '', // server controller method for ShopProducts is configured to to search model Specification according to these parameters and match associated ShopProducts,
+    search: '', // server controller method for ShopProducts is configured to to search model Specification according to these parameters and match associated ShopProducts,
     limit: 5,
   };
   const navigateCallback = (product: IShopProduct) => {
@@ -80,7 +82,7 @@ function Navbar() {
         {user.isRegistered && (
           <Dropdown
             label="Account"
-            to={navbarAccountButtons}
+            to={user.isAdmin ? [{ to: ADMIN_ROUTE, label: 'Admin' }, ...navbarAccountButtons] : navbarAccountButtons}
             dropdownIcon="account"
           />
         )}

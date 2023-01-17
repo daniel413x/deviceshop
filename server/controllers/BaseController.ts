@@ -86,33 +86,45 @@ export default abstract class BaseController<M extends Model> {
       }
     }
     if (req.query.where) {
-      params.where = JSON.parse(req.query.where as string);
+      const addedWhereParams = JSON.parse(req.query.where as string);
+      params.where = { ...params.where, ...addedWhereParams };
     }
-    // if (req.query.search) {
-    //   const search = JSON.parse(req.query.search as string) as { attribute: string, value: string };
-    //   params.where = {
-    //     ...params.where,
-    //     [search.attribute]: { [Op.iRegexp]: search.value },
-    //   };
-    // }
-    if (req.query.searchAttribute && req.query.searchValue) {
+    if (req.query.search && req.query.searchAttribute) {
       const {
+        search,
         searchAttribute,
-        searchValue,
       } = req.query;
       params.where = {
         ...params.where,
-        [searchAttribute as string]: { [Op.iRegexp]: searchValue },
+        [searchAttribute as string]: { [Op.iRegexp]: search },
       };
     }
     if (req.query.distinct) {
       params.distinct = true;
     }
     const data = await this.model.findAndCountAll(params);
+    if (req.query.countOnly) {
+      return res.json({
+        rows: [],
+        count: data.count,
+      });
+    }
     return res.json(data);
   }
 
   async execCreate(req: Request, res: Response, options?: FindAndCountOptions<M>) {
+    let form = req.body;
+    if (req.files) {
+      form = assignBodyAndWriteAndUpdateFiles(req);
+    }
+    let data = await this.model.create(form);
+    if (options) {
+      data = await this.model.findByPk(data.getDataValue('id'), options);
+    }
+    return res.json(data);
+  }
+
+  async execCount(req: Request, res: Response, options?: FindAndCountOptions<M>) {
     let form = req.body;
     if (req.files) {
       form = assignBodyAndWriteAndUpdateFiles(req);

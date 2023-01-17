@@ -2,7 +2,7 @@ import React, {
   useState,
 } from 'react';
 import useQueriedItems from '../hooks/useQueriedItems';
-import { IOrder, QueryReqFetchMultiple, SequelizeFindAndCountAll } from '../types/types';
+import { IOrder, QueryReqFetchMultipleOrders, SequelizeFindAndCountAll } from '../types/types';
 import RequestCancellationModal from './Account/YourOrders/RequestCancellationModal';
 import ReturnOrderModal from './Account/YourOrders/ReturnOrderModal';
 import List from './List';
@@ -12,7 +12,7 @@ import PaginatedItemsCounter from './PaginatedItemsCounter';
 import SortingDropdown from './SortingDropdown';
 
 interface OrdersControlProps {
-  fetchAPI: (query: QueryReqFetchMultiple<any>) => Promise<SequelizeFindAndCountAll<any>>;
+  fetchAPI: (query: QueryReqFetchMultipleOrders) => Promise<SequelizeFindAndCountAll<any>>;
 }
 
 function OrdersControl({
