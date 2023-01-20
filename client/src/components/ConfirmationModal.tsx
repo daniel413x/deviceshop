@@ -36,7 +36,7 @@ function ConfirmationModal({
             {title}
           </div>
           <CloseButton
-            callback={close}
+            onMouseDown={close}
           />
         </div>
       )}
@@ -47,6 +47,7 @@ function ConfirmationModal({
         <Button
           buttonStyle="warn"
           onClick={confirm}
+          className="confirm-button"
         >
           Confirm
         </Button>

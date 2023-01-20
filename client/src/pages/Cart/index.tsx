@@ -73,6 +73,11 @@ function Cart() {
           <PageHeader
             header="Cart"
           />
+          {cart.items.length === 0 && (
+            <span className="empty-cart">
+              Your cart is empty
+            </span>
+          )}
           <List
             className="cart-items-ul"
             items={cart.items}
@@ -88,11 +93,6 @@ function Cart() {
             )}
           />
           {!checkoutBreakpoint && <Checkout />}
-          {cart.items.length === 0 && (
-            <span className="empty-cart">
-              Your cart is empty
-            </span>
-          )}
         </div>
         {checkoutBreakpoint && (
         <div className="checkout-col">

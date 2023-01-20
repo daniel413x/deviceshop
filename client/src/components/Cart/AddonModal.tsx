@@ -24,6 +24,7 @@ function AddonModal({
   close,
   category,
 }: AddonModalProps) {
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedAddon, setSelectedAddon] = useState<IAddon>();
   const [addons, setAddons] = useState<IAddon[]>([]);
   const { user, cart } = useContext(Context);
@@ -46,9 +47,11 @@ function AddonModal({
     }
     const orderedAddon = cart.findOrderedAddon(selectedAddon!.id);
     if (orderedAddon) {
+      setLoading(true);
       await deleteOrderedAddon(orderedAddon!.id);
       cart.removeAddon(id, selectedAddon!.id);
       setSelectedAddon(undefined);
+      setLoading(false);
     }
   };
   const selectAddon = async (selection: IAddon) => {
@@ -83,6 +86,7 @@ function AddonModal({
       }
       return;
     }
+    setLoading(true);
     const newAddon = await createOrderedAddon({
       addonId: selection.id,
       orderedProductId: id,
@@ -91,12 +95,14 @@ function AddonModal({
     });
     cart.addAddon(id, newAddon);
     setSelectedAddon(selection);
+    setLoading(false);
   };
   const fetch = async (fetchedCategory: string) => fetchAddons({ where: { category: fetchedCategory } });
   useEffect(() => {
     (async () => {
       const fetchedAddons = await fetch(category); // passed-in fetch, passed-in addon category for modal re-usability
       setAddons(fetchedAddons.rows);
+      setLoading(false);
     })();
   }, []);
   useEffect(() => {
@@ -116,7 +122,7 @@ function AddonModal({
     <Modal
       show={id}
       close={close}
-      className="cartitem-addon"
+      className={`cartitem-addon ${loading && 'loading'}`}
       id="cartitem-addon"
       size="large"
     >
@@ -132,7 +138,7 @@ function AddonModal({
           </span>
         </div>
         <CloseButton
-          callback={close}
+          onMouseDown={close}
         />
       </div>
       <div className="body">

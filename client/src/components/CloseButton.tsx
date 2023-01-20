@@ -2,21 +2,29 @@ import React from 'react';
 import { ReactComponent as Close } from '../assets/icons/close.svg';
 
 interface CloseButtonProps {
-  callback: () => void;
+  onMouseDown?: () => void;
+  onClick?: () => void;
 }
 
 function CloseButton({
-  callback,
+  onMouseDown,
+  onClick,
 }: CloseButtonProps) {
   return (
     <button
       className="close-button"
-      onMouseDown={callback}
+      onClick={onClick}
+      onMouseDown={onMouseDown}
       type="button"
     >
       <Close />
     </button>
   );
 }
+
+CloseButton.defaultProps = {
+  onClick: undefined,
+  onMouseDown: undefined,
+};
 
 export default CloseButton;

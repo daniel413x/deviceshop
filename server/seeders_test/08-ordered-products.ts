@@ -21,12 +21,36 @@ import {
   cartForSecondUserWithReviews,
   cartForThirdUserWithReviews,
   cartForFourthUserWithReviews,
+  cartForUserWithCartItemsAndSavedAddresses,
+  userWithCartItemsAndSavedAddresses,
 } from '../utils/consts';
 import { apple, samsung } from './03-brands';
 import { smartphone } from './04-types';
 
 export default {
   up: async (queryInterface) => queryInterface.bulkInsert('OrderedProduct', [
+    {
+      price: 80000,
+      cartId: cartForUserWithCartItemsAndSavedAddresses,
+      brandId: samsung,
+      typeId: smartphone,
+      userId: userWithCartItemsAndSavedAddresses,
+      shopProductId: smartphonesIds[0],
+      id: uuid(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      price: 80000,
+      cartId: cartForUserWithCartItemsAndSavedAddresses,
+      brandId: samsung,
+      typeId: smartphone,
+      userId: userWithCartItemsAndSavedAddresses,
+      shopProductId: smartphonesIds[0],
+      id: uuid(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
     {
       price: 80000,
       cartId: cartForUserWithCartItemsAndOrderAndReviews,

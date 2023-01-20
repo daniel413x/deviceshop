@@ -88,7 +88,7 @@ function CopySpecificationsModal({
           Copy specifications
         </div>
         <CloseButton
-          callback={close}
+          onMouseDown={close}
         />
       </div>
       <div className="body">

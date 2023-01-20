@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-loop-func */
 /// <reference types="cypress" />
 
+import { objectHasProp } from "../../src/utils/functions";
+
 export const clientUrl = 'http://localhost:3000';
-export const serverUrl = 'http://localhost:6004';
+export const serverUrl = 'http://localhost:6006';
 
 /*
 
@@ -21,6 +23,17 @@ for (let c = 0; c < delayedCommands.length; c += 1) {
 }
 
 */
+
+Cypress.Commands.add('postLogin', (emailOrUsername, password) => {
+  const user = {
+    emailOrUsername,
+    password,
+  };
+  cy.request('POST', `${serverUrl}/api/user/login`, user)
+    .then(({ body }) => {
+      localStorage.setItem('registeredToken', body.token);
+    });
+});
 
 Cypress.Commands.add('shouldLoad', (selector: string) => {
   cy.get(selector)
@@ -49,6 +62,7 @@ Cypress.Commands.add('sideColDidLoad', () => {
 });
 
 Cypress.Commands.add('shopProductsDidLoad', () => {
+  cy.wait(1000);
   cy.get('.shop-products-ul')
     .should('not.have.class', 'loading');
   cy.get('.shop-products-ul')
@@ -332,6 +346,188 @@ Cypress.Commands.add('enterValidRegistrationForm', () => {
     .type('defg5678', { force: true });
   cy.get('#confirm-password-field')
     .type('defg5678', { force: true });
+});
+
+// shop product page
+
+Cypress.Commands.add('sliderNextClick', () => {
+  cy.get('.angle-button-next')
+    .click({ force: true });
+});
+
+Cypress.Commands.add('sliderPrevClick', () => {
+  cy.get('.angle-button-next')
+    .click({ force: true });
+});
+
+Cypress.Commands.add('shopProductPageAddToCart', () => {
+  cy.get('.add-to-cart')
+    .click({ force: true });
+  cy.get('body')
+    .should('contain.text', 'was added to your cart');
+});
+
+Cypress.Commands.add('shopProductPageAddSecondItem', () => {
+  cy.visit(`${clientUrl}/shop/samsung-galaxy-256gb-android-11-5g-smartphone-2`);
+  cy.shopProductPageAddToCart();
+});
+
+Cypress.Commands.add('cartDeleteItem', (index: number) => {
+  cy.get('.cart-item')
+    .eq(index)
+    .find('.close-button')
+    .click({ force: true });
+  cy.get('.confirm-button')
+    .click({ force: true });
+});
+
+Cypress.Commands.add('cartAddAndCheckAddon', (cartItemIndex: number, addonIndex: number) => {
+  cy.wait(300);
+  cy.get('.modal.show')
+    .should('not.have.class', 'loading');
+  let addedAddonName = '';
+  cy.get('.modal.show')
+    .find('.addon-choice')
+    .eq(addonIndex)
+    .as('theAddon');
+  cy.get('@theAddon')
+    .find('.choose-plan-button')
+    .click({ force: true });
+  cy.get('.addons-ul')
+    .eq(cartItemIndex)
+    .as('theCartItemAddons');
+  cy.get('@theAddon')
+    .find('.name')
+    .then((addon) => {
+      addedAddonName = addon.text();
+      cy.get('.modal.show')
+        .find('.addon-choice')
+        .find('.name')
+        .each(($addon) => {
+          const addonName = $addon.text();
+          if (addonName === addedAddonName) {
+            cy.get('@theCartItemAddons')
+              .should('contain.text', addedAddonName);
+          } else {
+            cy.get('@theCartItemAddons')
+              .should('not.contain.text', addonName);
+          }
+        });
+    });
+});
+
+Cypress.Commands.add('cartOneOrBothAddedItemsCanBeRemoved', () => {
+  cy.cartDeleteItem(0);
+  cy.get('.cart-item')
+    .should('have.length', 1);
+  cy.cartDeleteItem(0);
+  cy.get('.cart-item')
+    .should('have.length', 0);
+});
+
+Cypress.Commands.add('cartOpenWarrantyModal', () => {
+  cy.get('.warranty-button')
+    .eq(0)
+    .click({ force: true });
+});
+
+Cypress.Commands.add('cartAddonButtonsFunctionAsExpectedWhileToggling', () => {
+  cy.get('.modal.show')
+    .find('.choose-plan-button')
+    .each((button, i) => {
+      cy.cartAddAndCheckAddon(0, i);
+    });
+  cy.get('.remove-plan-button')
+    .should('have.length', 1);
+});
+
+Cypress.Commands.add('cartWarrantyFunctionsAsExpectedWhileToggling', () => {
+  cy.cartAddAndCheckAddon(0, 0);
+  cy.cartAddAndCheckAddon(0, 1);
+  cy.cartAddAndCheckAddon(0, 2);
+  cy.get('.remove-plan-button')
+    .should('have.length', 1);
+});
+
+Cypress.Commands.add('cartAddAddon', () => {
+  cy.get('.choose-plan-button')
+    .eq(0)
+    .click({ force: true });
+});
+
+Cypress.Commands.add('cartTestRemovePlanButton', () => {
+  cy.get('.remove-plan-button')
+    .click({ force: true });
+  cy.get('.cart-item')
+    .eq(0)
+    .find('.addons-ul')
+    .should('not.exist');
+  cy.get('.remove-plan-button')
+    .should('not.exist');
+});
+
+Cypress.Commands.add('cartOpenInsuranceModal', () => {
+  cy.get('.modal.show')
+    .find('.close-button')
+    .click({ force: true });
+  cy.get('.cart-item')
+    .eq(0)
+    .find('.insurance-button')
+    .click({ force: true });
+});
+
+Cypress.Commands.add('cartInsuranceFunctionsAsExpectedWhileToggling', () => {
+  cy.cartAddAndCheckAddon(0, 0);
+  cy.cartAddAndCheckAddon(0, 1);
+  cy.get('.remove-plan-button')
+    .should('have.length', 1);
+});
+
+Cypress.Commands.add('cartAddInsurance', () => {
+  cy.get('.modal.show')
+    .find('.choose-plan-button')
+    .eq(0)
+    .click({ force: true });
+});
+
+Cypress.Commands.add('cartWarrantyNotReplaced', () => {
+  cy.get('.modal.show')
+    .find('.choose-plan-button')
+    .eq(0)
+    .click({ force: true });
+});
+
+Cypress.Commands.add('checkoutSelectShippingMethod', (index: number) => {
+  cy.get('.shipping-fields')
+    .find('.labeled-radio-button')
+    .eq(index)
+    .click({ force: true });
+});
+
+Cypress.Commands.add('checkoutSelectPaymentMethod', (index: number) => {
+  cy.get('.payment-fields')
+    .find('.labeled-radio-button')
+    .eq(index)
+    .click({ force: true });
+});
+
+Cypress.Commands.add('checkoutFillPaymentFields', (index: number) => {
+  cy.get('#nameOnCard')
+    .type('Emmanuella Pedro');
+  cy.get('#cardNumber')
+    .type('2342 2342 2234 2354');
+  cy.get('#expirationDate')
+    .type('05/22');
+  cy.get('#cvc')
+    .type('146');
+});
+
+Cypress.Commands.add('hasWarningBorder', (obj: any) => {
+  obj.should('have.class', 'warn');
+});
+
+Cypress.Commands.add('hasNoWarningBorder', (obj: any) => {
+  obj.should('not.have.class', 'warn');
 });
 
 export {};

@@ -9,6 +9,7 @@ interface ShippingMethodProps {
   selectedShippingMethod: IShippingMethod;
   onClick: () => void;
   pressedSubmit: boolean;
+  setPressedSubmit: (bool: boolean) => void;
 }
 
 function ShippingMethod({
@@ -16,6 +17,7 @@ function ShippingMethod({
   selectedShippingMethod,
   onClick,
   pressedSubmit,
+  setPressedSubmit,
 }: ShippingMethodProps) {
   const {
     cart,
@@ -38,7 +40,10 @@ function ShippingMethod({
       name="shippingMethod"
       boolean={selectedShippingMethod?.id === shippingMethod.id}
       className={`${selectedShippingMethod?.id === shippingMethod.id && 'selected'}`}
-      warn={pressedSubmit && !selectedShippingMethod}
+      warnCondition={pressedSubmit && !selectedShippingMethod}
+      pressedSubmit={pressedSubmit}
+      setPressedSubmit={setPressedSubmit}
+      selectedValue={selectedShippingMethod}
     />
   );
 }

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useParams } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import { observer } from 'mobx-react-lite';
 import ShopSideCol from '../../../../components/ShopSideCol';
 import BreadcrumbTrail from '../../../../components/BreadcrumbTrail';
@@ -11,7 +11,9 @@ import EditableField from '../../../../components/EditableField';
 import Context from '../../../../context/context';
 import FormSubmissionOverlay from '../../../../components/Admin/ShopProducts/Create/FormSubmissionOverlay';
 import { fetchProduct } from '../../../../http/shopProductAPI';
-import { EDIT_ROUTE } from '../../../../utils/consts';
+import {
+  CREATE_SHOPPRODUCT_ROUTE, EDIT_ROUTE,
+} from '../../../../utils/consts';
 
 const Description = observer(() => {
   const {
@@ -36,22 +38,23 @@ function CreateShopProduct() {
     createProductPage,
   } = useContext(Context);
   const { title } = useParams();
+  const { pathname } = useLocation();
   useEffect(() => {
+    if (pathname === `/${CREATE_SHOPPRODUCT_ROUTE}` && createProductPage.id) {
+      createProductPage.setAllValues(undefined);
+    }
     if (title) { // if title, a PUT form is implied
       (async () => {
         try {
+          createProductPage.setLoading(true);
           const fetchedProduct = await fetchProduct(title) as IShopProduct;
-          createProductPage.setFetchedValues(fetchedProduct);
+          createProductPage.setAllValues(fetchedProduct);
         } finally {
           createProductPage.setLoading(false);
         }
       })();
     } else {
-      createProductPage.setStock(10);
-      createProductPage.setPrice('1000.00');
-      createProductPage.setDescription('Description');
-      createProductPage.setName('Product name');
-      createProductPage.setDiscount(10);
+      createProductPage.setAllValues(undefined);
     }
   }, []);
   return (

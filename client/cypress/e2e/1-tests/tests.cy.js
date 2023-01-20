@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import { CART_ROUTE, CHECKOUT_ROUTE } from '../../../src/utils/consts';
 import { clientUrl, serverUrl } from '../../support/commands';
 
 /// <reference types="cypress" />
@@ -215,13 +216,13 @@ describe('deviceshop app', () => {
           cy.get('.slider')
             .as('theSlider');
           cy.get('.slick-slide')
-            .eq(0)
+            .eq(1)
             .as('slideOne');
           cy.get('.slick-slide')
-            .eq(1)
+            .eq(2)
             .as('slideTwo');
           cy.get('.slick-slide')
-            .eq(2)
+            .eq(3)
             .as('slideThree');
           cy.get('.slider')
             .as('theSlider');
@@ -255,9 +256,6 @@ describe('deviceshop app', () => {
         describe('using the next/prev angle buttons', () => {
           beforeEach(() => {
             cy.get('@theSlider')
-              .find('.angle-button-prev')
-              .as('prevButton');
-            cy.get('@theSlider')
               .find('.angle-button-next')
               .as('nextButton');
           });
@@ -273,7 +271,7 @@ describe('deviceshop app', () => {
             cy.get('@slideThree')
               .should('have.class', 'slick-active');
             cy.wait(2750);
-            cy.get('@prevButton')
+            cy.get('.angle-button-prev')
               .click({ force: true });
             cy.get('@slideTwo')
               .should('have.class', 'slick-active');
@@ -873,7 +871,7 @@ describe('deviceshop app', () => {
         });
       });
     });
-    describe.only('on /register', () => {
+    describe('on /register', () => {
       beforeEach(() => {
         cy.visit(`${clientUrl}/register`);
       });
@@ -968,7 +966,7 @@ describe('deviceshop app', () => {
           .should('contain.text', 'password')
           .should('have.class', 'red');
       });
-      it.only('processes valid login form with correct credentials', () => {
+      it('processes valid login form with correct credentials', () => {
         cy.get('#email-field')
           .type('admin@deviceshop.com', { force: true });
         cy.get('#password-field')
@@ -985,6 +983,416 @@ describe('deviceshop app', () => {
         cy.contains('Please complete required fields');
       });
     });
+    describe('on a shop product\'s page', () => {
+      beforeEach(() => {
+        cy.visit(`${clientUrl}/shop/apple-iphone-256gb-ios-16-5g-smartphone-1`);
+        cy.get('#shop-product-page')
+          .should('not.have.class', 'loading');
+      });
+      describe('interacting with the slider', () => {
+        it('properly navigates back and forth through the slides, showing and hiding the buttons when appropriate', () => {
+          cy.wait(1400);
+          cy.get('.angle-button-prev')
+            .should('not.exist');
+          for (let i = 1; i <= 4; i += 1) {
+            cy.get('.angle-button-next').click({ force: true });
+            cy.get('.dots')
+              .get('.dot')
+              .eq(i)
+              .should('have.class', 'active');
+            cy.wait(2750);
+          }
+          cy.get('.angle-button-next')
+            .should('not.exist');
+          for (let i = 3; i >= 0; i -= 1) {
+            cy.get('.angle-button-prev').click({ force: true });
+            cy.get('.dots')
+              .get('.dot')
+              .eq(i)
+              .should('have.class', 'active');
+            if (i > 0) cy.wait(2750);
+          }
+          cy.get('.angle-button-prev')
+            .should('not.exist');
+        });
+      });
+      it('specifications are categorized with the first column being "General information" followed "Key specifications"', () => {
+        cy.get('.specifications')
+          .get('.category')
+          .as('theCategories');
+        cy.get('@theCategories')
+          .eq(0)
+          .get('.name')
+          .should('contain', 'General information');
+        cy.get('@theCategories')
+          .eq(1)
+          .get('.name')
+          .should('contain', 'Key specifications');
+      });
+      it('displays more reviews upon clicking the load button', () => {
+        cy.get('.reviews')
+          .get('.reviews-ul')
+          .children()
+          .then((reviews) => {
+            const initialLength = reviews.length;
+            cy.get('.reviews')
+              .get('.next-page-button')
+              .click({ force: true });
+            cy.get('.reviews')
+              .get('.reviews-ul')
+              .children()
+              .should('have.length.above', initialLength);
+          });
+      });
+      describe('all reviews are loaded', () => {
+        let reviewsLength = 0;
+        let fullStars = 0;
+        let halfStars = 0;
+        beforeEach(() => {
+          const openAllReviews = () => {
+            cy.get('.next-page-button')
+              .click({ force: true })
+              .then(() => {
+                cy.get('.next-page-button')
+                  .then((button) => {
+                    if (button.hasClass('limit-reached')) {
+                      cy.get('.reviews-ul')
+                        .children()
+                        .then((reviews) => {
+                          reviewsLength = reviews.length;
+                          if (reviews.find('.full-star').length > 0) {
+                            cy.get('.reviews')
+                              .find('.full-star')
+                              .then((stars) => {
+                                for (let s = 0; s < stars.length; s += 1) {
+                                  fullStars += 1;
+                                }
+                              });
+                          }
+                          if (reviews.find('.half-star').length > 0) {
+                            cy.get('.reviews')
+                              .find('.half-star')
+                              .then((stars) => {
+                                for (let s = 0; s < stars.length; s += 1) {
+                                  halfStars += 1;
+                                }
+                              });
+                          }
+                        });
+                    } else {
+                      cy.wait(100);
+                      openAllReviews();
+                    }
+                  });
+              });
+          };
+          openAllReviews();
+        });
+        it('has a computed rating accurate to the graphic stars rendered', () => {
+          cy.get('.rating-badge')
+            .get('.rating')
+            .should('contain', ((fullStars + halfStars) / reviewsLength).toString());
+        });
+      });
+      it('processes an add item request upon clicking "Add to cart"', () => {
+        cy.shopProductPageAddToCart();
+        cy.get('.cart-link')
+          .should('contain.text', '(1)');
+        cy.reload();
+      });
+      describe('an item was added to the user\'s cart', () => {
+        beforeEach(() => {
+          cy.shopProductPageAddToCart();
+        });
+        it('updates the user\'s cart count in the navbar', () => {
+          cy.get('.cart-link')
+            .should('contain.text', '(1)');
+        });
+        it('retrieves the added item from the guest\'s local storage upon reloading the page', () => {
+          cy.reload();
+          cy.get('.cart-link')
+            .should('contain.text', '(1)');
+        });
+        it('is possible to add a second item to the guest cart', () => {
+          cy.shopProductPageAddSecondItem();
+        });
+        describe('a second item is added to the user\'s cart', () => {
+          beforeEach(() => {
+            cy.shopProductPageAddSecondItem();
+          });
+          it('displays an accurate cart item count', () => {
+            cy.get('.cart-link')
+              .should('contain.text', '(2)');
+          });
+          it('retrieves both added items from the guest\'s local storage upon reloading the page', () => {
+            cy.reload();
+            cy.get('.cart-link')
+              .should('contain.text', '(2)');
+          });
+          describe('on /cart', () => {
+            beforeEach(() => {
+              cy.visit(`${clientUrl}/cart`);
+            });
+            it('one or both added items can be removed', () => {
+              cy.cartOneOrBothAddedItemsCanBeRemoved();
+            });
+            describe('the "Extend warranty" modal is open', () => {
+              beforeEach(() => {
+                cy.cartOpenWarrantyModal();
+              });
+              it('functions as expected while toggling through each option', () => {
+                cy.cartAddonButtonsFunctionAsExpectedWhileToggling();
+              });
+              describe('a warranty addon has been added to the first cart item', () => {
+                beforeEach(() => {
+                  cy.cartAddAddon();
+                });
+                it('can be removed via the "Remove plan" button', () => {
+                  cy.cartTestRemovePlanButton();
+                });
+                describe('the insurance modal is open', () => {
+                  beforeEach(() => {
+                    cy.cartOpenInsuranceModal();
+                  });
+                  it('functions as expected while toggling through each option', () => {
+                    cy.cartAddonButtonsFunctionAsExpectedWhileToggling();
+                  });
+                  describe('an insurance addon was added', () => {
+                    beforeEach(() => {
+                      cy.cartAddInsurance();
+                    });
+                    it('does not replace the warranty addon', () => {
+                      cy.cartWarrantyNotReplaced();
+                    });
+                  });
+                });
+              });
+            });
+            it('takes the user to a registration prompt if the checkout link is clicked', () => {
+              cy.get('.checkout')
+                .find('.checkout-link')
+                .click();
+              cy.contains('To continue placing your order, please register an account');
+            });
+          });
+        });
+      });
+    });
+  });
+  describe('as a registered user', () => {
+    describe('with cart items', () => {
+      beforeEach(() => {
+        cy.postLogin('userwithcartitemsandsavedaddresses@deviceshop.com', 'password');
+        cy.visit(`${clientUrl}`);
+      });
+      describe('on /cart', () => {
+        beforeEach(() => {
+          cy.visit(`${clientUrl}/${CART_ROUTE}`);
+        });
+        it('one or both added items can be removed', () => {
+          cy.cartOneOrBothAddedItemsCanBeRemoved();
+        });
+        describe('the "Extend warranty" modal is open', () => {
+          beforeEach(() => {
+            cy.cartOpenWarrantyModal();
+          });
+          it('functions as expected while toggling through each option', () => {
+            cy.cartAddonButtonsFunctionAsExpectedWhileToggling();
+          });
+          describe('a warranty addon has been added to the first cart item', () => {
+            beforeEach(() => {
+              cy.cartAddAddon();
+            });
+            it('can be removed via the "Remove plan" button', () => {
+              cy.cartTestRemovePlanButton();
+            });
+            describe('the insurance modal is open', () => {
+              beforeEach(() => {
+                cy.cartOpenInsuranceModal();
+              });
+              it('functions as expected while toggling through each option', () => {
+                cy.cartAddonButtonsFunctionAsExpectedWhileToggling();
+              });
+              describe('an insurance addon was added', () => {
+                beforeEach(() => {
+                  cy.cartAddInsurance();
+                });
+                it('does not replace the warranty addon', () => {
+                  cy.cartWarrantyNotReplaced();
+                });
+              });
+            });
+          });
+        });
+      });
+      describe('on /checkout', () => {
+        beforeEach(() => {
+          cy.visit(`${clientUrl}/${CART_ROUTE}/${CHECKOUT_ROUTE}`);
+        });
+        it('can change the shipping method', () => {
+          cy.checkoutSelectShippingMethod(0);
+          cy.get('.order-item.shipping')
+            .find('.price')
+            .then((firstPrice) => {
+              expect(firstPrice).to.not.contain.text('Select shipping below');
+              cy.checkoutSelectShippingMethod(1);
+              cy.get('.order-item.shipping')
+                .find('.price')
+                .should('not.eq', firstPrice);
+            });
+        });
+        it('initializes with a user\'s default delivery address selected', () => {
+          cy.get('.shipping-fields')
+            .find('#firstName')
+            .should('have.value', 'Emmanuella');
+          cy.get('.shipping-fields')
+            .find('#lastName')
+            .should('have.value', 'Pedro');
+        });
+        it('toggles through a user\'s saved delivery addresses', () => {
+          cy.get('.address-dropdown.toggle')
+            .should('not.have.class', 'loading')
+            .as('theMenu')
+            .click();
+          cy.get('.items.shown')
+            .find('.callback-button')
+            .as('theButtons')
+            .eq(0)
+            .click();
+          cy.get('.shipping-fields')
+            .find('#addressLineOne')
+            .should('have.value', '8 Circle Street');
+          cy.wait(222);
+          cy.get('@theMenu')
+            .click();
+          cy.get('@theButtons')
+            .eq(1)
+            .click();
+          cy.get('.shipping-fields')
+            .find('#addressLineOne')
+            .should('have.value', '68 Roosevelt Dr.');
+        });
+        it('toggles between the form for company addresses and private addresses via the buttons', () => {
+          cy.get('.border-buttons-row')
+            .children()
+            .as('theButtons')
+            .eq(1)
+            .click();
+          cy.get('.address-form')
+            .find('.labeled-input')
+            .eq(0)
+            .find('.label')
+            .as('theLabel')
+            .should('contain.text', 'Company name');
+          cy.get('@theButtons')
+            .eq(0)
+            .click();
+          cy.get('@theLabel')
+            .should('contain.text', 'First name');
+        });
+        describe.only('reviewing the cart items list', () => {
+          let countedTotal = 0;
+          let initialDisplayedTotal = 0;
+          beforeEach(() => {
+            cy.get('.order-items-ul')
+              .find('.order-item')
+              .each((orderItem) => {
+                if (orderItem.hasClass('shipping') || orderItem.hasClass('total')) {
+                  return;
+                }
+                let price = orderItem.find('.price').text();
+                price = price.substring(1);
+                price = Number(price) * 100;
+                countedTotal += price;
+              });
+            cy.get('.order-item.total')
+              .find('.price')
+              .then((totalSpan) => {
+                const total = totalSpan.text().substring(1);
+                initialDisplayedTotal = Number(total) * 100;
+              });
+          });
+          it('has the same total as the sum of its listed items', () => {
+            expect(countedTotal).to.equal(initialDisplayedTotal);
+          });
+          it('updates the total accurately according to the shipping method selected', () => {
+            cy.get('.shipping-fields')
+              .find('.labeled-radio-button')
+              .eq(0)
+              .get('.label')
+              .then((label) => {
+                const shippingPrice = Number(label.text().match(/(?<=\$)\d+\.\d+/)[0]) * 100;
+                cy.checkoutSelectShippingMethod(0);
+                cy.get('.order-item.total')
+                  .find('.price')
+                  .then((totalSpan) => {
+                    let newTotal = totalSpan.text().substring(1);
+                    newTotal = Number(newTotal) * 100;
+                    expect(newTotal).to.equal(initialDisplayedTotal + shippingPrice);
+                  });
+              });
+          });
+        });
+        describe('the payment fields are engaged', () => {
+          it('will block submission of an incomplete form on account of various conditions of incompleteness', () => {
+            cy.get('.shipping-fields')
+              .find('#addressLineOne')
+              .as('theAddressField')
+              .clear();
+            cy.get('.submit-button')
+              .click();
+            cy.hasWarningBorder(cy.get('@theAddressField').parent());
+            cy.get('.shipping-fields')
+              .find('.labeled-radio-button')
+              .eq(0)
+              .as('theShippingMethod');
+            cy.hasWarningBorder(cy.get('@theShippingMethod'));
+            cy.get('.payment-fields')
+              .find('.labeled-radio-button')
+              .eq(0)
+              .as('thePaymentMethod');
+            cy.hasWarningBorder(cy.get('@thePaymentMethod'));
+            cy.get('.payment-fields')
+              .find('#cardNumber')
+              .as('theCardNumberField');
+            cy.hasWarningBorder(cy.get('@theCardNumberField').parent());
+            cy.get('@theAddressField')
+              .type('3355 Connecticut Avenue NW #202');
+            cy.hasNoWarningBorder(cy.get('@theAddressField').parent());
+            cy.checkoutSelectShippingMethod(0);
+            cy.hasNoWarningBorder(cy.get('@theShippingMethod').parent());
+            cy.get('.submit-button')
+              .click();
+            cy.hasWarningBorder(cy.get('@thePaymentMethod'));
+            cy.hasNoWarningBorder(cy.get('@theShippingMethod'));
+            cy.get('@theAddressField')
+              .should('not.have.class', 'warn');
+            cy.hasNoWarningBorder(cy.get('@theAddressField').parent());
+            cy.checkoutSelectPaymentMethod(0);
+            cy.checkoutFillPaymentFields();
+            cy.get('@theAddressField')
+              .clear();
+            cy.get('.submit-button')
+              .click();
+            cy.get('.notification')
+              .should('contain.text', 'Please complete all required shipping fields');
+            cy.hasWarningBorder(cy.get('@theAddressField').parent());
+          });
+          describe('the form is complete', () => {
+            beforeEach(() => {
+              cy.checkoutSelectShippingMethod(0);
+              cy.checkoutSelectPaymentMethod(0);
+              cy.checkoutFillPaymentFields();
+            });
+            it('successfully processes a complete form', () => {
+              cy.get('.submit-button')
+                .click();
+              cy.contains('Your order was placed successfully');
+            });
+          });
+        });
+      });
+    });
   });
 });
 
@@ -993,7 +1401,7 @@ describe('deviceshop app', () => {
       beforeEach(() => {
         cy.get('#top-slider');
       });
-      itsetSorting('', () => {
+      setSorting('', () => {
       });
     });
  */

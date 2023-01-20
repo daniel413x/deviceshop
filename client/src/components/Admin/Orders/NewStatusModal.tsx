@@ -61,7 +61,7 @@ function NewStatusModal({
           Change status
         </div>
         <CloseButton
-          callback={close}
+          onMouseDown={close}
         />
       </div>
       <form onSubmit={submit}>

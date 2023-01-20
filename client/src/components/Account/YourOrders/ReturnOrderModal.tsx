@@ -35,7 +35,7 @@ function ReturnOrderModal({
           </span>
         </div>
         <CloseButton
-          callback={close}
+          onMouseDown={close}
         />
       </div>
       <div className="body">

@@ -155,7 +155,7 @@ function InDepth() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [types.all]);
   return (
     <div className={`in-depth ${loading}`}>
       <SectionHeader

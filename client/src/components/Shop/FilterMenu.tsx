@@ -48,7 +48,10 @@ function FilterMenu({
         };
         const fetchedSpecifications: SpecificationWithDeviceCount[] = await fetchFilteredSpecifications(filteredSpecificationsReqParams);
         const sortedSpecifications = fetchedSpecifications.slice().sort((a, b) => b.count - a.count);
-        setSpecifications(sortedSpecifications);
+        setSpecifications(sortedSpecifications.map((spec) => ({
+          ...spec,
+          id: `${spec.key}${spec.value}`.toLowerCase(),
+        })));
       } finally {
         setTimeout(() => setLoading(false), 60);
       }
@@ -109,7 +112,9 @@ function FilterMenu({
           type="submit"
           buttonStyle="secondary"
         >
-          Apply
+          <span className="text">
+            Apply
+          </span>
         </Button>
         )}
       </form>

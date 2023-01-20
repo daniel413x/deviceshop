@@ -15,7 +15,9 @@ function AddressDropdown({
   const {
     addresses,
     user,
+    notifications,
   } = useContext(Context);
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedAddress, setSelectedAddress] = useState<string>('');
   const selectAddress = (address: IAddressInAddressBook) => {
     setAddress(address);
@@ -23,14 +25,22 @@ function AddressDropdown({
   };
   useEffect(() => {
     (async () => {
-      const fetchedAddresses = await fetchAddresses({ where: { userId: user.id } });
-      addresses.setAddresses(fetchedAddresses);
-      if (addresses.all.length > 0) {
-        addresses.all.forEach((address) => {
-          if (address.isDefault) {
-            selectAddress(address);
-          }
-        });
+      try {
+        const fetchedAddresses = await fetchAddresses({ where: { userId: user.id } });
+        addresses.setAddresses(fetchedAddresses);
+        if (addresses.all.length > 0) {
+          addresses.all.forEach((address) => {
+            if (address.isDefault) {
+              selectAddress(address);
+            }
+          });
+        }
+      } catch (error: any) {
+        notifications.message(
+          `${error.response.data.message}`,
+        );
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);
@@ -40,7 +50,7 @@ function AddressDropdown({
   }));
   return (
     <Dropdown
-      className={`address-dropdown ${addresses.all.length === 0 && 'blocked'}`}
+      className={`address-dropdown ${addresses.all.length === 0 && 'blocked'} ${loading && 'loading'}`}
       label={selectedAddress || 'Saved addresses'}
       dropdownIcon="triangle"
       to={dropdownButtons}

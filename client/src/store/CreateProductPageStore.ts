@@ -161,11 +161,11 @@ export default class CreateProductPageStore {
     this.loading = bool;
   }
 
-  setType(type: IType) {
+  setType(type: IType | undefined) {
     this.type = type;
   }
 
-  setBrand(brand: IBrand) {
+  setBrand(brand: IBrand | undefined) {
     this.brand = brand;
   }
 
@@ -173,26 +173,20 @@ export default class CreateProductPageStore {
     this.id = id;
   }
 
-  setFetchedValues(product: IShopProduct) {
-    if (product.specifications) {
-      this.setSpecifications(product.specifications);
-    }
-    if (product.brand) {
-      this.setBrand(product.brand);
-    }
-    if (product.type) {
-      this.setType(product.type);
-    }
-    this.setId(product.id);
-    this.setBrand(product.brand);
-    this.setType(product.type);
-    this.setStock(product.stock);
-    this.setRating(Number(product.rating));
-    this.setReviewsLength(product.reviews.length);
-    this.setPrice(convertPriceInt(product.price).toString());
-    this.setDescription(product.description);
-    this.setName(product.name);
-    this.setDiscount(product.discount);
-    this.setImages(product.images);
+  setAllValues(product?: IShopProduct) {
+    this.setSpecifications(product?.specifications || []);
+    this.setBrand(product?.brand || undefined);
+    this.setType(product?.type || undefined);
+    this.setId(product?.id || '');
+    this.setBrand(product?.brand);
+    this.setType(product?.type);
+    this.setStock(product?.stock || 10);
+    this.setRating(Number(product?.rating || 0));
+    this.setReviewsLength(product?.reviews.length || 0);
+    this.setPrice(convertPriceInt(product?.price || 100000).toString());
+    this.setDescription(product?.description || '');
+    this.setName(product?.name || '');
+    this.setDiscount(product?.discount || 10);
+    this.setImages(product?.images || []);
   }
 }

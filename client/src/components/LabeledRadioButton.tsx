@@ -1,6 +1,7 @@
 import React, {
   useState, useRef, MouseEvent, useEffect,
 } from 'react';
+import useInputIncomplete from '../hooks/useInputIncomplete';
 import useOnClickOutside from '../hooks/useOnOutsideClick';
 
 interface LabeledRadioButtonProps {
@@ -8,11 +9,14 @@ interface LabeledRadioButtonProps {
   name: string;
   boolean: boolean;
   onClick: () => void;
+  id: string;
+  value: any;
   className?: string;
   light?: boolean;
-  id: string;
-  warn?: boolean;
-  value: any;
+  warnCondition?: boolean;
+  selectedValue?: any;
+  pressedSubmit?: boolean;
+  setPressedSubmit?: (bool: boolean) => void;
 }
 
 function LabeledRadioButton({
@@ -23,9 +27,20 @@ function LabeledRadioButton({
   light,
   id,
   onClick,
-  warn,
+  warnCondition,
   value,
+  selectedValue,
+  pressedSubmit,
+  setPressedSubmit,
 }: LabeledRadioButtonProps) {
+  const {
+    warn,
+  } = useInputIncomplete({
+    condition: warnCondition,
+    pressedSubmit,
+    setPressedSubmit,
+    value: selectedValue,
+  });
   const [active, setActive] = useState<boolean>(false);
   const [boxShadow, setBoxShadow] = useState<boolean>(false);
   const ref = useRef<HTMLButtonElement>(null);
@@ -44,7 +59,6 @@ function LabeledRadioButton({
     onClick();
     radioRef.current?.click();
   };
-  // !pressedEnter && !
   return (
     <button
       className={`labeled-radio-button ${boolean && 'checked'} ${active && 'active'} ${className} ${warn && 'warn'}`}
@@ -80,7 +94,10 @@ function LabeledRadioButton({
 LabeledRadioButton.defaultProps = {
   light: false,
   className: '',
-  warn: false,
+  warnCondition: false,
+  pressedSubmit: undefined,
+  setPressedSubmit: undefined,
+  selectedValue: undefined,
 };
 
 export default LabeledRadioButton;

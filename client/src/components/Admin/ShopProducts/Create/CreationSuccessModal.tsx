@@ -41,7 +41,7 @@ function CreationSuccessModal({
           Shop product created
         </div>
         <CloseButton
-          callback={close}
+          onMouseDown={close}
         />
       </div>
       <div className="body">

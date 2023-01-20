@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 interface UseInputIncompleteProps {
-  input?: string;
+  value?: string;
   pressedSubmit?: boolean;
   setPressedSubmit?: (boolean: boolean) => void;
   condition?: boolean;
@@ -13,7 +13,7 @@ interface UseInputIncompleteReturn {
 }
 
 const useInputIncomplete = ({
-  input,
+  value,
   setPressedSubmit,
   pressedSubmit,
   condition,
@@ -30,7 +30,7 @@ const useInputIncomplete = ({
       if (condition) {
         setWarn(true);
         setPressedSubmit(false);
-      } else if (!input || input === '') {
+      } else if (!value) {
         setWarn(true);
         setPressedSubmit(false);
       }
@@ -38,7 +38,7 @@ const useInputIncomplete = ({
   }, [pressedSubmit]);
   useEffect(() => {
     removeWarning();
-  }, [input]);
+  }, [value]);
   return {
     warn,
     removeWarning,

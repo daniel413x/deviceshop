@@ -41,7 +41,7 @@ const Input = forwardRef(({
     warn,
     removeWarning,
   } = useInputIncomplete({
-    input,
+    value: input,
     setPressedSubmit,
     pressedSubmit,
     condition: warnCondition,

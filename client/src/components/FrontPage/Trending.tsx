@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { observer } from 'mobx-react-lite';
 import TrendingItems from './TrendingItems';
 import { fetchProducts } from '../../http/shopProductAPI';
 import Context from '../../context/context';
@@ -101,4 +102,4 @@ function Trending() {
   );
 }
 
-export default Trending;
+export default observer(Trending);

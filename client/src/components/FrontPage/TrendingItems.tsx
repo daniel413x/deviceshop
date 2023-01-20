@@ -29,7 +29,7 @@ function TrendingItems({
         setLoading(false);
       }
     })();
-  }, []);
+  }, [api]);
   return (
     <div className={`trending-items ${className} ${loading}`}>
       <SectionHeader

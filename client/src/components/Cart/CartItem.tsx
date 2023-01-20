@@ -80,12 +80,14 @@ function CartItem({
             <Button
               buttonStyle="secondary"
               onClick={openWarrantyModal}
+              className="warranty-button"
             >
               {showChangeWarrantyButton ? 'Change warranty' : 'Extend warranty'}
             </Button>
             <Button
               onClick={openInsuranceModal}
               buttonStyle="secondary"
+              className="insurance-button"
             >
               Add insurance
             </Button>
@@ -113,7 +115,7 @@ function CartItem({
         />
       )}
       <div className="divider" />
-      <CloseButton callback={openDeleteModal} />
+      <CloseButton onClick={openDeleteModal} />
     </div>
   );
 }

@@ -17,6 +17,12 @@ interface ReviewProps {
 function Review({
   review,
 }: ReviewProps) {
+  if (!review) {
+    return null;
+  }
+  if (!review.orderedproduct || !review.shopproduct) {
+    return null;
+  }
   const {
     avatar,
     firstName,
@@ -27,9 +33,10 @@ function Review({
     id,
     body,
   } = review;
-  const {
-    name: productName,
-  } = review.shopproduct;
+  let productName = '';
+  if (review.shopproduct) {
+    productName = review.shopproduct.name;
+  }
   const {
     createdAt,
   } = review.orderedproduct;
@@ -179,7 +186,7 @@ function Reviews({
         {!noReviews && (
         <RatingBadge
           rating={decimalRating}
-          reviewsLength={reviews.length}
+          reviewsLength={dbReviewCount}
         />
         )}
       </div>
@@ -190,6 +197,7 @@ function Reviews({
       />
       )}
       {!noReviews && <div className="divider" />}
+      {!noReviews && (
       <List
         className="reviews-ul"
         items={reviews}
@@ -201,10 +209,11 @@ function Reviews({
           </li>
         ))}
       />
+      )}
       {!noReviews && (
       <Button
         onClick={loadMore}
-        className={`next-page-button ${pageLimitReached && 'blocked'}`}
+        className={`next-page-button ${(loading || pageLimitReached) && 'blocked'} ${pageLimitReached && 'limit-reached'}`}
       >
         Show more
       </Button>

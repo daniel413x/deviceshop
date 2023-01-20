@@ -33,6 +33,7 @@ export const REFRIGERATOR = 'refrigerator';
 export const DESKTOP = 'desktop';
 export const SAMSUNG = 'samsung';
 export const CREATE_ROUTE = 'create';
+export const CREATE_SHOPPRODUCT_ROUTE = `${ADMIN_ROUTE}/${SHOP_PRODUCTS_ROUTE}/${CREATE_ROUTE}`;
 export const EDIT_ROUTE = 'edit';
 export const DELETED_ROUTE = 'deleted';
 export const APPLE = 'apple';

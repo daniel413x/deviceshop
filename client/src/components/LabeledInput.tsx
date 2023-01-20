@@ -27,7 +27,7 @@ function LabeledInput({
   const {
     warn,
   } = useInputIncomplete({
-    input,
+    value: input,
     setPressedSubmit,
     pressedSubmit,
     condition: warnCondition,

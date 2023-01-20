@@ -145,7 +145,7 @@ body, html {
   font-size: 0.875rem;
   font-weight: 400;
   opacity: 0;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   margin-bottom: .25rem;
   transition: all 0.5s var(--ease-out-anim);
   transform:translateY(-20%);
@@ -847,7 +847,6 @@ form.checkout-style .labeled-input input {
   border-radius: 3px;
   padding: 0.25rem 0.625rem;
   position: relative;
-  border: 1px solid var(--primary-text-light);
 }
 
 .price-tags .discounted-price {
@@ -878,6 +877,10 @@ form.checkout-style .labeled-input input {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+
+.shop-product-card .price-tags .undiscounted-price, .shop-product-card .price-tags .discounted-price {
+  border: 1px solid var(--primary-text-light);
 }
 
 .shop-product-card .lower-col {
@@ -1846,11 +1849,19 @@ form.checkout-style .labeled-input input {
   display: flex;
 }
 
+.border-buttons-row {
+  display: flex;
+}
+
 .border-buttons-row .button {
   border-bottom: 1px solid var(--primary-accent);
   position: relative;
   transition: all 0.1s linear;
   padding: 0.95rem;
+}
+
+.border-buttons-row .button:focus {
+  box-shadow: none;
 }
 
 .border-buttons-row .button.selected {
@@ -2634,10 +2645,20 @@ form.checkout-style .labeled-input input {
 
 #shop .filter-buttons-ul .filter-menu .form-wrapper .submit-button {
   width: 100%;
-  text-align: center;
   padding: 0.5rem 0;
   border: 0;
   font-weight: 600;
+}
+
+#shop .filter-buttons-ul .filter-menu .form-wrapper .submit-button {
+  width: 100%;
+  padding: 0.5rem 0;
+  border: 0;
+  font-weight: 600;
+}
+
+#shop .filter-buttons-ul .filter-menu .form-wrapper .submit-button .text {
+  padding-left: 0.75rem;
 }
 
 #shop .sorting-buttons-row {
@@ -3279,6 +3300,10 @@ form.checkout-style .labeled-input input {
 
 #checkout .radio-button-ul .labeled-radio-button.selected {
   background-color: var(--primary-accent-light);
+}
+
+#checkout .radio-button-ul .labeled-radio-button.warn {
+  border: 1px solid var(--warn-red);
 }
 
 #checkout .fields {

@@ -84,7 +84,7 @@ export default class CartStore {
     return false;
   }
 
-  getIntTotal() {
+  getTotal() {
     let total = 0;
     this.items.forEach((item) => {
       total += item.price;
@@ -94,10 +94,20 @@ export default class CartStore {
         });
       }
     });
+    return total;
+  }
+
+  getTax() {
+    const total = this.getTotal();
+    return total * 0.05;
+  }
+
+  getIntTotal() {
+    let total = this.getTotal();
     if (this.shippingMethod) {
       total += this.shippingMethod.price;
     }
-    const tax = total * 0.05;
+    const tax = this.getTax();
     return total + tax;
   }
 

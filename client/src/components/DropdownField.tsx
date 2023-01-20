@@ -28,7 +28,7 @@ function DropdownField({
   const {
     warn,
   } = useInputIncomplete({
-    input: value,
+    value,
     setPressedSubmit,
     pressedSubmit,
   });

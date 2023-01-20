@@ -57,7 +57,10 @@ function PaymentFields({
               name="paymentMethod"
               boolean={button.id === paymentMethod}
               className={`${button.id === paymentMethod && 'selected'}`}
-              warn={pressedSubmit && !paymentMethod}
+              warnCondition={pressedSubmit && !paymentMethod}
+              pressedSubmit={pressedSubmit}
+              setPressedSubmit={setPressedSubmit}
+              selectedValue={paymentMethod}
             />
           </li>
         ))}

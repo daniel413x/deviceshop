@@ -41,15 +41,8 @@ const usePagination = ({
   const nextPage = () => changePage(page + 1);
   const prevPage = () => changePage(page - 1);
   useEffect(() => {
-    if (page === pageLimit) {
-      setPageLimitReached(true);
-    } else {
-      setPageLimitReached(false);
-    }
-  }, [page, pageLimit, pageFromQuery]);
-  useEffect(() => {
     const newPageLimit = getMaxPage(itemsInDb, itemsPerPage);
-    setPageLimit(newPageLimit);
+    setPageLimit(newPageLimit || 1);
     if (newPageLimit > 0 && page > newPageLimit) {
       changePage(newPageLimit);
     }
@@ -59,6 +52,13 @@ const usePagination = ({
       setPage(pageFromQuery);
     }
   }, [pageFromQuery]);
+  useEffect(() => {
+    if (page === pageLimit) {
+      setPageLimitReached(true);
+    } else {
+      setPageLimitReached(false);
+    }
+  }, [page, pageLimit, pageFromQuery]);
   return {
     page,
     pageLimit,

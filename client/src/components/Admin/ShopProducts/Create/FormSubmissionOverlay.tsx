@@ -94,6 +94,9 @@ function FormSubmissionOverlay() {
     if (createProductPage.id) {
       setSelectedType(createProductPage.type);
       setSelectedBrand(createProductPage.brand);
+    } else {
+      setSelectedType(undefined);
+      setSelectedBrand(undefined);
     }
   }, [createProductPage.id]);
   return (

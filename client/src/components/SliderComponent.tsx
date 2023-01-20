@@ -3,6 +3,8 @@ import React, {
   ChangeEvent,
 } from 'react';
 import Slider from 'react-slick';
+import { useLocation } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
 import useKeyPress from '../hooks/useKeyPress';
 import { ReactComponent as AddIcon } from '../assets/icons/Add.svg';
 import { ReactComponent as TrashIcon } from '../assets/icons/Trash.svg';
@@ -11,6 +13,7 @@ import SliderAngleButton from './SliderAngleButton';
 import { Image } from '../types/types';
 import Context from '../context/context';
 import createProductPlaceholder from '../assets/images/create-product-placeholder.png';
+import { CREATE_SHOPPRODUCT_ROUTE } from '../utils/consts';
 
 interface ReplaceableImageProps {
   img: Image;
@@ -59,6 +62,7 @@ function SliderComponent({
   const {
     createProductPage,
   } = useContext(Context);
+  const { pathname } = useLocation();
   const [images, setImages] = useState<Image[]>([]);
   const [index, setIndex] = useState<number>(0);
   const rightPress = useKeyPress('ArrowRight');
@@ -74,6 +78,7 @@ function SliderComponent({
     swipe: false,
     accessibility: true,
     autoplay,
+    autoplaySpeed: 5000,
     fade: instant,
     afterChange: (newIndex: number) => {
       setIndex(newIndex);
@@ -160,11 +165,14 @@ function SliderComponent({
     shouldCleanupBackend();
   };
   useEffect(() => {
-    if (admin && !createProductPage.loading) {
+    if (admin && !createProductPage.loading && createProductPage.images.length > 0) {
       setImages(createProductPage.images.map((image) => ({
         url: `${process.env.REACT_APP_API_URL}${image.url}`,
         file: null,
       })));
+      if (pathname === `/${CREATE_SHOPPRODUCT_ROUTE}`) {
+        setImages([]);
+      }
     }
   }, [createProductPage.loading]);
   const addImageRef = useRef<HTMLInputElement>(null);
@@ -275,4 +283,4 @@ SliderComponent.defaultProps = {
   propImages: [],
 };
 
-export default SliderComponent;
+export default observer(SliderComponent);

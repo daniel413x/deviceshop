@@ -10,7 +10,7 @@ function CartItems() {
     cart,
   } = useContext(Context);
   const total = cart.getIntTotal();
-  const tax = total * 0.05;
+  const tax = cart.getTax();
   return (
     <OrderItems
       items={cart.items as IOrderedProduct[]}
@@ -18,6 +18,7 @@ function CartItems() {
       <li key="shipping-cost">
         <OrderItem
           legend="Shipping"
+          className="shipping"
           value={cart.shippingMethod ? cart.shippingMethod.price : 'Select shipping below'}
         />
       </li>

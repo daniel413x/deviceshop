@@ -49,6 +49,7 @@ function ShippingFields({
             <ShippingMethod
               onClick={() => setSelectedShippingMethod(shippingMethod)}
               pressedSubmit={pressedSubmit}
+              setPressedSubmit={setPressedSubmit}
               shippingMethod={shippingMethod}
               selectedShippingMethod={selectedShippingMethod!}
             />

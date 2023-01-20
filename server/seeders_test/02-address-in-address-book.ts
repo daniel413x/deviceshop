@@ -1,16 +1,13 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import {
+  userWithCartItemsAndSavedAddresses,
   userWithSavedAddresses,
 } from '../utils/consts';
-
-export const addressInAddressBookOne = uuidv4();
-export const addressInAddressBookTwo = uuidv4();
-export const addressInAddressBookThree = uuidv4();
 
 export default {
   up: (queryInterface) => queryInterface.bulkInsert('AddressInAddressBook', [
     {
-      id: addressInAddressBookOne,
+      id: uuid(),
       userId: userWithSavedAddresses,
       firstName: 'Kelsea',
       lastName: 'Sullivan',
@@ -23,7 +20,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      id: addressInAddressBookTwo,
+      id: uuid(),
       userId: userWithSavedAddresses,
       firstName: 'Kelsea',
       lastName: 'Sullivan',
@@ -37,7 +34,7 @@ export default {
       updatedAt: new Date(),
     },
     {
-      id: addressInAddressBookThree,
+      id: uuid(),
       userId: userWithSavedAddresses,
       firstName: 'Kelsea',
       lastName: 'Sullivan',
@@ -46,6 +43,32 @@ export default {
       state: 'DC',
       zip: '20008',
       isDefault: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuid(),
+      userId: userWithCartItemsAndSavedAddresses,
+      firstName: 'Emmanuella',
+      lastName: 'Pedro',
+      addressLineOne: '8 Circle Street',
+      city: 'Washington',
+      state: 'DC',
+      zip: '20529',
+      isDefault: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuid(),
+      userId: userWithCartItemsAndSavedAddresses,
+      firstName: 'Emmanuella',
+      lastName: 'Pedro',
+      addressLineOne: '68 Roosevelt Dr.',
+      city: 'Washington',
+      state: 'DC',
+      zip: '20407',
+      isDefault: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     },

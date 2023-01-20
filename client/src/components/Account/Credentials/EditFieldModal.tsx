@@ -66,7 +66,7 @@ function EditFieldModal({
           </span>
         </div>
         <CloseButton
-          callback={close}
+          onMouseDown={close}
         />
       </div>
       <form onSubmit={submit}>
