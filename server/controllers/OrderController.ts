@@ -17,6 +17,7 @@ import {
 import OrderedShippingMethod from '../db/models/OrderedShippingMethod';
 import { inclusionsForOrder } from '../utils/inclusions';
 import { FindAndCountOptions } from '../types/types';
+import ShopProduct from '../db/models/ShopProduct';
 
 class OrderController extends BaseController<Order> {
   constructor() {
@@ -26,6 +27,9 @@ class OrderController extends BaseController<Order> {
   async get(req: Request, res: Response) {
     const { id } = res.locals.user;
     const options: any = {
+      order: [
+        [col('createdAt'), 'DESC'],
+      ],
       where: {
         userId: id,
       },
@@ -115,6 +119,16 @@ class OrderController extends BaseController<Order> {
         cartId: null,
       });
     }));
+    const shopProducts = await ShopProduct.findAll({
+      where: {
+        id: orderedProducts.rows.map((orderedProduct) => orderedProduct.shopProductId),
+      },
+    });
+    shopProducts.forEach((shopProduct) => {
+      shopProduct.update({
+        stock: shopProduct.stock - 1,
+      });
+    });
     await AddressForOrder.create({
       ...address,
       orderId: order.id,

@@ -24,6 +24,7 @@ import FilterLink from '../../../components/Admin/ShopProducts/FilterLink';
 import AdminSideCol from '../../../components/Admin/AdminSideCol';
 import { fetchOrdersAdmin } from '../../../http/orderAPI';
 import Order from '../../../components/Order';
+import FilterLinks from '../../../components/Admin/FilterLinks';
 
 function Orders() {
   const itemsPerPage = 10;
@@ -46,6 +47,7 @@ function Orders() {
     dbCount,
     setSearchParams,
     setItems: setOrders,
+    loading,
   } = useQueriedItems<IOrder>({
     initialSorting: 'byNewest',
     fetchAPI: fetchOrdersAdmin,
@@ -93,17 +95,19 @@ function Orders() {
               dontRenderResults
               setSearchParams={setSearchParams}
             />
-            <FilterLink
-              label={`All (${allOrdersCount})`}
-              to={`/${ADMIN_ROUTE}/${ORDERS_ROUTE}`}
-            />
-            <FilterLink
-              label={`Unshipped (${unshippedOrdersCount})`}
-              to={`/${ADMIN_ROUTE}/${ORDERS_ROUTE}/${UNSHIPPED}`}
-            />
+            <FilterLinks>
+              <FilterLink
+                label={`All (${allOrdersCount})`}
+                to={`/${ADMIN_ROUTE}/${ORDERS_ROUTE}`}
+              />
+              <FilterLink
+                label={`Unshipped (${unshippedOrdersCount})`}
+                to={`/${ADMIN_ROUTE}/${ORDERS_ROUTE}/${UNSHIPPED}`}
+              />
+            </FilterLinks>
           </div>
           <List
-            className="search-results-ul"
+            className={`search-results-ul ${loading && 'loading'}`}
             items={orders}
             childrenBefore
             renderAs={(order) => (

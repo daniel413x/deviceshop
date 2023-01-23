@@ -1,5 +1,11 @@
 /* eslint-disable no-undef */
-import { CART_ROUTE, CHECKOUT_ROUTE } from '../../../src/utils/consts';
+import {
+  CANCELLATION_REQUESTED,
+  CART_ROUTE,
+  CHECKOUT_ROUTE,
+  PROCESSING,
+  CANCELED,
+} from '../../../src/utils/consts';
 import { clientUrl, serverUrl } from '../../support/commands';
 
 /// <reference types="cypress" />
@@ -1290,7 +1296,7 @@ describe('deviceshop app', () => {
           cy.get('@theLabel')
             .should('contain.text', 'First name');
         });
-        describe.only('reviewing the cart items list', () => {
+        describe('reviewing the cart items list', () => {
           let countedTotal = 0;
           let initialDisplayedTotal = 0;
           beforeEach(() => {
@@ -1392,16 +1398,339 @@ describe('deviceshop app', () => {
           });
         });
       });
+      describe('on /account/addresses', () => {
+        beforeEach(() => {
+          cy.visit(`${clientUrl}/account/addresses`);
+        });
+        describe('using the "Add an address" form', () => {
+          beforeEach(() => {
+            cy.get('.border-buttons-row')
+              .children()
+              .eq(0)
+              .click();
+          });
+          it('creates addresses', () => {
+            cy.addressesFillForm();
+            cy.get('.submit-button')
+              .click();
+            cy.get('.border-buttons-row')
+              .eq(0)
+              .children()
+              .eq(1)
+              .click();
+            cy.get('.address-dropdown.toggle')
+              .click();
+            cy.get('.items.shown')
+              .should('contain.text', '4326 Wisconsin Avenue');
+          });
+          it('creates a default address', () => {
+            cy.addressesFillForm();
+            cy.get('.labeled-checkbox-button.default-checkbox')
+              .click();
+            cy.get('.submit-button')
+              .click();
+            cy.visit(`${clientUrl}/${CART_ROUTE}/${CHECKOUT_ROUTE}`);
+            cy.get('.shipping-fields')
+              .find('#addressLineOne')
+              .should('have.value', '4326 Wisconsin Avenue');
+          });
+        });
+        describe('using the "Edit an address" form', () => {
+          beforeEach(() => {
+            cy.get('.border-buttons-row')
+              .children()
+              .eq(1)
+              .click();
+          });
+          it('initializes with the default delivery address selected', () => {
+            cy.get('.labeled-checkbox-button.default-checkbox')
+              .find('#makeDefault')
+              .should('contain.value', 'true');
+            cy.addressesSelectAddress(0);
+            cy.addressesIsNotDefaultAddress();
+          });
+          it('can update fields in a user\'s address', () => {
+            cy.get('#addressLineOne')
+              .clear()
+              .type('4326 Wisconsin Avenue');
+            cy.get('.submit-button')
+              .click();
+            cy.get('.notification')
+              .contains('Address updated');
+          });
+          it('can set the user\'s default address', () => {
+            cy.addressesSelectAddress(0);
+            cy.get('.labeled-checkbox-button.default-checkbox')
+              .click();
+            cy.get('.submit-button')
+              .click();
+            cy.get('.notification')
+              .contains('Address updated');
+            cy.visit(`${clientUrl}/${CART_ROUTE}/${CHECKOUT_ROUTE}`);
+            cy.get('.shipping-fields')
+              .find('#addressLineOne')
+              .should('have.value', '8 Circle Street');
+          });
+        });
+      });
+    });
+    describe('with orders', () => {
+      beforeEach(() => {
+        cy.postLogin('userwithcartitemsandordersandreviews@deviceshop.com', 'password');
+      });
+      describe('on account/orders', () => {
+        beforeEach(() => {
+          cy.visit(`${clientUrl}/account/orders`);
+        });
+        it('can send an order cancellation request', () => {
+          cy.get('.order')
+            .eq(0)
+            .as('theOrder')
+            .find('.buttons-row')
+            .then((buttonsRow) => {
+              if (buttonsRow.hasClass('blocked')) {
+                cy.get('.order')
+                  .eq(1)
+                  .as('theOrder');
+              }
+              cy.get('@theOrder')
+                .find('.cancel-order-button')
+                .click();
+              cy.get('.modal.show')
+                .find('.labeled-radio-button')
+                .eq(1)
+                .click();
+              cy.get('.modal.show')
+                .find('.submit-button')
+                .click();
+              cy.get('@theOrder')
+                .find('.col.status')
+                .find('.value')
+                .should('have.text', CANCELLATION_REQUESTED);
+            });
+        });
+      });
+      describe('on account/credentials', () => {
+        beforeEach(() => {
+          cy.visit(`${clientUrl}/account/credentials`);
+        });
+        it('can change an account\'s first name, last name and phone number', () => {
+          cy.credentialsChangeFieldTo(0, 'Daniel');
+          cy.credentialsChangeFieldTo(1, 'Rahill');
+          cy.credentialsChangeFieldTo(3, '292-308-3074');
+        });
+        it('can change an account\'s password', () => {
+          cy.get('.field')
+            .eq(2)
+            .find('.button')
+            .click();
+          cy.get('.modal.show')
+            .find('#new-value')
+            .clear()
+            .type('newPassword');
+          cy.get('.modal.show')
+            .find('#confirm-password')
+            .clear()
+            .type('newPassword');
+          cy.get('.modal.show')
+            .find('.submit-button')
+            .click();
+          cy.get('.account-link.toggle')
+            .click();
+          cy.get('.items.shown')
+            .find('.dropdown.nav-button')
+            .eq(1)
+            .click();
+          cy.get('.account-link')
+            .click();
+          cy.get('#email-field')
+            .type('userwithcartitemsandordersandreviews@deviceshop.com');
+          cy.get('#password-field')
+            .type('newPassword');
+          cy.get('#submit-button')
+            .click({ force: true });
+          cy.contains('You logged in successfully');
+        });
+      });
+    });
+  });
+  describe('as an admin', () => {
+    beforeEach(() => {
+      cy.postLogin('admin@deviceshop.com', 'password');
+    });
+    describe('on admin/orders', () => {
+      beforeEach(() => {
+        cy.visit(`${clientUrl}/admin/orders`);
+      });
+      it('can fetch specific orders by typing their id\'s in the searchbox', () => {
+        cy.get('.order')
+          .eq(1)
+          .find('.id')
+          .then((searchedId) => {
+            const searchTerm = searchedId.text().slice(0, 4);
+            cy.get('.main-col')
+              .find('.searchbox')
+              .find('input')
+              .type(searchTerm);
+            cy.adminSearchboxLoaded();
+            cy.get('.order')
+              .find('.id')
+              .should('contain.text', searchedId.text());
+          });
+      });
+      it('should be ordered by status: Processing, Delivered, Canceled', () => {
+        cy.adminOrderIsProcessing(0);
+        cy.adminOrderIsDelivered(1);
+        cy.adminOrderIsDelivered(2);
+        cy.adminOrderIsDelivered(3);
+        cy.adminOrderIsDelivered(4);
+        cy.adminOrderIsCanceled(5);
+      });
+      it('updates status changes accordingly', () => {
+        cy.adminChangeOrderStatus(0, 0);
+        cy.adminOrderIsShipped(0);
+        cy.adminChangeOrderStatus(0, 1);
+        cy.adminOrderIsDelivered(0);
+      });
+      describe('on admin/orders/unshipped', () => {
+        beforeEach(() => {
+          cy.get('.filter-link')
+            .eq(1)
+            .click();
+        });
+        it('shows only "Processing" orders', () => {
+          cy.get('.status.col .value')
+            .each((statusValue) => {
+              expect(statusValue).to.have.text(PROCESSING);
+            });
+        });
+        it('does not display "Canceled" orders', () => {
+          cy.get('.status.col .value')
+            .each((statusValue) => {
+              expect(statusValue).to.not.have.text(CANCELED);
+            });
+        });
+      });
+    });
+    describe('on admin/shopproducts', () => {
+      beforeEach(() => {
+        cy.visit(`${clientUrl}/admin/shopproducts`);
+      });
+      describe('using the searchbar', () => {
+        it('fetches and renders results', () => {
+          cy.get('.main-col')
+            .find('.searchbox')
+            .find('input')
+            .type('s');
+          cy.adminSearchboxLoaded();
+          cy.get('.search-results-ul')
+            .find('li')
+            .should('have.length.greaterThan', 2);
+        });
+        it('fetches and renders only Samsung or Apple products upon respective input', () => {
+          cy.adminTestSearchboxInput('samsung');
+          cy.adminTestSearchboxInput('apple');
+        });
+        it('fetches and renders only 128GB or 256GB products upon respective input', () => {
+          cy.adminTestSearchboxInput('256');
+          cy.adminTestSearchboxInput('128');
+        });
+        it('fetches and renders only 128GB Samsung, 128GB Apple, 256GB Samsung or 256GB Apple products upon respective input ', () => {
+          cy.adminTestSearchboxInput('samsung 256');
+          cy.adminTestSearchboxInput('samsung 128');
+          cy.adminTestSearchboxInput('apple 256');
+          cy.adminTestSearchboxInput('apple 128');
+        });
+        it('renders a "no results" item if no results were fetched', () => {
+          cy.get('.main-col')
+            .find('.searchbox')
+            .find('input')
+            .type('asdfc');
+          cy.adminSearchboxLoaded();
+          cy.get('.main-col')
+            .find('.search-results-ul')
+            .contains('No results');
+        });
+        describe('on the second page of search results', () => {
+          beforeEach(() => {
+            cy.get('.arrow-button.forward')
+              .click();
+          });
+          it('returns the user to page 1 after entering input which returns only enough results to support a maximum page of one', () => {
+            cy.get('.main-col')
+              .find('.searchbox')
+              .find('input')
+              .type('samsung');
+            cy.adminSearchboxLoaded();
+            cy.get('.number-button.current-page')
+              .should('contain.text', '1');
+          });
+          describe('on the third page of search results', () => {
+            beforeEach(() => {
+              cy.get('.arrow-button.forward')
+                .click();
+            });
+            it('returns the user to page 2 after entering input which returns only enough results to support a maximum page of two', () => {
+              cy.get('.main-col')
+                .find('.searchbox')
+                .find('input')
+                .type('apple');
+              cy.adminSearchboxLoaded();
+              cy.get('.number-button.current-page')
+                .should('contain.text', '2');
+            });
+          });
+        });
+      });
+      it('moves a shop product to the recycling bin via the deletion modal', () => {
+        cy.adminSearchboxLoaded();
+        cy.get('.filter-link')
+          .eq(1)
+          .then((filterLink) => {
+            const initialDeletedCount = filterLink.text().match(/\d/g)[0];
+            cy.get('.search-result')
+              .eq(2)
+              .find('.name')
+              .then((deletedProductName) => {
+                cy.get('.search-result')
+                  .eq(2)
+                  .find('.icon-button.trash-icon')
+                  .click();
+                cy.get('.modal.show')
+                  .find('.confirm-button')
+                  .click();
+                cy.get('.filter-link')
+                  .eq(1)
+                  .should('contain.text', String(Number(initialDeletedCount) + 1));
+                cy.get('.filter-link')
+                  .eq(1)
+                  .click();
+                cy.adminSearchboxLoaded();
+                cy.contains(deletedProductName.text());
+              });
+          });
+      });
+      describe('on admin/shopproducts/deleted', () => {
+        beforeEach(() => {
+          cy.visit(`${clientUrl}/admin/shopproducts/deleted`);
+        });
+        it('deletes items from the recycling bin', () => {
+          cy.adminSearchboxLoaded();
+          cy.get('.search-result')
+            .eq(0)
+            .find('.name')
+            .then((deletedProductName) => {
+              cy.get('.search-result')
+                .eq(0)
+                .find('.icon-button.trash-icon')
+                .click();
+              cy.get('.modal.show')
+                .find('.confirm-button')
+                .click();
+              cy.should('not.contain', deletedProductName.text());
+            });
+        });
+      });
     });
   });
 });
-
-/*
-    describe('as a guest', () => {
-      beforeEach(() => {
-        cy.get('#top-slider');
-      });
-      setSorting('', () => {
-      });
-    });
- */

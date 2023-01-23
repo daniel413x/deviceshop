@@ -21,11 +21,14 @@ export default class AddressStore {
     this.addresses = [...this.addresses, address];
   }
 
-  updateAddress(updatedAddress: IAddress) {
+  updateAddress(updatedId: string, updatedFields: Partial<IAddress>) {
     this.handlePreviousDefault();
     this.addresses = this.addresses.map((address) => {
-      if (updatedAddress.id === address.id) {
-        return updatedAddress;
+      if (updatedId === address.id) {
+        return {
+          ...address,
+          ...updatedFields,
+        };
       }
       return address;
     });

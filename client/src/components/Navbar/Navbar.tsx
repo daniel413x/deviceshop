@@ -84,6 +84,7 @@ function Navbar() {
             label="Account"
             to={user.isAdmin ? [{ to: ADMIN_ROUTE, label: 'Admin' }, ...navbarAccountButtons] : navbarAccountButtons}
             dropdownIcon="account"
+            className="account-link"
           />
         )}
         <Search

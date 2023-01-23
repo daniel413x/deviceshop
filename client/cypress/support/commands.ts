@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-loop-func */
 /// <reference types="cypress" />
 
-import { objectHasProp } from "../../src/utils/functions";
+import {
+  CANCELED, DELIVERED, PROCESSING, SHIPPED,
+} from '../../src/utils/consts';
+import { objectHasProp } from '../../src/utils/functions';
 
 export const clientUrl = 'http://localhost:3000';
 export const serverUrl = 'http://localhost:6006';
@@ -528,6 +531,133 @@ Cypress.Commands.add('hasWarningBorder', (obj: any) => {
 
 Cypress.Commands.add('hasNoWarningBorder', (obj: any) => {
   obj.should('not.have.class', 'warn');
+});
+
+Cypress.Commands.add('credentialsChangeFieldTo', (index: number, value: string) => {
+  cy.get('.field')
+    .eq(index)
+    .find('.button')
+    .click();
+  cy.get('.modal.show')
+    .get('.input')
+    .clear()
+    .type(value);
+  cy.get('.submit-button')
+    .click();
+  cy.get('.field')
+    .eq(index)
+    .find('.field-value-col')
+    .find('.value')
+    .should('have.text', value);
+});
+
+Cypress.Commands.add('addressesFillForm', (index: number, value: string) => {
+  cy.get('#firstName')
+    .clear()
+    .type('Daniel');
+  cy.get('#lastName')
+    .clear()
+    .type('Rahill');
+  cy.get('#addressLineOne')
+    .clear()
+    .type('4326 Wisconsin Avenue');
+  cy.get('#city')
+    .clear()
+    .type('Washington');
+  cy.get('#state')
+    .clear()
+    .type('DC');
+  cy.get('#zip')
+    .clear()
+    .type('20008');
+});
+
+Cypress.Commands.add('addressesSelectAddress', (index: number) => {
+  cy.get('.address-dropdown.toggle')
+    .click();
+  cy.get('.items.shown')
+    .children()
+    .eq(index)
+    .click();
+});
+
+Cypress.Commands.add('addressesIsDefaultAddress', () => {
+  cy.get('.labeled-checkbox-button.default-checkbox')
+    .find('#makeDefault')
+    .should('contain.value', 'true');
+});
+
+Cypress.Commands.add('addressesIsNotDefaultAddress', () => {
+  cy.get('.labeled-checkbox-button.default-checkbox')
+    .find('#makeDefault')
+    .should('contain.value', 'false');
+});
+
+Cypress.Commands.add('adminGetOrderStatusCol', (index: number) => {
+  cy.get('.order')
+    .eq(index)
+    .find('.col.status')
+    .find('.value');
+});
+
+Cypress.Commands.add('adminOrderIsProcessing', (index: number) => {
+  cy.adminGetOrderStatusCol(index)
+    .should('have.text', PROCESSING);
+});
+
+Cypress.Commands.add('adminOrderIsShipped', (index: number) => {
+  cy.adminGetOrderStatusCol(index)
+    .should('have.text', SHIPPED);
+});
+
+Cypress.Commands.add('adminOrderIsDelivered', (index: number) => {
+  cy.adminGetOrderStatusCol(index)
+    .should('have.text', DELIVERED);
+});
+
+Cypress.Commands.add('adminOrderIsCanceled', (index: number) => {
+  cy.adminGetOrderStatusCol(index)
+    .should('have.text', CANCELED);
+});
+
+Cypress.Commands.add('adminChangeOrderStatus', (orderIndex: number, statusIndex: number) => {
+  cy.get('.order')
+    .eq(orderIndex)
+    .find('.change-status-button')
+    .click();
+  cy.get('.modal.show')
+    .find('.labeled-checkbox-button')
+    .eq(statusIndex)
+    .click();
+  cy.get('.submit-button')
+    .click();
+});
+
+Cypress.Commands.add('adminSearchboxLoaded', () => {
+  let initialCount = '';
+  cy.get('.db-count')
+    .then((count) => {
+      initialCount = count.text();
+      cy.get('.db-count')
+        .should('not.contain.text', initialCount);
+    });
+});
+
+Cypress.Commands.add('adminTestSearchboxInput', (string: string) => {
+  cy.get('.main-col')
+    .find('.searchbox')
+    .find('input')
+    .clear()
+    .type(string);
+  cy.adminSearchboxLoaded();
+  const terms = string.split(' ');
+  terms.forEach((term) => {
+    cy.get('.search-results-ul')
+      .find('.name')
+      .each(($result) => {
+        expect($result.text().toLowerCase()).to.contain(term.toLowerCase());
+      });
+  });
 });
 
 export {};

@@ -127,7 +127,7 @@ function RequestCancellationModal({
         )}
         <div className="bottom-buttons">
           <Button
-            className={`${pressedSubmit && 'blocked'}`}
+            className={`submit-button ${pressedSubmit && 'blocked'}`}
             type="submit"
           >
             Confirm

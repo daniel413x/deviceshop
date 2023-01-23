@@ -66,23 +66,23 @@ function Order({
       <div className="header-bar">
         <div className="start-items">
           <div className="col">
-            <span>
+            <span className="key">
               Order placed
             </span>
-            <span>
+            <span className="value">
               {orderDate}
             </span>
           </div>
-          <div className="col">
-            <span>
+          <div className="status col">
+            <span className="key">
               Status
             </span>
             {showTrackingLink ? (
-              <NavLink to="#">
+              <NavLink to="#" className="value">
                 {statusLabel}
               </NavLink>
             ) : (
-              <span>
+              <span className="value">
                 {statusLabel}
               </span>
             )}
@@ -104,10 +104,12 @@ function Order({
         </div>
         <div className="end-items">
           <div className="col">
-            <span className="id">
+            <span>
               Order
               {' '}
-              {`${id.slice(0, 11)}...`}
+              <span className="id">
+                {`${id.slice(0, 11)}...`}
+              </span>
             </span>
             <NavLink to={id}>
               View confirmation
@@ -129,6 +131,7 @@ function Order({
           <Button
             onClick={() => setNewStatusOrder!(order)}
             buttonStyle="secondary"
+            className="change-status-button"
           >
             Change status
           </Button>
@@ -145,7 +148,7 @@ function Order({
             <Button
               onClick={() => setCanceledOrder!(order)}
               buttonStyle="secondary"
-              className={`${orderCancellationRequested && 'blocked'}`}
+              className={`cancel-order-button ${orderCancellationRequested && 'blocked'}`}
             >
               Cancel order
             </Button>

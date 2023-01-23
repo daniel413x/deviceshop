@@ -55,8 +55,8 @@ function Addresses() {
     };
     try {
       if (formMode === 'edit') {
-        const updatedAddress = await editAddress(id, form);
-        addresses.updateAddress(updatedAddress);
+        await editAddress(id, form);
+        addresses.updateAddress(id, form);
         notifications.message(
           'Address updated',
         );

@@ -189,7 +189,7 @@ const Search = forwardRef(<T, A>({
   }, [enterPress]);
   return (
     <div
-      className={`searchbox ${className}`}
+      className={`searchbox ${className} ${loading && 'loading'}`}
       ref={outsideClickRef}
     >
       <div className="input-icon-wrapper">

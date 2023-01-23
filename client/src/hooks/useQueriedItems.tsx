@@ -36,7 +36,7 @@ function useQueriedItems<T>({
   queryProps,
 }: UseQueriedItemsProps<T>): UseQueriedItemsReturn<T> {
   const [items, setItems] = useState<T[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [sorting, setSorting] = useState<string>(initialSorting || '');
   const [dbCount, setDbProductCount] = useState<number>(0);
   const {

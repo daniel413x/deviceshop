@@ -1,4 +1,7 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, {
+  FormEvent, useContext, useEffect, useState,
+} from 'react';
+import Context from '../../../context/context';
 import { editOrder } from '../../../http/orderAPI';
 import { IOrder, OrderStatusStrings } from '../../../types/types';
 import { CANCELED, DELIVERED, SHIPPED } from '../../../utils/consts';
@@ -20,6 +23,9 @@ function NewStatusModal({
   orders,
   setOrders,
 }: NewStatusModalProps) {
+  const {
+    notifications,
+  } = useContext(Context);
   const [newStatus, setNewStatus] = useState<OrderStatusStrings[]>([]);
   const toggleStatus = (string: OrderStatusStrings) => {
     if (newStatus.indexOf(string) === -1) {
@@ -42,6 +48,9 @@ function NewStatusModal({
       }
       return order;
     }));
+    notifications.message(
+      'Order status changed',
+    );
     close();
   };
   useEffect(() => {
@@ -66,7 +75,6 @@ function NewStatusModal({
       </div>
       <form onSubmit={submit}>
         <div className="body">
-          Current status: blah blah
           <ul className="checkboxes-ul">
             <li>
               <LabeledCheckboxButton
@@ -94,6 +102,7 @@ function NewStatusModal({
         <div className="bottom-buttons">
           <Button
             type="submit"
+            className="submit-button"
           >
             Confirm
           </Button>

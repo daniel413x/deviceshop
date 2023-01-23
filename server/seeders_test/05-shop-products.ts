@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { NEW } from '../utils/consts';
+import { DELETED, NEW } from '../utils/consts';
 import {
   apple,
   samsung,
@@ -53,7 +53,7 @@ for (let n = 0; n <= 12; n += 1) {
     discount: 20,
     discountedPrice: 80000,
     description: makeSamsung ? samsungDesc : appleDesc,
-    name: makeSamsung ? `Samsung Galaxy ${n <= 4 ? '256GB' : '128GB'} Android 11 5G Smartphone ${deviceNumber}` : `Apple iPhone  ${n <= 4 ? '256GB' : '128GB'} iOS 16 5G Smartphone ${deviceNumber}`,
+    name: makeSamsung ? `Samsung Galaxy ${n <= 4 ? '256GB' : '128GB'} Android 11 5G Smartphone ${deviceNumber}` : `Apple iPhone ${n <= 4 ? '256GB' : '128GB'} iOS 16 5G Smartphone ${deviceNumber}`,
     // name: `Smartphone ${deviceNumber}`,
     brandId: makeSamsung ? samsung : apple,
     typeId: smartphonetypeId,
@@ -135,12 +135,32 @@ for (let n = 0; n <= 12; n += 1) {
   tablets.push(tablet);
 }
 
+const recycleBinProduct = {
+  thumbnail: 'test-product-filler-thumbnail.png',
+  images: ['test-product-filler.png'],
+  price: 10000,
+  discount: 20,
+  description: 'Deleted product',
+  discountedPrice: 8000,
+  name: 'Apple iPhone 128GB iOS 16 5G Smartphone 13',
+  numberSold: 0,
+  stock: 10,
+  rating: 0,
+  brandId: apple,
+  typeId: smartphonetypeId,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  id: uuid(),
+  flags: [NEW, DELETED],
+};
+
 export default {
   up: async (queryInterface) => queryInterface.bulkInsert('ShopProduct', [
     ...smartphones,
     ...laptops,
     ...accessories,
     ...tablets,
+    recycleBinProduct,
   ]),
   down: (queryInterface) => queryInterface.bulkDelete('ShopProduct', null, {}),
 };

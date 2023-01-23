@@ -20,7 +20,9 @@ function PaginatedItemsCounter({
       {' '}
       of
       {' '}
-      {dbCount}
+      <span className="db-count">
+        {dbCount}
+      </span>
       {' '}
       {descriptor}
     </span>

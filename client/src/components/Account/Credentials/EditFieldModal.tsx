@@ -95,7 +95,7 @@ function EditFieldModal({
         </div>
         <div className="bottom-buttons">
           <Button
-            className={`${pressedSubmit && 'blocked'} ${password && newValue !== confirmPassword && 'blocked'} ${!newValue && 'blocked'}`}
+            className={`submit-button ${pressedSubmit && 'blocked'} ${password && newValue !== confirmPassword && 'blocked'} ${!newValue && 'blocked'}`}
             type="submit"
           >
             Confirm

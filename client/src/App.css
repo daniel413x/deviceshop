@@ -3530,6 +3530,12 @@ form.checkout-style .labeled-input input {
   width: 220px;
 }
 
+.admin-search-page .search-result.no-results {
+  display: flex;
+  align-items: center;
+  padding-left: 5.35rem;
+}
+
 .admin-search-page .search-result {
   display: flex;
   padding: 1rem 1.25rem;
@@ -3538,6 +3544,7 @@ form.checkout-style .labeled-input input {
   justify-content: space-between;
   position: relative;
   font-size: 0.875rem;
+  min-height: 93.81px;
 }
 
 .admin-search-page .search-result:hover::before {
@@ -3604,6 +3611,11 @@ form.checkout-style .labeled-input input {
 
 .admin-search-page .search-result .icons-col .edit-icon svg path {
   fill: var(--primary-text-light);
+}
+
+.admin-search-page .filter-links {
+  display: flex;
+  grid-gap: 0.75rem;
 }
 
 .admin-search-page .filter-link {

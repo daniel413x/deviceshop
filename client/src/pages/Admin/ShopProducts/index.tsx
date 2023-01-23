@@ -36,6 +36,7 @@ import ConfirmationModal from '../../../components/ConfirmationModal';
 import Context from '../../../context/context';
 import FilterLink from '../../../components/Admin/ShopProducts/FilterLink';
 import AdminSideCol from '../../../components/Admin/AdminSideCol';
+import FilterLinks from '../../../components/Admin/FilterLinks';
 
 interface SearchResultProps {
   product: IShopProduct;
@@ -121,6 +122,7 @@ function ShopProducts() {
     dbCount,
     setSearchParams,
     fetch,
+    loading,
   } = useQueriedItems<IShopProduct>({
     initialSorting: 'byNewest',
     fetchAPI: fetchProducts,
@@ -180,17 +182,19 @@ function ShopProducts() {
               dontRenderResults
               setSearchParams={setSearchParams}
             />
-            <FilterLink
-              label={`Public (${publicProductsCount})`}
-              to={`/${ADMIN_ROUTE}/${SHOP_PRODUCTS_ROUTE}`}
-            />
-            <FilterLink
-              label={`Deleted (${deletedProductsCount})`}
-              to={`/${ADMIN_ROUTE}/${SHOP_PRODUCTS_ROUTE}/${DELETED_ROUTE}`}
-            />
+            <FilterLinks>
+              <FilterLink
+                label={`Public (${publicProductsCount})`}
+                to={`/${ADMIN_ROUTE}/${SHOP_PRODUCTS_ROUTE}`}
+              />
+              <FilterLink
+                label={`Deleted (${deletedProductsCount})`}
+                to={`/${ADMIN_ROUTE}/${SHOP_PRODUCTS_ROUTE}/${DELETED_ROUTE}`}
+              />
+            </FilterLinks>
           </div>
           <List
-            className="search-results-ul"
+            className={`search-results-ul ${loading && 'loading'}`}
             items={products}
             childrenBefore
             renderAs={(product) => (
@@ -201,6 +205,8 @@ function ShopProducts() {
                 />
               </li>
             )}
+            fillerElement={<div className="search-result filler" />}
+            fillersNeeded={itemsPerPage - products.length - 1}
           >
             {!deletedProductsPage && (
             <li key="create-link">
@@ -230,6 +236,15 @@ function ShopProducts() {
                   />
                 </div>
               </NavLink>
+            </li>
+            )}
+            {!products.length && (
+            <li key="no-results">
+              <div
+                className="search-result no-results"
+              >
+                No results
+              </div>
             </li>
             )}
           </List>

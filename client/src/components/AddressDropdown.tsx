@@ -21,7 +21,7 @@ function AddressDropdown({
   const [selectedAddress, setSelectedAddress] = useState<string>('');
   const selectAddress = (address: IAddressInAddressBook) => {
     setAddress(address);
-    setSelectedAddress(address.addressLineOne);
+    setSelectedAddress(address.id);
   };
   useEffect(() => {
     (async () => {
@@ -51,7 +51,7 @@ function AddressDropdown({
   return (
     <Dropdown
       className={`address-dropdown ${addresses.all.length === 0 && 'blocked'} ${loading && 'loading'}`}
-      label={selectedAddress || 'Saved addresses'}
+      label={addresses.all.find((address) => address.id === selectedAddress)?.addressLineOne || 'Saved addresses'}
       dropdownIcon="triangle"
       to={dropdownButtons}
     />
