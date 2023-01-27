@@ -50,7 +50,15 @@ export function listProductAttributeInColumns(specifications: ISpecification[]):
   return columnizedAttributes;
 }
 
-export function convertPriceInt(price: number | string, discount?: number | string): number {
+export function convertPriceToInt(price: number | string, discount?: number | string): number {
+  let calculatedPrice = Number(price) * 100;
+  if (discount) {
+    calculatedPrice -= (calculatedPrice * (Number(discount) / 100));
+  }
+  return Number(calculatedPrice.toFixed());
+}
+
+export function convertIntToPrice(price: number | string, discount?: number | string): number {
   let calculatedPrice = Number(price) * 0.01;
   if (discount) {
     calculatedPrice -= (calculatedPrice * (Number(discount) * 0.01));

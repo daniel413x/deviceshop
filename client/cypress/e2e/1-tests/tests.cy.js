@@ -7,6 +7,7 @@ import {
   CANCELED,
 } from '../../../src/utils/consts';
 import { clientUrl, serverUrl } from '../../support/commands';
+import { convertPriceToInt } from '../../../src/utils/functions';
 
 /// <reference types="cypress" />
 
@@ -1615,6 +1616,8 @@ describe('deviceshop app', () => {
     describe('on admin/shopproducts', () => {
       beforeEach(() => {
         cy.visit(`${clientUrl}/admin/shopproducts`);
+        cy.get('#name')
+          .should('contain.value', 'Product name');
       });
       describe('using the searchbar', () => {
         it('fetches and renders results', () => {
@@ -1730,6 +1733,400 @@ describe('deviceshop app', () => {
               cy.should('not.contain', deletedProductName.text());
             });
         });
+      });
+    });
+    describe('on /admin/shopproducts/create', () => {
+      beforeEach(() => {
+        cy.visit(`${clientUrl}/admin/shopproducts/create`);
+      });
+      describe('working with the slider', () => {
+        beforeEach(() => {
+          cy.get('.slider')
+            .as('theSlider');
+          cy.get('@theSlider')
+            .get('.add-image-input')
+            .as('theAddInput');
+        });
+        it('adds an image', () => {
+          cy.get('@theAddInput')
+            .selectFile('cypress/fixtures/fixture-1.png', { force: true });
+          cy.get('.dot')
+            .should('have.length', 1);
+          cy.get('@theSlider')
+            .find('img')
+            .invoke('attr', 'src')
+            .should('contain', 'blob');
+        });
+        describe('an image was added', () => {
+          beforeEach(() => {
+            cy.get('@theAddInput')
+              .selectFile('cypress/fixtures/fixture-1.png', { force: true });
+          });
+          it('can be replaced', () => {
+            cy.adminReplaceSliderImage('fixture-2.png');
+          });
+          it('updates the images form field counter accurately', () => {
+            cy.get('.form-field.images')
+              .find('input')
+              .should('have.value', 1);
+          });
+          it('can add a second image', () => {
+            cy.adminAddAndTestSliderImage('fixture-2.png');
+          });
+          describe('a second image was added', () => {
+            beforeEach(() => {
+              cy.adminAddAndTestSliderImage('fixture-2.png');
+              cy.get('@theSlider')
+                .find('.button.delete-image')
+                .as('theDeleteButton');
+            });
+            it('can be deleted', () => {
+              cy.adminDeleteSliderImage();
+            });
+            it('can delete the first image', () => {
+              cy.sliderPrevClick();
+              cy.adminDeleteSliderImage();
+            });
+            it('can be replaced', () => {
+              cy.adminReplaceSliderImage('fixture-3.png');
+            });
+            it('can replace the first image', () => {
+              cy.sliderPrevClick();
+              cy.adminReplaceSliderImage('fixture-3.png');
+            });
+            it('updates the images form field counter accurately', () => {
+              cy.get('.form-field.images')
+                .find('input')
+                .should('have.value', 2);
+            });
+          });
+        });
+      });
+      it('changes the corresponding fields in the product preview pane upon changes to fields in the form overlay', () => {
+        cy.get('#name')
+          .clear()
+          .type('new smartphone');
+        cy.get('#namePreview')
+          .should('contain.text', 'new smartphone');
+        cy.get('#price')
+          .clear()
+          .type('800');
+        cy.get('#pricePreview')
+          .should('contain.text', '800');
+        cy.get('#discount')
+          .clear()
+          .type('20');
+        cy.get('#discountPreview')
+          .should('contain.text', '20');
+        cy.get('#stock')
+          .clear()
+          .type('5');
+        cy.get('#stockPreview')
+          .should('contain.text', '5');
+        cy.get('#description')
+          .clear()
+          .type('smartphone description');
+        cy.get('#descriptionPreview')
+          .should('contain.text', 'smartphone description');
+      });
+      it('changes the corresponding fields in the form overlay upon changes to fields in the product preview pane', () => {
+        cy.get('#namePreview')
+          .clear()
+          .type('new smartphone');
+        cy.get('#name')
+          .should('contain.value', 'new smartphone');
+        cy.get('#pricePreview')
+          .clear()
+          .type('800');
+        cy.get('#price')
+          .should('contain.value', '800');
+        cy.get('#discountPreview')
+          .clear()
+          .type('20');
+        cy.get('#discount')
+          .should('contain.value', '20');
+        cy.get('#stockPreview')
+          .clear()
+          .type('5');
+        cy.get('#stock')
+          .should('contain.value', '5');
+        cy.get('#descriptionPreview')
+          .clear()
+          .type('smartphone description');
+        cy.get('#description')
+          .should('contain.value', 'smartphone description');
+      });
+      it('changes the price and previews the calculated discounted price accurately upon inputs to relevant fields', () => {
+        cy.get('#discountPreview')
+          .click()
+          .clear()
+          .type('15');
+        cy.adminCheckShopProductFormPrices();
+        cy.get('#pricePreview')
+          .click()
+          .clear()
+          .type('950');
+        cy.adminCheckShopProductFormPrices();
+        cy.get('#discount')
+          .click()
+          .clear()
+          .type('23');
+        cy.adminCheckShopProductFormPrices();
+        cy.get('#price')
+          .click()
+          .clear()
+          .type('678');
+        cy.adminCheckShopProductFormPrices();
+      });
+      describe('working on the specifications section', () => {
+        it('adds a new category upon click \'Add category\'', () => {
+          cy.get('.add-category-button')
+            .click();
+          cy.get('.category')
+            .should('contain.text', 'New category');
+        });
+        describe('a category was added', () => {
+          beforeEach(() => {
+            cy.get('.add-category-button')
+              .click();
+          });
+          it('can be deleted', () => {
+            cy.get('.category')
+              .find('.delete-category-button')
+              .click();
+            cy.get('.category')
+              .should('not.exist');
+          });
+          it('is deleted if its last specification is deleted', () => {
+            cy.get('.category')
+              .find('.delete-specification-button')
+              .click();
+            cy.get('.category')
+              .should('not.exist');
+          });
+        });
+        describe('another product\'s specifications are loaded', () => {
+          beforeEach(() => {
+            cy.adminFetchOtherSpecifications();
+          });
+          it('can delete categories and correctly output their next expected ordering', () => {
+            let fourthCategory = '';
+            cy.get('.category')
+              .eq(3)
+              .find('.name')
+              .find('input')
+              .then((input) => {
+                fourthCategory = input.val();
+                cy.get('.category')
+                  .eq(2)
+                  .find('.delete-category-button')
+                  .click();
+                cy.get('.category')
+                  .eq(2)
+                  .find('.name')
+                  .find('input')
+                  .should('have.value', fourthCategory);
+              });
+          });
+        });
+      });
+      describe('dealing with form warnings', () => {
+        beforeEach(() => {
+          cy.get('#price')
+            .clear();
+          cy.adminSubmitShopProductForm();
+        });
+        it('warns if there is no name and clears the warning after input', () => {
+          cy.get('#name')
+            .parent()
+            .as('theNameInputParent');
+          cy.hasWarningBorder(cy.get('@theNameInputParent'));
+          cy.adminProductFormFillName('new smartphone');
+          cy.hasNoWarningBorder(cy.get('@theNameInputParent'));
+        });
+        it('warns if there is no price and clears the warning after input', () => {
+          cy.get('#price')
+            .parent()
+            .as('thePriceInputParent');
+          cy.hasWarningBorder(cy.get('@thePriceInputParent'));
+          cy.adminProductFormFillPrice('1000');
+          cy.hasNoWarningBorder(cy.get('@thePriceInputParent'));
+        });
+        it('warns if there are no images and clears the warning after input', () => {
+          cy.get('#images')
+            .parent()
+            .as('theImagesInputParent');
+          cy.hasWarningBorder(cy.get('@theImagesInputParent'));
+          cy.adminAddSliderImage('fixture-3.png');
+          cy.wait(100);
+          cy.hasNoWarningBorder(cy.get('@theImagesInputParent'));
+        });
+        it('warns if there is no description and clears the warning after input', () => {
+          cy.get('#description')
+            .parent()
+            .as('theDescriptionInputParent');
+          cy.hasWarningBorder(cy.get('@theDescriptionInputParent'));
+          cy.adminProductFormFillDescription('new smartphone');
+          cy.hasNoWarningBorder(cy.get('@theDescriptionInputParent'));
+        });
+        it('warns if there is no type or brand and clears the warning after input', () => {
+          cy.get('.form-submission-overlay')
+            .find('.dropdown-field')
+            .eq(0)
+            .as('theBrandDropdown');
+          cy.get('.form-submission-overlay')
+            .find('.dropdown-field')
+            .eq(1)
+            .as('theTypeDropdown');
+          cy.hasWarningBorder(cy.get('@theBrandDropdown'));
+          cy.hasWarningBorder(cy.get('@theTypeDropdown'));
+          cy.adminSelectBrandOrType(0, 0);
+          cy.hasNoWarningBorder(cy.get('@theBrandDropdown'));
+          cy.adminSelectBrandOrType(1, 0);
+          cy.hasNoWarningBorder(cy.get('@theTypeDropdown'));
+        });
+      });
+      it('submits the form and creates the product', () => {
+        cy.adminFillAndSubmitProductForm();
+        cy.get('.nav-to-page-button')
+          .click();
+        cy.contains('new smartphone');
+        cy.contains('1000');
+        cy.get('.categories-ul')
+          .find('.category')
+          .should('exist');
+        cy.get('.categories-ul')
+          .find('.specification')
+          .should('exist');
+      });
+      describe('a product is created', () => {
+        beforeEach(() => {
+          cy.adminFillAndSubmitProductForm();
+          cy.get('.modal.show')
+            .find('.close-button')
+            .click();
+        });
+        it('transitions the page into the update form which can update the new product accordingly', () => {
+          cy.adminAddSliderImage('fixture-3.png');
+          cy.adminProductFormFillPrice('967');
+          cy.adminSubmitShopProductForm();
+          cy.get('.notification')
+            .should('exist');
+          cy.visit(`${clientUrl}/shop/new-smartphone`);
+          cy.contains('967');
+          cy.get('.dot')
+            .should('have.length', 2);
+        });
+      });
+    });
+    describe('test test', () => {
+      const product = 'apple-iphone-256gb-ios-16-5g-smartphone-1';
+      beforeEach(() => {
+        cy.visit(`${clientUrl}/admin/shopproducts/edit/${product}`);
+        cy.adminSelectBrandOrType(0, 0);
+        cy.adminSelectBrandOrType(1, 0);
+      });
+      it('can update the product images', () => {
+        cy.adminReplaceSliderImage('fixture-2.png');
+        cy.adminAddSliderImage('fixture-1.png');
+        cy.adminSubmitShopProductEditForm();
+        cy.visit(`${clientUrl}/admin/shopproducts/edit/${product}`);
+        cy.get('.dot')
+          .should('have.length', 6);
+      });
+      it('can update the product name', () => {
+        cy.adminProductFormFillName('new smartphone');
+        cy.adminSubmitShopProductEditForm();
+        cy.visit(`${clientUrl}/shop/new-smartphone`);
+        cy.contains('new smartphone');
+      });
+      it('can update the product price', () => {
+        cy.adminProductFormFillPrice('1200');
+        cy.adminSubmitShopProductEditForm();
+        cy.visit(`${clientUrl}/shop/${product}`);
+        cy.contains('1200');
+      });
+      it('can update the product discount', () => {
+        cy.adminProductFormFillDiscount('30');
+        cy.adminSubmitShopProductEditForm();
+        cy.visit(`${clientUrl}/shop/${product}`);
+        cy.get('.discount-tag')
+          .should('contain.text', '30');
+        cy.get('.discount-tag')
+          .then((discountTag) => {
+            const discountNum = Number(discountTag.text().match(/\d+/));
+            cy.get('.undiscounted-price')
+              .then((undiscountedPrice) => {
+                const undiscountedPriceNum = Number(undiscountedPrice.text().match(/\d+/));
+                cy.get('.discounted-price')
+                  .then((discountedPrice) => {
+                    const discountedPriceNum = Number(discountedPrice.text().match(/\d+/));
+                    const calculatedDiscountedPrice = convertPriceToInt(undiscountedPriceNum, discountNum);
+                    expect(calculatedDiscountedPrice).to.equal(convertPriceToInt(discountedPriceNum));
+                  });
+              });
+          });
+      });
+      it('can update the product description', () => {
+        cy.adminProductFormFillPrice('new description');
+        cy.adminSubmitShopProductEditForm();
+        cy.visit(`${clientUrl}/shop/new-smartphone`);
+        cy.contains('new description');
+      });
+      it('can update the product stock', () => {
+        cy.adminProductFormFillStock('4');
+        cy.adminSubmitShopProductEditForm();
+        cy.visit(`${clientUrl}/shop/${product}`);
+        cy.get('.stock')
+          .should('contain.text', '4');
+      });
+      it.only('can update the product\'s specifications', () => {
+        cy.get('.category')
+          .eq(2)
+          .find('.header-row')
+          .find('input')
+          .click()
+          .clear()
+          .type('An updated category');
+        cy.get('.category')
+          .eq(3)
+          .find('.header-row')
+          .then((updatedKeyCategoryName) => {
+            cy.get('.category')
+              .eq(3)
+              .find('.specification')
+              .eq(0)
+              .find('.span-input-wrapper.key')
+              .find('input')
+              .click()
+              .clear()
+              .type('An updated key');
+            cy.get('.category')
+              .eq(4)
+              .find('.header-row')
+              .then((updatedValueCategoryName) => {
+                cy.get('.category')
+                  .eq(4)
+                  .find('.specification')
+                  .eq(0)
+                  .find('.span-input-wrapper.value')
+                  .find('input')
+                  .click()
+                  .clear()
+                  .type('An updated value');
+                cy.adminSubmitShopProductEditForm();
+                cy.visit(`${clientUrl}/shop/${product}`);
+                cy.get('.category')
+                  .each((category) => {
+                    if (category.find('.header-row').text() === updatedKeyCategoryName.text()) {
+                      expect(category).to.contain.text('An updated key');
+                    }
+                    if (category.find('.header-row').text() === updatedValueCategoryName.text()) {
+                      expect(category).to.contain.text('An updated value');
+                    }
+                  });
+              });
+          });
       });
     });
   });

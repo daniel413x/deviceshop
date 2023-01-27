@@ -19,7 +19,7 @@ const Name = observer(() => {
     <span className="name">
       <EditableField
         name="name"
-        id="name"
+        id="namePreview"
         outsideInput={createProductPage.name}
         // eslint-disable-next-line react/jsx-no-bind
         setOutsideInput={createProductPage.setName.bind(createProductPage)}

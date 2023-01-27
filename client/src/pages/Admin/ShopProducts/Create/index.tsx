@@ -57,8 +57,11 @@ function CreateShopProduct() {
       createProductPage.setAllValues(undefined);
     }
   }, []);
+  const {
+    loading,
+  } = createProductPage;
   return (
-    <div id="create-shop-product" className="shop-product-page">
+    <div id="create-shop-product" className={`shop-product-page ${loading && 'loading'}`}>
       <div className="columned-page">
         <ShopSideCol />
         <div className="main-col">

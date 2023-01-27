@@ -38,7 +38,7 @@ function Category({
         <Button
           buttonStyle={['blank', 'warn']}
           onClick={() => createProductPage.deleteCategory(category)}
-          className="delete-button"
+          className="delete-category-button delete-button"
         >
           <CloseIcon />
         </Button>
@@ -54,7 +54,7 @@ function Category({
             <Button
               buttonStyle={['blank', 'warn']}
               onClick={() => createProductPage.deleteSpec(spec.id)}
-              className="delete-button"
+              className="delete-specification-button delete-button"
             >
               <CloseIcon />
             </Button>

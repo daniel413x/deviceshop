@@ -11,9 +11,9 @@ function AvailabilityLabel({
 }: AvailabilityLabelProps) {
   return (
     <div className="availability-label">
-      {!stock && <CircleWarning className="icon" />}
-      {stock && <CircleCheck className="icon" />}
-      <span className="rating">
+      {!stock && <CircleWarning className="icon out-of-stock" />}
+      {stock && <CircleCheck className="icon in-stock" />}
+      <span className="stock">
         {!stock && 'out of stock'}
         {stock && `${stock} in stock`}
       </span>

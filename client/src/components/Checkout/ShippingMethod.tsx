@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import Context from '../../context/context';
 import { IShippingMethod, QueryReqCreateShippingMethod } from '../../types/types';
-import { convertPriceInt, formatPrice } from '../../utils/functions';
+import { convertIntToPrice, formatPrice } from '../../utils/functions';
 import LabeledRadioButton from '../LabeledRadioButton';
 
 interface ShippingMethodProps {
@@ -30,7 +30,7 @@ function ShippingMethod({
     price: shippingMethod.price,
     name: shippingMethod.name,
   };
-  const price = formatPrice(convertPriceInt(shippingMethod.price));
+  const price = formatPrice(convertIntToPrice(shippingMethod.price));
   return (
     <LabeledRadioButton
       onClick={onClickHandler}

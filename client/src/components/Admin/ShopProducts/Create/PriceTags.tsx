@@ -1,14 +1,14 @@
 import { observer } from 'mobx-react-lite';
 import React, { useContext } from 'react';
 import Context from '../../../../context/context';
-import { convertPriceInt, formatPrice } from '../../../../utils/functions';
+import { convertIntToPrice, formatPrice } from '../../../../utils/functions';
 import EditableField from '../../../EditableField';
 
 function PriceTags() {
   const {
     createProductPage,
   } = useContext(Context);
-  const discountToDecimal = convertPriceInt(createProductPage.discount);
+  const discountToDecimal = convertIntToPrice(createProductPage.discount);
   const formattedRenderedPrice = formatPrice(Number(createProductPage.price), discountToDecimal);
   return (
     <div className="price-tags">
@@ -16,7 +16,7 @@ function PriceTags() {
         $
         <EditableField
           name="price"
-          id="pricePrieview"
+          id="pricePreview"
           outsideInput={createProductPage.price.toString()}
           // eslint-disable-next-line react/jsx-no-bind
           setOutsideInput={createProductPage.setPrice.bind(createProductPage)}

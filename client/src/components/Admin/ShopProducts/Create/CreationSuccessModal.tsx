@@ -58,6 +58,7 @@ function CreationSuccessModal({
       <div className="bottom-buttons">
         <Button
           onClick={navToPage}
+          className="nav-to-page-button"
         >
           Nav to page
         </Button>

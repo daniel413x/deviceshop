@@ -38,7 +38,7 @@ function ReplaceableImage({ img, replaceImage }: ReplaceableImageProps) {
       />
       <input
         type="file"
-        className="hidden"
+        className="hidden replace-image-input"
         onChange={(e) => replaceImage(e)}
         ref={replaceImageRef}
       />
@@ -248,7 +248,7 @@ function SliderComponent({
             type="file"
             multiple
             ref={addImageRef}
-            className="hidden"
+            className="hidden add-image-input"
             onChange={addImages}
             name="files[]"
           />

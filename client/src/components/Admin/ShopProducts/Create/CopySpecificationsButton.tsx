@@ -6,7 +6,7 @@ function CopySpecificationsButton() {
   const [showModal, setShowModal] = useState<boolean>(false);
   return (
     <button
-      className="categories-control-button"
+      className="copy-specifications-button categories-control-button"
       onClick={() => setShowModal(true)}
       type="button"
     >

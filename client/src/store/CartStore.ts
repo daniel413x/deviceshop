@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx';
 import {
   ICart, IGuestAddedProduct, IOrderedAddon, IOrderedProduct, IShippingMethod,
 } from '../types/types';
-import { convertPriceInt, formatPrice } from '../utils/functions';
+import { convertIntToPrice, formatPrice } from '../utils/functions';
 
 export default class CartStore {
   items: (IOrderedProduct | IGuestAddedProduct)[];
@@ -112,6 +112,6 @@ export default class CartStore {
   }
 
   getFormattedTotal() {
-    return formatPrice(convertPriceInt(this.getIntTotal()));
+    return formatPrice(convertIntToPrice(this.getIntTotal()));
   }
 }

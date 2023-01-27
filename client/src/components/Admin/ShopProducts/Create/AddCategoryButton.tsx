@@ -8,7 +8,7 @@ function AddCategoryButton() {
   } = useContext(Context);
   return (
     <button
-      className="categories-control-button"
+      className="categories-control-button add-category-button"
       onClick={() => createProductPage.addSpecification('New category')}
       type="button"
     >

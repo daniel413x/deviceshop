@@ -1,5 +1,5 @@
 import React from 'react';
-import { convertPriceInt, formatPrice } from '../utils/functions';
+import { convertIntToPrice, formatPrice } from '../utils/functions';
 
 interface PriceTagsProps {
   price: number | string;
@@ -10,8 +10,8 @@ function PriceTags({
   price,
   discount,
 }: PriceTagsProps) {
-  const undiscountedPrice = formatPrice(convertPriceInt(price));
-  const discountedPrice = formatPrice(convertPriceInt(price, discount));
+  const undiscountedPrice = formatPrice(convertIntToPrice(price));
+  const discountedPrice = formatPrice(convertIntToPrice(price, discount));
   return (
     <div className={`price-tags ${discount && 'with-discount'}`}>
       {discount && (

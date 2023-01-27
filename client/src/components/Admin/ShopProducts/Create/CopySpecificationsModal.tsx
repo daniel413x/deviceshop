@@ -114,6 +114,7 @@ function CopySpecificationsModal({
           {selectedProduct && (
           <div className="bottom-buttons">
             <Button
+              className="submit-button"
               buttonStyle="warn"
               onMouseDown={generate}
             >

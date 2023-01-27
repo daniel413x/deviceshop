@@ -46,7 +46,7 @@ function FormSubmissionOverlay() {
     setPressedSubmit(true);
     const noImages = createProductPage.images.length === 0;
     if (!selectedBrand || !selectedBrand || !createProductPage.name || !createProductPage.description || noImages) {
-      notifications.message(
+      notifications.error(
         'Required fields missing',
       );
       return;
@@ -83,7 +83,7 @@ function FormSubmissionOverlay() {
         setCreationSuccess(true);
       }
     } catch (error: any) {
-      notifications.message(
+      notifications.error(
         error.response.data.message,
       );
     } finally {
@@ -92,11 +92,12 @@ function FormSubmissionOverlay() {
   };
   useEffect(() => {
     if (createProductPage.id) {
-      setSelectedType(createProductPage.type);
-      setSelectedBrand(createProductPage.brand);
-    } else {
-      setSelectedType(undefined);
-      setSelectedBrand(undefined);
+      if (!selectedType) {
+        setSelectedType(createProductPage.type);
+      }
+      if (!selectedBrand) {
+        setSelectedBrand(createProductPage.brand);
+      }
     }
   }, [createProductPage.id]);
   return (
@@ -151,6 +152,7 @@ function FormSubmissionOverlay() {
             pressedSubmit={pressedSubmit}
             setPressedSubmit={setPressedSubmit}
             warnCondition={createProductPage.images.length === 0}
+            id="images"
           />
           <LabeledInput
             className="form-field name"
@@ -161,6 +163,8 @@ function FormSubmissionOverlay() {
             placeholder="Device name"
             pressedSubmit={pressedSubmit}
             setPressedSubmit={setPressedSubmit}
+            id="name"
+            warnCondition={createProductPage.name === '' || createProductPage.name === 'Product name'}
           />
         </div>
         <div className="line three">
@@ -173,6 +177,7 @@ function FormSubmissionOverlay() {
             label="Price ($)"
             pressedSubmit={pressedSubmit}
             setPressedSubmit={setPressedSubmit}
+            id="price"
           />
           <LabeledInput
             className="form-field"
@@ -181,6 +186,7 @@ function FormSubmissionOverlay() {
             setInput={createProductPage.setDiscount.bind(createProductPage)}
             placeholder="Device discount"
             label="Discount (%)"
+            id="discount"
           />
           <LabeledInput
             className="form-field"
@@ -189,6 +195,7 @@ function FormSubmissionOverlay() {
             setInput={createProductPage.setStock.bind(createProductPage)}
             placeholder="Initial stock"
             label="Initial stock"
+            id="stock"
           />
         </div>
         <div className="line four">
@@ -201,6 +208,8 @@ function FormSubmissionOverlay() {
             placeholder="Device description"
             pressedSubmit={pressedSubmit}
             setPressedSubmit={setPressedSubmit}
+            id="description"
+            warnCondition={createProductPage.description === '' || createProductPage.description === 'Product description'}
           />
           <Button
             className="submit-button"
@@ -208,14 +217,6 @@ function FormSubmissionOverlay() {
           >
             {submitLabel}
           </Button>
-          {!md && (
-          <Button
-            className="submit-button"
-            type="submit"
-          >
-            {submitLabel}
-          </Button>
-          )}
         </div>
       </form>
     </div>

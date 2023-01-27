@@ -4,7 +4,7 @@
 import {
   CANCELED, DELIVERED, PROCESSING, SHIPPED,
 } from '../../src/utils/consts';
-import { objectHasProp } from '../../src/utils/functions';
+import { convertPriceToInt } from '../../src/utils/functions';
 
 export const clientUrl = 'http://localhost:3000';
 export const serverUrl = 'http://localhost:6006';
@@ -356,11 +356,13 @@ Cypress.Commands.add('enterValidRegistrationForm', () => {
 Cypress.Commands.add('sliderNextClick', () => {
   cy.get('.angle-button-next')
     .click({ force: true });
+  cy.wait(2750);
 });
 
 Cypress.Commands.add('sliderPrevClick', () => {
-  cy.get('.angle-button-next')
+  cy.get('.angle-button-prev')
     .click({ force: true });
+  cy.wait(2750);
 });
 
 Cypress.Commands.add('shopProductPageAddToCart', () => {
@@ -658,6 +660,210 @@ Cypress.Commands.add('adminTestSearchboxInput', (string: string) => {
         expect($result.text().toLowerCase()).to.contain(term.toLowerCase());
       });
   });
+});
+
+Cypress.Commands.add('adminAddSliderImage', (fileName: string) => {
+  cy.wait(1500);
+  cy.get('.slider')
+    .find('.add-image-input')
+    .selectFile(`cypress/fixtures/${fileName}`, { force: true });
+});
+
+Cypress.Commands.add('adminAddAndTestSliderImage', (fileName: string) => {
+  cy.wait(1500);
+  cy.get('@theSlider')
+    .find('.dot')
+    .then((initialDots) => {
+      cy.get('@theAddInput')
+        .selectFile(`cypress/fixtures/${fileName}`, { force: true });
+      cy.get('@theSlider')
+        .find('.dot')
+        .should('have.length', initialDots.length + 1);
+    });
+});
+
+Cypress.Commands.add('adminReplaceSliderImage', (fileName: string) => {
+  cy.get('@theSlider')
+    .find('.dot')
+    .then((initialDots) => {
+      cy.get('@theSlider')
+        .find('.slick-active')
+        .find('img')
+        .invoke('attr', 'src')
+        .as('theSrcAttribute')
+        .then((initialSrcAttribute) => {
+          cy.get('@theSlider')
+            .find('.slick-active')
+            .find('.replace-image-input')
+            .selectFile(`cypress/fixtures/${fileName}`, { force: true });
+          cy.get('@theSlider')
+            .find('.slick-active')
+            .find('img')
+            .invoke('attr', 'src')
+            .should('not.eq', initialSrcAttribute);
+          cy.get('@theSlider')
+            .find('.dot')
+            .should('have.length', initialDots.length);
+        });
+    });
+});
+
+Cypress.Commands.add('adminDeleteSliderImage', (fileName: string) => {
+  cy.get('@theSlider')
+    .find('.dot')
+    .then((initialDots) => {
+      cy.get('@theDeleteButton')
+        .click();
+      cy.get('@theSlider')
+        .find('.dot')
+        .should('have.length', initialDots.length - 1);
+    });
+});
+
+Cypress.Commands.add('adminCheckShopProductFormPrices', () => {
+  let previewPrice = 0;
+  let previewDiscount = 0;
+  let formPrice = 0;
+  let formDiscount = 0;
+  let calculatedPrice = 0;
+  cy.get('#price')
+    .then((price) => {
+      formPrice = Number(price.val());
+      cy.get('#discount')
+        .then((discount) => {
+          formDiscount = Number(discount.val());
+          cy.get('#discountPreview')
+            .then((discountPreview) => {
+              previewDiscount = Number(discountPreview.text());
+              cy.get('#pricePreview')
+                .then((pricePreview) => {
+                  previewPrice = Number(pricePreview.text());
+                  cy.get('.discounted-price')
+                    .then((discountedPrice) => {
+                      calculatedPrice = convertPriceToInt(Number(discountedPrice.text().substring(1)));
+                      const calculatedPreviewPrice = convertPriceToInt(previewPrice, previewDiscount);
+                      const calculatedFormPrice = convertPriceToInt(formPrice, formDiscount);
+                      expect(calculatedPreviewPrice).to.eq(calculatedFormPrice);
+                      expect(calculatedPrice).to.eq(calculatedFormPrice);
+                    });
+                });
+            });
+        });
+    });
+});
+
+Cypress.Commands.add('adminFetchOtherSpecifications', () => {
+  cy.get('.copy-specifications-button')
+    .click();
+  cy.get('.modal.show')
+    .find('input')
+    .type('ap');
+  const insistGet = () => {
+    cy.wait(2000);
+    cy.get('.results-container')
+      .then((resultsContainer) => {
+        if (resultsContainer.children.length > 1) {
+          cy.get('.results-container')
+            .find('li')
+            .should('have.length.greaterThan', 1);
+          cy.get('.results-item')
+            .eq(0)
+            .find('button')
+            .click();
+          cy.get('.modal.show')
+            .find('.submit-button')
+            .trigger('mousedown');
+          cy.contains('Specifications generated for product form');
+        } else {
+          insistGet();
+        }
+      });
+  };
+  insistGet();
+});
+
+Cypress.Commands.add('adminSelectBrandOrType', (dropdownIndex: number, itemIndex: number) => {
+  cy.get('.form-submission-overlay')
+    .find('.dropdown-field')
+    .eq(dropdownIndex)
+    .as('theDropdownField');
+  const insistClick = () => {
+    cy.wait(1000);
+    cy.get('@theDropdownField')
+      .find('.toggle')
+      .click({ force: true });
+    cy.get('@theDropdownField')
+      .find('.items')
+      .children()
+      .then((items) => {
+        if (items.length > 1) {
+          cy.get('@theDropdownField')
+            .find('.items')
+            .children()
+            .eq(itemIndex)
+            .click({ force: true });
+        } else {
+          insistClick();
+        }
+      });
+  };
+  insistClick();
+});
+
+Cypress.Commands.add('adminProductFormFillName', (string: string) => {
+  cy.get('#name')
+    .clear()
+    .type(string);
+});
+
+Cypress.Commands.add('adminProductFormFillPrice', (string: string) => {
+  cy.get('#price')
+    .clear()
+    .type(string);
+});
+
+Cypress.Commands.add('adminProductFormFillDiscount', (string: string) => {
+  cy.get('#discount')
+    .clear()
+    .type(string);
+});
+
+Cypress.Commands.add('adminProductFormFillStock', (string: string) => {
+  cy.get('#stock')
+    .clear()
+    .type(string);
+});
+
+Cypress.Commands.add('adminProductFormFillDescription', (string: string) => {
+  cy.get('#description')
+    .clear()
+    .type(string);
+});
+
+Cypress.Commands.add('adminFillAndSubmitProductForm', () => {
+  cy.adminSelectBrandOrType(0, 0);
+  cy.adminSelectBrandOrType(1, 0);
+  cy.adminProductFormFillName('new smartphone');
+  cy.adminProductFormFillPrice('1000');
+  cy.adminAddSliderImage('fixture-3.png');
+  cy.adminProductFormFillDescription('new smartphone');
+  cy.adminFetchOtherSpecifications();
+  cy.adminSubmitShopProductForm();
+  cy.wait(1000);
+  cy.get('.modal.show')
+    .should('exist');
+});
+
+Cypress.Commands.add('adminSubmitShopProductForm', () => {
+  cy.get('.form-submission-overlay')
+    .find('.submit-button')
+    .click();
+});
+
+Cypress.Commands.add('adminSubmitShopProductEditForm', () => {
+  cy.adminSubmitShopProductForm();
+  cy.get('.notification')
+    .should('contain', 'Shop product was successfully updated');
 });
 
 export {};

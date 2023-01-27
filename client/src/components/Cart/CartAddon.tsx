@@ -1,6 +1,6 @@
 import React from 'react';
 import { IOrderedAddon } from '../../types/types';
-import { convertPriceInt, formatPrice } from '../../utils/functions';
+import { convertIntToPrice, formatPrice } from '../../utils/functions';
 
 interface CartAddonProps {
   orderedAddon: IOrderedAddon;
@@ -15,7 +15,7 @@ function CartAddon({
       name,
     },
   } = orderedAddon;
-  const intToPrice = formatPrice(convertPriceInt(price));
+  const intToPrice = formatPrice(convertIntToPrice(price));
   return (
     <div className="addon">
       <div className="info-row">

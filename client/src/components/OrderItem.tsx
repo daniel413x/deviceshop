@@ -1,6 +1,6 @@
 import React from 'react';
 import { IOrderedAddon } from '../types/types';
-import { convertPriceInt, formatPrice } from '../utils/functions';
+import { convertIntToPrice, formatPrice } from '../utils/functions';
 import List from './List';
 
 interface AddonProps {
@@ -14,7 +14,7 @@ function Addon({ addon }: AddonProps) {
       name,
     },
   } = addon;
-  const renderedPrice = formatPrice(convertPriceInt(price));
+  const renderedPrice = formatPrice(convertIntToPrice(price));
   return (
     <div className="addon row">
       <span className="name">
@@ -48,7 +48,7 @@ function OrderItem({
   let renderedPrice;
   const showAPrice = typeof value === 'number';
   if (showAPrice) {
-    renderedPrice = formatPrice(convertPriceInt(value));
+    renderedPrice = formatPrice(convertIntToPrice(value));
   }
   return (
     <div className={`order-item ${className}`}>

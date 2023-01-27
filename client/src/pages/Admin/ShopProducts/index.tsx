@@ -26,7 +26,7 @@ import {
   EDIT_ROUTE,
   SHOP_PRODUCTS_ROUTE,
 } from '../../../utils/consts';
-import { convertPriceInt, formatPrice, makeSlug } from '../../../utils/functions';
+import { convertIntToPrice, formatPrice, makeSlug } from '../../../utils/functions';
 import PaginatedItemsCounter from '../../../components/PaginatedItemsCounter';
 import PageControl from '../../../components/PageControl';
 import useQueriedItems from '../../../hooks/useQueriedItems';
@@ -53,7 +53,7 @@ function SearchResult({ product, setDeletedProduct }: SearchResultProps) {
       name: typeName,
     },
   } = product;
-  const formattedPrice = formatPrice(convertPriceInt(discountedPrice));
+  const formattedPrice = formatPrice(convertIntToPrice(discountedPrice));
   return (
     <div className="search-result">
       <NavLink

@@ -6,7 +6,7 @@ import {
   IType,
   IBrand,
 } from '../types/types';
-import { convertPriceInt } from '../utils/functions';
+import { convertIntToPrice } from '../utils/functions';
 
 export default class CreateProductPageStore {
   fetchedImages: string[];
@@ -183,9 +183,9 @@ export default class CreateProductPageStore {
     this.setStock(product?.stock || 10);
     this.setRating(Number(product?.rating || 0));
     this.setReviewsLength(product?.reviews.length || 0);
-    this.setPrice(convertPriceInt(product?.price || 100000).toString());
-    this.setDescription(product?.description || '');
-    this.setName(product?.name || '');
+    this.setPrice(convertIntToPrice(product?.price || 100000).toString());
+    this.setDescription(product?.description || 'Product description');
+    this.setName(product?.name || 'Product name');
     this.setDiscount(product?.discount || 10);
     this.setImages(product?.images || []);
   }

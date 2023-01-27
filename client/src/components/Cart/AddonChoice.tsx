@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { IAddon } from '../../types/types';
-import { convertPriceInt, formatPrice } from '../../utils/functions';
+import { convertIntToPrice, formatPrice } from '../../utils/functions';
 import Button from '../Button';
 import List from '../List';
 
@@ -24,7 +24,7 @@ function AddonChoice({
     id,
     bulletPoints,
   } = addon;
-  const intToPrice = formatPrice(convertPriceInt(price));
+  const intToPrice = formatPrice(convertIntToPrice(price));
   const showRemoveWarrantyButton = selectedAddonId === id;
   return (
     <div className={`addon-choice ${selectedAddonId === id && 'selected'}`}>
