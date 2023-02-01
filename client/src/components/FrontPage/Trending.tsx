@@ -1,4 +1,6 @@
-import React, { useContext } from 'react';
+import React, {
+  useContext,
+} from 'react';
 import { observer } from 'mobx-react-lite';
 import TrendingItems from './TrendingItems';
 import { fetchProducts } from '../../http/shopProductAPI';
@@ -60,7 +62,7 @@ function Trending() {
     });
   }
   const mostSoldFetch = () => fetchProducts({
-    limit: 5,
+    limit: 4,
     order: {
       byMostSold: true,
     },
@@ -75,25 +77,25 @@ function Trending() {
       <div className="columns">
         {smartphonesFetch && (
         <TrendingItems
-          header="Trending smartphones"
+          header="Smartphones"
           api={smartphonesFetch}
         />
         )}
         {laptopsFetch && (
         <TrendingItems
-          header="Trending laptops"
+          header="Laptops"
           api={laptopsFetch}
         />
         )}
         {tabletsFetch && (
         <TrendingItems
-          header="Trending tablets"
+          header="Tablets"
           api={tabletsFetch}
         />
         )}
         {accessoriesFetch && (
         <TrendingItems
-          header="Trending accessories"
+          header="Accessories"
           api={accessoriesFetch}
         />
         )}

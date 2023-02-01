@@ -104,13 +104,13 @@ class ShopProductController extends BaseController<ShopProduct> {
       };
       delete req.query.search;
     }
-    if (req.query.filteredSearch) {
-      const search = JSON.parse(req.query.filteredSearch as string) as FilteredSearchParams;
+    if (req.query.filters) {
+      const search = JSON.parse(req.query.filters as string) as FilteredSearchParams;
       const proceed = search.specifications.length > 0;
       if (proceed) {
-        const specificationsToFetch = search.specifications.map(({ key, value }) => ({
-          value: { [Op.iLike]: value },
-          key: { [Op.iLike]: key },
+        const specificationsToFetch = search.specifications.map((spec) => ({
+          value: { [Op.iLike]: spec.value },
+          key: { [Op.iLike]: spec.key },
         }));
         const fetchedSpecifications = await Specification.findAll({
           where: {

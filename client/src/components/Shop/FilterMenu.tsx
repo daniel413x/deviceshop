@@ -65,7 +65,6 @@ function FilterMenu({
   const submit = (e: FormEvent) => {
     e.preventDefault();
     shopPage.toggleFilters();
-    // await shopPage.fetchAndSetShopProducts();
     const newSearchParams = shopPage.createSearchParamsRecordFromFilters();
     setSearchParams(newSearchParams);
   };

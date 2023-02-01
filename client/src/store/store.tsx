@@ -6,7 +6,7 @@ import ShopPageStore from './ShopPageStore';
 import CartStore from './CartStore';
 import NotificationStore from './NotificationStore';
 import ModalStore from './ModalStore';
-import OrderStore from './OrderStore';
+import FrontPageStore from './FrontPageStore';
 import AddressStore from './AddressStore';
 import CreateProductPageStore from './CreateProductPageStore';
 import AdminShopProductsStore from './AdminShopProductsStore';
@@ -20,7 +20,7 @@ const store = {
   reviews: new ReviewStore(),
   shopPage: new ShopPageStore(),
   cart: new CartStore(),
-  orders: new OrderStore(),
+  frontPage: new FrontPageStore(),
   modals: new ModalStore(),
   addresses: new AddressStore(),
   createProductPage: new CreateProductPageStore(),

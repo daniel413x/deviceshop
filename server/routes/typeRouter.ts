@@ -9,6 +9,10 @@ router.get(
   '/',
   (req, res) => TypeController.get(req, res),
 );
+router.get(
+  '/:name',
+  (req, res) => TypeController.execFindOneByParams(req, res),
+);
 router.post(
   '/',
   checkRoleMiddleware(ADMIN),

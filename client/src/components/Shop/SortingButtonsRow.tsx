@@ -7,32 +7,40 @@ import { ReactComponent as ListItemIcon } from '../../assets/icons/listview.svg'
 import Context from '../../context/context';
 import SortingDropdown from '../SortingDropdown';
 
-function SortingButtonsRow() {
+interface SortingButtonsRowProps {
+  sorting: string;
+  setSorting: (string: string) => void;
+}
+
+function SortingButtonsRow({
+  sorting,
+  setSorting,
+}: SortingButtonsRowProps) {
   const {
     shopPage,
   } = useContext(Context);
   let sortingDropdownLabel = '';
-  if (shopPage.sorting === 'relevance') {
+  if (sorting === 'relevance') {
     sortingDropdownLabel = 'Relevance';
   }
-  if (shopPage.sorting === 'byLowestPrice') {
+  if (sorting === 'byLowestPrice') {
     sortingDropdownLabel = 'Price: Low to High';
   }
-  if (shopPage.sorting === 'byHighestRated') {
+  if (sorting === 'byHighestRated') {
     sortingDropdownLabel = 'Highest Rated';
   }
   const sortingButtons = [
     {
       label: 'Relevance',
-      callback: () => shopPage.changeSorting('relevance'),
+      callback: () => setSorting('relevance'),
     },
     {
       label: 'Rating',
-      callback: () => shopPage.changeSorting('byHighestRated'),
+      callback: () => setSorting('byHighestRated'),
     },
     {
       label: 'Price: Low to High',
-      callback: () => shopPage.changeSorting('byLowestPrice'),
+      callback: () => setSorting('byLowestPrice'),
     },
   ];
   return (

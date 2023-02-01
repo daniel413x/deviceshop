@@ -158,7 +158,7 @@ function SliderComponent({
     setImages(nextImages);
     createProductPage.setImages(nextImages);
   };
-  const deleteImage = () => { // note that test env products currently all have x5 of an image with the same name test-product-filler.png instead of uuid's so deleting one of those images will delete them all. recommended to add new images to test the func
+  const deleteImage = () => {
     const nextImages = images.filter((image, mappedIndex) => mappedIndex !== index);
     setImages(nextImages);
     createProductPage.setImages(nextImages);

@@ -1,5 +1,5 @@
 import React, {
-  useContext, useEffect, useRef,
+  useContext, useEffect,
 } from 'react';
 import { observer } from 'mobx-react-lite';
 import { NavLink } from 'react-router-dom';
@@ -13,7 +13,6 @@ import SortingButtonsRow from '../../components/Shop/SortingButtonsRow';
 import ShopProductCard from '../../components/ShopProductCard';
 import ShopSideCol from '../../components/ShopSideCol';
 import Context from '../../context/context';
-import usePagination from '../../hooks/usePagination';
 import { shopFilterButtons } from '../../utils/arrays';
 import { ReactComponent as AngleIcon } from '../../assets/icons/angleup.svg';
 import useTrackDimensions from '../../hooks/useTrackDimensions';
@@ -21,23 +20,17 @@ import LoadingAnimation from '../../components/LoadingAnimation';
 import useQuery from '../../hooks/useQuery';
 import useBreakpoints from '../../hooks/useBreakpoints';
 import PaginatedItemsCounter from '../../components/PaginatedItemsCounter';
+import useQueriedItems from '../../hooks/useQueriedItems';
+import {
+  IShopProduct,
+  QueryReqFetchMultiple,
+  QueryReqFetchMultipleAny,
+  SearchParamsRecord,
+} from '../../types/types';
+import { fetchProducts } from '../../http/shopProductAPI';
+import { getFiltersFromSearchParamsRecord } from '../../utils/functions';
 
 function Shop() {
-  const { shopPage } = useContext(Context);
-  const dbProductCount = shopPage.count;
-  const itemsPerPage = 15;
-  const {
-    page,
-    pageLimitReached,
-    changePage,
-  } = usePagination({
-    itemsPerPage,
-    itemsInDb: dbProductCount,
-  });
-  const {
-    searchParamsRecord,
-    thereAreSearchParams,
-  } = useQuery();
   const { width: mainColWidth } = useTrackDimensions('main-col');
   const { width } = useBreakpoints();
   const gridGap = 20;
@@ -47,31 +40,51 @@ function Shop() {
     (mainColWidth! + gridGap) / compositeWidth,
   )
     * compositeWidth) - gridGap;
+  const { shopPage } = useContext(Context);
   const listView = shopPage.view === 'list';
-  const loadMore = async () => {
-    const newPage = page + 1;
-    await shopPage.fetchMoreShopProducts(newPage);
-    changePage(newPage);
-  };
+  const {
+    searchParamsRecord,
+    thereAreSearchParams,
+  } = useQuery();
   useEffect(() => {
-    changePage(1);
-  }, [shopPage.activeFilters]);
-  useEffect(() => {
-    shopPage.setPage(page);
-  }, [page]);
-  const ref = useRef<boolean>(true); // prevent double fetch on render
-  useEffect(() => {
-    if (ref.current) {
-      ref.current = false;
-      return;
-    }
     if (thereAreSearchParams) {
       shopPage.setFiltersFromSearchParams(searchParamsRecord);
     } else {
       shopPage.resetFilters();
     }
-    shopPage.fetchAndSetShopProducts();
   }, [searchParamsRecord]);
+  const itemsPerPage = 15;
+  const handleSearchParams = (searchParams: SearchParamsRecord, query: QueryReqFetchMultipleAny<IShopProduct>): QueryReqFetchMultiple<IShopProduct> => {
+    const specifications = getFiltersFromSearchParamsRecord(searchParams);
+    return {
+      ...query,
+      filters: {
+        specifications,
+      },
+    };
+  };
+  const {
+    items: products,
+    fetchPageNumber,
+    pageLimitReached,
+    page,
+    dbCount,
+    sorting,
+    fetchAndSort,
+    loading,
+  } = useQueriedItems<IShopProduct>({
+    initialSorting: 'relevance',
+    fetchAPI: fetchProducts,
+    itemsPerPage,
+    noFirstRender: true,
+    pageOneOnSearchParamsChange: true,
+    concatOnFetchPageNumber: true,
+    handleSearchParams,
+  });
+  const loadMore = async () => {
+    const newPage = page + 1;
+    fetchPageNumber(newPage);
+  };
   return (
     <div id="shop" className="columned-page">
       <ShopSideCol />
@@ -89,7 +102,7 @@ function Shop() {
           >
             <span className="product-count">
               <span className="figure">
-                {dbProductCount}
+                {dbCount}
               </span>
               {' '}
               products
@@ -118,11 +131,14 @@ function Shop() {
               </li>
             )}
           />
-          <SortingButtonsRow />
+          <SortingButtonsRow
+            sorting={sorting}
+            setSorting={fetchAndSort}
+          />
         </div>
         <List
-          items={shopPage.items}
-          className={`shop-products-ul ${listView && 'list-view'} ${shopPage.loading && 'loading'}`}
+          items={products}
+          className={`shop-products-ul ${listView && 'list-view'} ${loading && 'loading'}`}
           renderAs={((product) => (
             <li key={product.id}>
               <ShopProductCard
@@ -133,7 +149,7 @@ function Shop() {
             </li>
           ))}
         />
-        {shopPage.loading && (
+        {loading && (
           <LoadingAnimation />
         )}
         <div
@@ -143,7 +159,7 @@ function Shop() {
           <PaginatedItemsCounter
             page={page}
             itemsPerPage={itemsPerPage}
-            dbCount={dbProductCount}
+            dbCount={dbCount}
             descriptor="products"
           />
           <div className="lower-row">

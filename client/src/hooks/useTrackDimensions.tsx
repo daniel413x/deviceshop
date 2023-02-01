@@ -10,15 +10,22 @@ const useTrackDimensions: (refOrId?: string | RefObject<any>) => {
     const update = () => {
       let returnedHeight;
       let returnedWidth;
-      if (typeof refOrId === 'string') {
-        const id = refOrId as string;
-        const element = document.getElementById(id);
-        returnedHeight = element?.clientHeight;
-        returnedWidth = element?.clientWidth;
-      } else if (refOrId) {
-        const ref = refOrId as RefObject<any>;
-        returnedHeight = ref?.current.clientHeight || 0;
-        returnedWidth = ref?.current.clientWidth || 0;
+      if (refOrId) {
+        const isId = typeof refOrId === 'string';
+        const isRef = typeof refOrId !== 'string';
+        if (isId) {
+          const id = refOrId as string;
+          const element = document.getElementById(id);
+          returnedHeight = element?.clientHeight;
+          returnedWidth = element?.clientWidth;
+        } else if (isRef) {
+          if (!(refOrId as any).current) {
+            return;
+          }
+          const ref = refOrId as any;
+          returnedHeight = ref?.current.clientHeight || 0;
+          returnedWidth = ref?.current.clientWidth || 0;
+        }
       } else {
         returnedHeight = window.innerHeight || 0;
         returnedWidth = window.innerWidth || 0;

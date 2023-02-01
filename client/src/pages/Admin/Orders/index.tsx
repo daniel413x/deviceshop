@@ -49,10 +49,10 @@ function Orders() {
     setItems: setOrders,
     loading,
   } = useQueriedItems<IOrder>({
+    noFirstRender: true,
     initialSorting: 'byNewest',
     fetchAPI: fetchOrdersAdmin,
     itemsPerPage,
-    concatItems: true,
     concurrentlySetQuery: true,
     queryProps: unshippedOrdersPage ? {
       unshipped: true,

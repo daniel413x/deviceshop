@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import SectionHeader from './SectionHeader';
 import {
   IShopProduct,
@@ -6,6 +6,7 @@ import {
 } from '../../types/types';
 import ShopProductCard from '../ShopProductCard';
 import List from '../List';
+import ShownInView from '../ShownInView';
 
 interface TrendingItemsProps {
   api: () => Promise<SequelizeFindAndCountAll<IShopProduct>>;
@@ -20,18 +21,16 @@ function TrendingItems({
 }: TrendingItemsProps) {
   const [loading, setLoading] = useState<boolean>(true);
   const [products, setProducts] = useState<IShopProduct[]>([]);
-  useEffect(() => {
-    (async () => {
-      try {
-        const fetchedProducts = await api();
-        setProducts(fetchedProducts.rows);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [api]);
+  const fetch = async () => {
+    try {
+      const fetchedProducts = await api();
+      setProducts(fetchedProducts.rows);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
-    <div className={`trending-items ${className} ${loading}`}>
+    <ShownInView className={`trending-items ${className} ${loading}`} func={fetch} id="trending-items">
       <SectionHeader
         header={header}
       />
@@ -46,7 +45,7 @@ function TrendingItems({
           </li>
         ))}
       />
-    </div>
+    </ShownInView>
   );
 }
 

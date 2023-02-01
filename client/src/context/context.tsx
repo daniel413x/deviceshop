@@ -7,7 +7,7 @@ import ReviewStore from '../store/ReviewStore';
 import ShopPageStore from '../store/ShopPageStore';
 import CartStore from '../store/CartStore';
 import ModalStore from '../store/ModalStore';
-import OrderStore from '../store/OrderStore';
+import FrontPageStore from '../store/FrontPageStore';
 import AddressStore from '../store/AddressStore';
 import CreateProductPageStore from '../store/CreateProductPageStore';
 import AdminShopProductsStore from '../store/AdminShopProductsStore';
@@ -19,7 +19,7 @@ interface ContextProps {
   user: UserStore;
   cart: CartStore;
   types: TypeStore;
-  orders: OrderStore;
+  frontPage: FrontPageStore;
   reviews: ReviewStore;
   shopPage: ShopPageStore;
   modals: ModalStore;
@@ -38,7 +38,7 @@ const Context = createContext<ContextProps>({
   shopPage: new ShopPageStore(),
   cart: new CartStore(),
   modals: new ModalStore(),
-  orders: new OrderStore(),
+  frontPage: new FrontPageStore(),
   addresses: new AddressStore(),
   createProductPage: new CreateProductPageStore(),
   adminShopProducts: new AdminShopProductsStore(),

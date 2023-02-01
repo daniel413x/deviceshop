@@ -28,7 +28,6 @@ function RemoveFilterButton({ specification }: RemoveFilterButtonProps) {
     setClasses('');
     const timer = setTimeout(() => {
       shopPage.removeFilter(id);
-      // await shopPage.fetchAndSetShopProducts();
       const newSearchParams = shopPage.createSearchParamsRecordFromFilters();
       setSearchParams(newSearchParams);
     }, 220);

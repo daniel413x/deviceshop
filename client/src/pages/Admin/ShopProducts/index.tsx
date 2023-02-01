@@ -115,7 +115,7 @@ function ShopProducts() {
   const deletedProductsPage = pathname.includes(DELETED_ROUTE);
   const {
     items: products,
-    fetchPageNumber,
+    changePage,
     pageLimitReached,
     pageLimit,
     page,
@@ -124,10 +124,10 @@ function ShopProducts() {
     fetch,
     loading,
   } = useQueriedItems<IShopProduct>({
+    noFirstRender: true,
     initialSorting: 'byNewest',
     fetchAPI: fetchProducts,
     itemsPerPage,
-    concatItems: true,
     concurrentlySetQuery: true,
     queryProps: deletedProductsPage ? {
       deleted: true,
@@ -256,7 +256,7 @@ function ShopProducts() {
           />
           <PageControl
             page={page}
-            changePage={fetchPageNumber}
+            changePage={changePage}
             pageLimitReached={pageLimitReached}
             pageLimit={pageLimit}
           />

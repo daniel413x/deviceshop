@@ -35,7 +35,6 @@ function Modal({
   const { width: windowWidth, height: windowHeight } = useTrackDimensions();
   useOnOutsideClick(ref, close);
   const { modals } = useContext(Context);
-  const firstInQueue = modals.all[0] === id;
   useEffect(() => {
     if (!show) {
       modals.unqueue(id);
@@ -55,7 +54,7 @@ function Modal({
     }
   }, [windowWidth, windowHeight, ref.current?.scrollHeight]);
   return ReactDom.createPortal(
-    <div className={`modal ${(firstInQueue && show) && 'show'} ${className} ${size} ${handleOverflow && 'handle-overflow'} ${modalStyle}`}>
+    <div className={`modal ${(show) && 'show'} ${className} ${size} ${handleOverflow && 'handle-overflow'} ${modalStyle}`}>
       <div className="overlay" />
       <div
         className="window"
@@ -69,7 +68,7 @@ function Modal({
 }
 
 Modal.defaultProps = {
-  children: false,
+  children: undefined,
   className: '',
   size: '',
   modalStyle: '',

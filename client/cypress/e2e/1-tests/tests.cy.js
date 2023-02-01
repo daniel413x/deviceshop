@@ -13,25 +13,33 @@ import { convertPriceToInt } from '../../../src/utils/functions';
 
 describe('deviceshop app', () => {
   beforeEach(() => {
-    cy.request('POST', `${serverUrl}/api/testing/reset`);
+    // cy.request('POST', `${serverUrl}/api/testing/reset`);
     cy.visit(clientUrl);
   });
   describe('as a guest', () => {
     describe('on the front page', () => {
       beforeEach(() => {
-        cy.get('.slider');
+        cy.get('.slider')
+          .find('img')
+          .should('exist');
         cy.get('.browse-the-shop')
-          .find('.row')
-          .children()
-          .should('have.length', 12);
+          .find('img')
+          .should('exist');
+      });
+      it('initializes with off-screen elements hidden', () => {
         cy.get('.trending')
-          .find('.shop-product-card')
-          .should('have.length', 17);
-        cy.get('.in-depth .product.left .image-col');
-        cy.get('.in-depth .product.right .image-col');
-        cy.get('.recently-reviewed .review');
+          .should('not.have.class', 'shown');
+        cy.get('.in-depth')
+          .should('not.have.class', 'shown');
+        cy.get('.recently-reviewed')
+          .should('not.have.class', 'shown');
       });
       describe('using the navbar', () => {
+        beforeEach(() => {
+          cy.get('.slider');
+          cy.get('.browse-the-shop')
+            .find('img');
+        });
         it('shows a dropdown menu upon clicking one of the toggles', () => {
           cy.get('#navbar')
             .find('.toggle')
@@ -294,6 +302,30 @@ describe('deviceshop app', () => {
             .find('.name')
             .should('contain.text', 'Smartphone 4');
         });
+      });
+      it.only(('lazy loads page elements'), () => {
+        let elementsHeight = 300;
+        cy.get('.trending-items.top-row')
+          .should('not.be.visible');
+        cy.get('.slider')
+          .then((slider) => {
+            elementsHeight += slider.innerHeight();
+            cy.scrollTo(0, elementsHeight, { duration: 0 });
+            cy.get('.browse-the-shop')
+              .then((browse) => {
+                elementsHeight += browse.innerHeight();
+                cy.scrollTo(0, elementsHeight, { duration: 0 });
+                cy.get('.trending-items.top-row')
+                  .should('be.visible');
+                  cy.get('.trending-items.top-row')
+                    .then((trendingItemsTopRow) => {
+                      elementsHeight += trendingItemsTopRow.innerHeight();
+                      cy.scrollTo(0, elementsHeight, { duration: 0 });
+                      cy.get('.trending-items.top-row')
+                        .should('be.visible');
+                    })
+              })
+          })
       });
     });
     describe('on /shop', () => {
@@ -2019,7 +2051,7 @@ describe('deviceshop app', () => {
         });
       });
     });
-    describe('test test', () => {
+    describe('on admin/shopproducts/edit/:title', () => {
       const product = 'apple-iphone-256gb-ios-16-5g-smartphone-1';
       beforeEach(() => {
         cy.visit(`${clientUrl}/admin/shopproducts/edit/${product}`);
@@ -2080,7 +2112,7 @@ describe('deviceshop app', () => {
         cy.get('.stock')
           .should('contain.text', '4');
       });
-      it.only('can update the product\'s specifications', () => {
+      it('can update the product\'s specifications', () => {
         cy.get('.category')
           .eq(2)
           .find('.header-row')

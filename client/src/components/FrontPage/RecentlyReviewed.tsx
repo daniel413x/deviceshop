@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import SectionHeader from './SectionHeader';
 import { IReview } from '../../types/types';
@@ -11,6 +11,7 @@ import {
 } from '../../utils/consts';
 import List from '../List';
 import RatingStars from '../RatingStars';
+import ShownInView from '../ShownInView';
 
 interface RecentReviewProps {
   review: IReview;
@@ -67,18 +68,20 @@ function Review({
 function RecentlyReviewed() {
   const [loading, setLoading] = useState<boolean>(true);
   const [reviews, setReviews] = useState<IReview[]>([]);
-  useEffect(() => {
-    (async () => {
-      try {
-        const fetchedReviews = await fetchRecentReviews();
-        setReviews(fetchedReviews.rows);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+  const fetch = async () => {
+    try {
+      const fetchedReviews = await fetchRecentReviews();
+      setReviews(fetchedReviews.rows);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
-    <div className={`recently-reviewed ${loading}`}>
+    <ShownInView
+      className={`recently-reviewed ${loading}`}
+      func={fetch}
+      timeout={500}
+    >
       <div className="header-col">
         <SectionHeader
           header="Recently reviewed"
@@ -98,7 +101,7 @@ function RecentlyReviewed() {
           </li>
         ))}
       />
-    </div>
+    </ShownInView>
   );
 }
 

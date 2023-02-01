@@ -295,7 +295,7 @@ export type QueryReqFetchMultiple<T> = {
   attributes?: InclusionAttributes<T>;
   search?: string;
   searchAttribute?: string;
-  filteredSearch?: SearchViaFilteredSearch;
+  filters?: SearchViaFilteredSearch;
   where?: Partial<T>;
   order?: any;
   distinct?: boolean;

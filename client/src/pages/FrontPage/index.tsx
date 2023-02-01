@@ -1,20 +1,25 @@
-import React from 'react';
-import BrowseTheShop from '../../components/FrontPage/BrowseTheShop';
-import Trending from '../../components/FrontPage/Trending';
-import InDepth from '../../components/FrontPage/InDepth';
-import RecentlyReviewed from '../../components/FrontPage/RecentlyReviewed';
-import SliderWithAd from '../../components/FrontPage/SliderWithAd';
+import React, { Suspense, lazy } from 'react';
+
+const SliderWithAd = lazy(() => import('../../components/FrontPage/SliderWithAd'));
+const BrowseTheShop = lazy(() => import('../../components/FrontPage/BrowseTheShop'));
+const Trending = lazy(() => import('../../components/FrontPage/Trending'));
+const InDepth = lazy(() => import('../../components/FrontPage/InDepth'));
+const RecentlyReviewed = lazy(() => import('../../components/FrontPage/RecentlyReviewed'));
+const Guarantees = lazy(() => import('../../components/FrontPage/Guarantees'));
 
 function FrontPage() {
   return (
     <div id="front-page">
-      <SliderWithAd />
-      <div className="beneath-slider-row">
-        <BrowseTheShop />
-        <Trending />
-      </div>
-      <InDepth />
-      <RecentlyReviewed />
+      <Suspense>
+        <SliderWithAd />
+        <div className="beneath-slider">
+          <BrowseTheShop />
+          <Trending />
+        </div>
+        <InDepth />
+        <RecentlyReviewed />
+        <Guarantees />
+      </Suspense>
     </div>
   );
 }

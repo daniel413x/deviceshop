@@ -82,7 +82,7 @@ export const shopNavButtons = [
     label: 'Phones',
   },
   {
-    to: routes.SHOP_PHONES_ROUTE,
+    to: routes.SHOP_LAPTOPS_ROUTE,
     label: 'Laptops',
   },
   {

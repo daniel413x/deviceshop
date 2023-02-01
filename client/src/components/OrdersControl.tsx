@@ -33,10 +33,10 @@ function OrdersControl({
     dbCount,
     sorting,
   } = useQueriedItems<IOrder>({
+    noFirstRender: true,
     initialSorting: 'byNewest',
     fetchAPI,
     itemsPerPage,
-    concatItems: true,
     concurrentlySetQuery: true,
   });
   let sortingDropdownLabel = '';

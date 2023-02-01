@@ -1,4 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  useContext, useState,
+} from 'react';
 import { NavLink } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import SectionHeader from './SectionHeader';
@@ -22,6 +24,8 @@ import {
   SHOP_ROUTE,
 } from '../../utils/consts';
 import List from '../List';
+import ShownInView from '../ShownInView';
+import { fetchType } from '../../http/typeAPI';
 
 interface SpecificationProps {
   specification: ISpecification;
@@ -125,43 +129,43 @@ function InDepth() {
   const [firstItem, setFirstItem] = useState<IShopProduct>();
   const [secondItem, setSecondItem] = useState<IShopProduct>();
   const smartphones = types.findType('Smartphone');
-  useEffect(() => {
-    (async () => {
-      try {
-        if (smartphones) {
-          const products = await fetchProducts({
-            limit: 5,
-            where: {
-              typeId: smartphones.id,
-            },
-          });
-          const firstItemIndex = randomInt(0, 4);
-          let secondItemIndex;
-          if (firstItemIndex === 4) {
-            secondItemIndex = 3;
-          } else if (firstItemIndex === 0) {
-            secondItemIndex = 1;
-          } else {
-            secondItemIndex = firstItemIndex + 1;
-          }
-          setFirstItem(products.rows[firstItemIndex]);
-          setSecondItem(products.rows[secondItemIndex]);
-        }
-      } catch (error: any) {
-        notifications.error(
-          error.response.data.message,
-        );
-      } finally {
-        setLoading(false);
+  const fetch = async () => {
+    try {
+      if (!smartphones) {
+        const fetchedSmartphones = await fetchType('smartphone');
+        types.set(fetchedSmartphones);
       }
-    })();
-  }, [types.all]);
+      const products = await fetchProducts({
+        limit: 5,
+        where: {
+          typeId: smartphones!.id,
+        },
+      });
+      const firstItemIndex = randomInt(0, 4);
+      let secondItemIndex;
+      if (firstItemIndex === 4) {
+        secondItemIndex = 3;
+      } else if (firstItemIndex === 0) {
+        secondItemIndex = 1;
+      } else {
+        secondItemIndex = firstItemIndex + 1;
+      }
+      setFirstItem(products.rows[firstItemIndex]);
+      setSecondItem(products.rows[secondItemIndex]);
+    } catch (error: any) {
+      notifications.error(
+        error.response.data.message,
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
-    <div className={`in-depth ${loading}`}>
+    <div className={`in-depth ${loading}`} id="in-depth">
       <SectionHeader
         header="In depth"
       />
-      <div className="row">
+      <ShownInView className="row" func={fetch}>
         {firstItem && (
         <ProductCol
           product={firstItem}
@@ -174,7 +178,7 @@ function InDepth() {
           className="right"
         />
         )}
-      </div>
+      </ShownInView>
     </div>
   );
 }

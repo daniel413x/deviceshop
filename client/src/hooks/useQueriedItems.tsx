@@ -1,15 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
-import { QueryReqFetchMultipleAny, SearchParamsRecord, SequelizeFindAndCountAll } from '../types/types';
+import {
+  QueryReqFetchMultipleAny, SearchParamsRecord, SequelizeFindAndCountAll,
+} from '../types/types';
 import usePagination from './usePagination';
 import useQuery from './useQuery';
 
 interface UseQueriedItemsProps<T> {
   itemsPerPage: number;
   fetchAPI: (query: QueryReqFetchMultipleAny<T>) => Promise<SequelizeFindAndCountAll<T>>;
-  concatItems?: boolean;
   concurrentlySetQuery?: boolean;
   initialSorting?: string;
   queryProps?: QueryReqFetchMultipleAny<T>;
+  noFirstRender?: boolean;
+  handleSearchParams?: (searchParamsRecord: SearchParamsRecord, query: QueryReqFetchMultipleAny<T>) => QueryReqFetchMultipleAny<T>; // if you need search params like ?type=smartphone&brand=apple handled a certain way
+  pageOneOnSearchParamsChange?: boolean;
+  concatOnSearchParamsChange?: boolean;
+  concatOnFetchPageNumber?: boolean;
 }
 
 interface UseQueriedItemsReturn<T> {
@@ -17,6 +23,7 @@ interface UseQueriedItemsReturn<T> {
   loading: boolean;
   fetchAndSort: (string: string) => void;
   fetchPageNumber: (page: number) => void;
+  changePage: (page: number) => void;
   pageLimitReached: boolean;
   setSorting: (string: string) => void;
   page: number,
@@ -34,6 +41,11 @@ function useQueriedItems<T>({
   concurrentlySetQuery,
   initialSorting,
   queryProps,
+  noFirstRender,
+  handleSearchParams,
+  pageOneOnSearchParamsChange,
+  concatOnSearchParamsChange,
+  concatOnFetchPageNumber,
 }: UseQueriedItemsProps<T>): UseQueriedItemsReturn<T> {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -55,7 +67,7 @@ function useQueriedItems<T>({
     thereAreSearchParams,
   } = useQuery();
   const createQuery: () => QueryReqFetchMultipleAny<T> = () => {
-    const query: any = {
+    let query: any = {
       limit: itemsPerPage,
       page,
       order: {
@@ -65,39 +77,51 @@ function useQueriedItems<T>({
       ...queryProps,
     };
     if (thereAreSearchParams) {
-      const noMutate = { ...searchParamsRecord };
-      const noMutateKeys = Object.keys(noMutate);
-      for (let k = 0; k < noMutateKeys.length; k += 1) {
-        query[noMutateKeys[k]] = noMutate[noMutateKeys[k]];
+      if (handleSearchParams) {
+        query = handleSearchParams(searchParamsRecord, query);
+      } else {
+        const noMutate = { ...searchParamsRecord };
+        const noMutateKeys = Object.keys(noMutate);
+        for (let k = 0; k < noMutateKeys.length; k += 1) {
+          query[noMutateKeys[k]] = noMutate[noMutateKeys[k]];
+        }
       }
     }
     return query;
   };
-  const fetchAndSort = async (sortString: string) => {
+  const fetchAndSort = async (sortString?: string) => {
     const query = createQuery();
-    query.order = { [sortString]: true };
+    query.order = { [sortString || sorting]: true };
     query.limit = page * itemsPerPage;
     query.page = 1;
     try {
       setLoading(true);
       const fetchedItems = await fetchAPI(query);
       setItems(fetchedItems.rows);
-      setSorting(sortString);
+      setSorting(sortString || sorting);
     } finally {
       setLoading(false);
     }
   };
-  const fetchPageNumber = (pageArg: number) => {
-    const query = createQuery();
-    query.page = pageArg;
-    changePage(pageArg);
-  };
-  const fetch = async () => {
+  const fetch = async (addedParams?: QueryReqFetchMultipleAny<T>) => {
     const query = createQuery();
     try {
       setLoading(true);
-      const fetchedItems = await fetchAPI(query);
-      setItems(fetchedItems.rows);
+      const fetchedItems = await fetchAPI({ ...query, ...addedParams });
+      setItems(concatOnSearchParamsChange ? items.concat(fetchedItems.rows) : fetchedItems.rows);
+      setDbProductCount(fetchedItems.count);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchPageNumber = async (pageArg: number) => {
+    changePage(pageArg);
+    const query = createQuery();
+    query.page = pageArg;
+    try {
+      setLoading(true);
+      const fetchedItems = await fetchAPI({ ...query });
+      setItems(concatOnFetchPageNumber ? items.concat(fetchedItems.rows) : fetchedItems.rows);
       setDbProductCount(fetchedItems.count);
     } finally {
       setLoading(false);
@@ -105,8 +129,13 @@ function useQueriedItems<T>({
   };
   const ref = useRef<boolean>(true); // prevent double fetch on render
   useEffect(() => {
-    if (ref.current) {
+    if (noFirstRender && ref.current) {
       ref.current = false;
+      return;
+    }
+    if (pageOneOnSearchParamsChange) {
+      changePage(1);
+      fetch({ page: 1 });
       return;
     }
     fetch();
@@ -117,14 +146,15 @@ function useQueriedItems<T>({
     loading,
     fetchAndSort,
     pageLimitReached,
+    sorting,
     setSorting,
     page,
     fetchPageNumber,
     pageLimit,
     dbCount,
-    sorting,
     setSearchParams,
     fetch,
+    changePage,
   };
 }
 

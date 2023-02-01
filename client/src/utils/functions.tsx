@@ -1,4 +1,6 @@
-import { ISpecification, SpecificationColumn } from '../types/types';
+import {
+  Filter, ISpecification, SearchParamsRecord, SpecificationColumn,
+} from '../types/types';
 
 export function makeSlug(string: string): string {
   const id = string.toLowerCase().split(' ').filter(Boolean).join('-');
@@ -75,6 +77,31 @@ export function formatPrice(price: number, discount?: number): string {
     return `${Number(stringPrice).toFixed(2)}.0`;
   }
   return Number(stringPrice).toFixed(2);
+}
+
+export function getFiltersFromSearchParamsRecord(obj: SearchParamsRecord): Filter[] {
+  const filtersKeys = Object.keys(obj);
+  let filters = filtersKeys.map((key) => ({
+    key: key.toLowerCase(),
+    value: obj[key].toLowerCase(),
+  }));
+  const hasEncoding = (string: string) => {
+    const regex = /\|/;
+    return regex.test(string);
+  };
+  filters.forEach((filter) => {
+    if (hasEncoding(filter.value)) {
+      const newFilters = filter.value.split('|');
+      newFilters.forEach((value) => {
+        filters.push({
+          key: filter.key,
+          value,
+        });
+      });
+    }
+  });
+  filters = filters.filter((filter) => !hasEncoding(filter.value));
+  return filters;
 }
 
 export function getMaxPage(itemsInDb: number, itemsPerPage: number) {

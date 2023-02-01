@@ -20,8 +20,15 @@ const useQuery = (searchParamsObj?: SearchParamsRecord): UseQueryReturn => {
         .replace(/\+/g, ' ')
         .replace(/&/g, '","')
         .replace(/=/g, '":"')
+        .replace(/=/g, '":"')
         .toLowerCase()
     }"}`);
+    const keys = Object.keys(newSearchParamsRecord);
+    for (let k = 0; k < keys.length; k += 1) {
+      newSearchParamsRecord[keys[k]] = newSearchParamsRecord[keys[k]]
+        .replace(/%2c/g, ',')
+        .replace(/%3a/g, ':');
+    }
     return newSearchParamsRecord;
   };
   const [searchParamsRecord, setSearchParamsRecord] = useState<any>({});

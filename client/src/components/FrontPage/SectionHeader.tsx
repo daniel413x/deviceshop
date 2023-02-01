@@ -1,18 +1,24 @@
 import React from 'react';
+import ShownInView from '../ShownInView';
 
 interface SectionHeaderProps {
   header: string;
+  colorStyle?: 'light';
 }
 
-function SectionHeader({ header }: SectionHeaderProps) {
+function SectionHeader({ header, colorStyle }: SectionHeaderProps) {
   return (
-    <div className="section-header">
+    <ShownInView className={`section-header ${colorStyle}`}>
       <h2>
         {header}
       </h2>
       <div className="divider" />
-    </div>
+    </ShownInView>
   );
 }
+
+SectionHeader.defaultProps = {
+  colorStyle: '',
+};
 
 export default SectionHeader;
