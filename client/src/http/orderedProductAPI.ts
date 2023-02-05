@@ -17,6 +17,11 @@ export const createOrderedProduct = async (itemToAdd?: QueryReqOrderedProduct): 
   return data;
 };
 
+export const eligibileToReview = async (id: string): Promise<IOrderedProduct> => {
+  const { data } = await $authHost.get(`api/review/eligibility/${id}`);
+  return data;
+};
+
 export const deleteOrderedProduct = async (id: string): Promise<null> => {
   const { data } = await $authHost.delete(`api/orderedproduct/${id}`);
   return data;

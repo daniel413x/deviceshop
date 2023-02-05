@@ -14,6 +14,8 @@ import {
   thirdUserWithAReview,
   cartForSecondUserWithReviews,
   secondUserWithAReview,
+  cartForUserWhoCanWriteReviews,
+  userWhoCanWriteReviews,
 } from '../utils/consts';
 
 export default {
@@ -63,6 +65,12 @@ export default {
     {
       id: cartForFourthUserWithReviews,
       userId: secondUserWithAReview,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: cartForUserWhoCanWriteReviews,
+      userId: userWhoCanWriteReviews,
       createdAt: new Date(),
       updatedAt: new Date(),
     },

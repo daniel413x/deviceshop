@@ -39,6 +39,7 @@ function OrdersControl({
     itemsPerPage,
     concurrentlySetQuery: true,
   });
+  const noOrders = !loading && orders.length === 0;
   let sortingDropdownLabel = '';
   if (sorting === 'relevance') {
     sortingDropdownLabel = 'Relevance';
@@ -80,7 +81,7 @@ function OrdersControl({
         />
       </div>
       <div className="divider" />
-      {!loading && orders.length === 0 && (
+      {noOrders && (
         <span className="no-orders">
           No orders on record
         </span>
@@ -98,18 +99,22 @@ function OrdersControl({
           </li>
         ))}
       />
-      <PaginatedItemsCounter
-        page={page}
-        itemsPerPage={itemsPerPage}
-        dbCount={dbCount}
-        descriptor="orders"
-      />
-      <PageControl
-        page={page}
-        changePage={fetchPageNumber}
-        pageLimitReached={pageLimitReached}
-        pageLimit={pageLimit}
-      />
+      {!noOrders && (
+        <PaginatedItemsCounter
+          page={page}
+          itemsPerPage={itemsPerPage}
+          dbCount={dbCount}
+          descriptor="orders"
+        />
+      )}
+      {!noOrders && (
+        <PageControl
+          page={page}
+          changePage={fetchPageNumber}
+          pageLimitReached={pageLimitReached}
+          pageLimit={pageLimit}
+        />
+      )}
     </div>
   );
 }

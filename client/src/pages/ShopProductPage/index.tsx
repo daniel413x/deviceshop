@@ -1,18 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import ShopSideCol from '../../components/ShopSideCol';
 import BreadcrumbTrail from '../../components/BreadcrumbTrail';
 import { fetchProduct } from '../../http/shopProductAPI';
-import { IShopProduct } from '../../types/types';
+import { IOrderedProduct, IShopProduct } from '../../types/types';
 import TopInfoRow from '../../components/ShopProductPage/TopInfoRow';
 import Specifications from '../../components/Specifications';
 import CollapsibleInfo from '../../components/CollapsibleInfo';
 import Reviews from '../../components/ShopProductPage/Reviews';
 import RecentlyViewedProducts from '../../components/RecentlyViewedProducts';
 import { FRONT_PAGE_ROUTE } from '../../utils/consts';
+import ReviewModal from '../../components/ReviewModal';
+import { eligibileToReview } from '../../http/orderedProductAPI';
+import Context from '../../context/context';
+import LeaveARating from '../../components/ShopProductPage/LeaveARating';
 
 function ShopProductPage() {
+  const { notifications, user } = useContext(Context);
   const [loading, setLoading] = useState<boolean>(true);
+  const [showReviewModal, setShowReviewModal] = useState<boolean>(false);
+  const [orderedProduct, setOrderedProduct] = useState<IOrderedProduct>();
   const [product, setProduct] = useState<IShopProduct>();
   const navigate = useNavigate();
   const { title } = useParams();
@@ -35,6 +42,16 @@ function ShopProductPage() {
           }
           localStorage.setItem('recentlyViewedIds', JSON.stringify(recentlyViewedIds.slice(0, 4)));
         }
+        if (!user.isGuest) {
+          try {
+            const fetchedOrderedProduct = await eligibileToReview(fetchedProduct.id);
+            setOrderedProduct(fetchedOrderedProduct);
+          } catch (error: any) {
+            notifications.message(
+              `${error.response.data.message}`,
+            );
+          }
+        }
       } finally {
         setLoading(false);
       }
@@ -42,9 +59,21 @@ function ShopProductPage() {
   }, [title]);
   return (
     <div id="shop-product-page" className={`shop-product-page ${loading && 'loading'}`}>
+      <ReviewModal
+        show={showReviewModal}
+        orderedProduct={orderedProduct}
+        close={() => setShowReviewModal(false)}
+        productName={product?.name || ''}
+      />
       <div className="columned-page">
         <ShopSideCol />
         <div className="main-col">
+          {orderedProduct && (
+            <LeaveARating
+              setShowReviewModal={setShowReviewModal}
+              orderedProduct={orderedProduct}
+            />
+          )}
           <BreadcrumbTrail
             lastString={product?.name}
           />

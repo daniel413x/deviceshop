@@ -27,6 +27,12 @@ const includeAll = [
     model: OrderedProduct,
     as: 'orderedproduct',
     attributes: ['createdAt'],
+    include: [
+      {
+        model: Order,
+        as: 'order',
+        attributes: ['createdAt'],
+      }],
   },
 ];
 
@@ -72,14 +78,52 @@ class ReviewController extends BaseController<Review> {
 
   async create(req: Request, res: Response, next: NextFunction) {
     const { id: userId } = res.locals.user;
-    const { id: orderId } = req.params;
+    const {
+      orderId,
+      shopProductId,
+    } = req.body;
+    const reviewAlreadyExists = await Review.findOne({ where: { userId, shopProductId } });
     const order = await Order.findByPk(orderId);
     const notEligible = order.status.indexOf(DELIVERED) === -1;
     const notUser = order.userId !== userId;
-    if (notEligible || notUser) {
+    if (notEligible || notUser || reviewAlreadyExists) {
       return next(ApiError.unauthorized('Unauthorized request'));
     }
-    return this.execCreate(req, res);
+    const newReview = await Review.create(req.body);
+    return res.json(newReview);
+  }
+
+  async eligibility(req: Request, res: Response) {
+    const { id: userId } = res.locals.user;
+    const { id: shopProductId } = req.params;
+    const orderedProduct = await OrderedProduct.findOne({
+      where: {
+        userId,
+        shopProductId,
+      },
+      include: [{
+        model: Order,
+        as: 'order',
+      }],
+    });
+    if (!orderedProduct) {
+      return res.status(204).end();
+    }
+    const reviewAlreadyExists = await Review.findOne({ where: { userId, shopProductId } });
+    const orderWasDelivered = (orderedProduct as any).order.status.indexOf(DELIVERED) >= 0;
+    const eligible = orderWasDelivered && !reviewAlreadyExists;
+    if (eligible) {
+      return res.json(orderedProduct);
+    }
+    return res.status(204).end();
+  }
+
+  update(req: Request, res: Response, next: NextFunction) {
+    req.body = {
+      body: req.body.body,
+      rating: req.body.rating,
+    };
+    this.execValidateUserAndUpdate(req, res, next);
   }
 
   delete(req: Request, res: Response) {

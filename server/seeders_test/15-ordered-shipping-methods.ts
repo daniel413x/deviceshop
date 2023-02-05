@@ -2,6 +2,7 @@ import { v4 as uuid } from 'uuid';
 import {
   orderForFourthUserWithAReview, orderForSecondUserWithAReview,
   orderForThirdUserWithAReview,
+  orderForUserWhoCanWriteReviews,
   orderForUserWithCartItemsAndOrdersAndReviewsCanceled,
   orderForUserWithCartItemsAndOrdersAndReviewsDelivered,
   orderForUserWithCartItemsAndOrdersAndReviewsProcessing,
@@ -54,6 +55,14 @@ export default {
       name: 'One-Day Delivery',
       id: uuid(),
       orderId: orderForFourthUserWithAReview,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      price: 1000,
+      name: 'One-Day Delivery',
+      id: uuid(),
+      orderId: orderForUserWhoCanWriteReviews,
       createdAt: new Date(),
       updatedAt: new Date(),
     },

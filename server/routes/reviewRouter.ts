@@ -13,10 +13,20 @@ router.get(
   '/recentlyreviewed',
   (req, res) => ReviewController.recentReviews(req, res),
 );
+router.get(
+  '/eligibility/:id', // shop product
+  checkRoleMiddleware(USER),
+  (req, res) => ReviewController.eligibility(req, res),
+);
 router.post(
-  '/:id',
+  '/',
   checkRoleMiddleware(USER),
   (req, res, next) => ReviewController.create(req, res, next),
+);
+router.put(
+  '/:id',
+  checkRoleMiddleware(USER),
+  (req, res, next) => ReviewController.update(req, res, next),
 );
 router.delete(
   '/:id',

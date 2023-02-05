@@ -1,5 +1,5 @@
 import {
-  Filter, ISpecification, SearchParamsRecord, SpecificationColumn,
+  Filter, IGuestAddedProduct, IOrderedProduct, ISpecification, SearchParamsRecord, SpecificationColumn,
 } from '../types/types';
 
 export function makeSlug(string: string): string {
@@ -164,7 +164,7 @@ export function dateMonthYear(string: string): string {
     month: 'numeric',
     day: 'numeric',
     year: 'numeric',
-  }).split(',')[0];
+  }).split(',')[0].split('.').join('/');
 }
 
 export function validateEmail(string: string): boolean {
@@ -198,4 +198,34 @@ export function selectEnd(domObjById: any): void {
   }
   selection?.removeAllRanges();
   selection?.addRange(range);
+}
+
+export function getTotal(orderItems: (IOrderedProduct | IGuestAddedProduct)[]): number {
+  let total = 0;
+  orderItems.forEach((item) => {
+    total += item.price;
+    if (item.addons && item.addons.length > 0) {
+      item.addons.forEach((addon) => {
+        total += addon.price;
+      });
+    }
+  });
+  return total;
+}
+
+export function getTax(total: number): number {
+  return total * 0.05;
+}
+
+export function getIntTotal(orderItems: (IOrderedProduct | IGuestAddedProduct)[], shippingMethod?: number) {
+  let total = getTotal(orderItems);
+  const tax = getTax(total);
+  if (shippingMethod) {
+    total += shippingMethod;
+  }
+  return total + tax;
+}
+
+export function getFormattedTotal(orderItems: (IOrderedProduct | IGuestAddedProduct)[]) {
+  return formatPrice(convertIntToPrice(getIntTotal(orderItems)));
 }

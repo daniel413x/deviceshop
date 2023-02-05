@@ -36,12 +36,17 @@ class OrderedProduct extends BaseModel<OrderedProduct> implements IOrderedProduc
     OrderedProduct.belongsTo(models.Order, {
       targetKey: 'id',
       foreignKey: 'orderId',
-      as: 'products',
+      as: 'order',
     });
     OrderedProduct.hasMany(models.OrderedAddon, {
       sourceKey: 'id',
       foreignKey: 'orderedProductId',
       as: 'addons',
+    });
+    OrderedProduct.hasOne(models.Review, {
+      sourceKey: 'id',
+      foreignKey: 'orderedProductId',
+      as: 'review',
     });
   }
 }

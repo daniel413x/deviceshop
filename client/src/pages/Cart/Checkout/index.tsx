@@ -7,7 +7,8 @@ import Context from '../../../context/context';
 import NavButton from '../../../components/NavButton';
 import { CART_ROUTE } from '../../../utils/consts';
 import Form from '../../../components/Checkout/Form';
-import CartItems from '../../../components/Checkout/CartItems';
+import { IOrderedProduct } from '../../../types/types';
+import OrderItems from '../../../components/OrderItems';
 
 function Checkout() {
   const [auth, setAuth] = useState<boolean>(false);
@@ -34,7 +35,9 @@ function Checkout() {
             noDiv
             noEllipses
           />
-          <CartItems />
+          <OrderItems
+            items={cart.items as IOrderedProduct[]}
+          />
           <NavButton
             className="make-changes-button"
             to={`/${CART_ROUTE}`}

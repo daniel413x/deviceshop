@@ -13,7 +13,7 @@ import { convertPriceToInt } from '../../../src/utils/functions';
 
 describe('deviceshop app', () => {
   beforeEach(() => {
-    // cy.request('POST', `${serverUrl}/api/testing/reset`);
+    cy.request('POST', `${serverUrl}/api/testing/reset`);
     cy.visit(clientUrl);
   });
   describe('as a guest', () => {
@@ -303,7 +303,7 @@ describe('deviceshop app', () => {
             .should('contain.text', 'Smartphone 4');
         });
       });
-      it.only(('lazy loads page elements'), () => {
+      it(('lazy loads page elements'), () => {
         let elementsHeight = 300;
         cy.get('.trending-items.top-row')
           .should('not.be.visible');
@@ -1264,7 +1264,7 @@ describe('deviceshop app', () => {
           });
         });
       });
-      describe('on /checkout', () => {
+      describe.only('on /checkout', () => {
         beforeEach(() => {
           cy.visit(`${clientUrl}/${CART_ROUTE}/${CHECKOUT_ROUTE}`);
         });
@@ -1378,8 +1378,7 @@ describe('deviceshop app', () => {
               .find('#addressLineOne')
               .as('theAddressField')
               .clear();
-            cy.get('.submit-button')
-              .click();
+            cy.checkoutSubmitForm();
             cy.hasWarningBorder(cy.get('@theAddressField').parent());
             cy.get('.shipping-fields')
               .find('.labeled-radio-button')
@@ -1400,8 +1399,7 @@ describe('deviceshop app', () => {
             cy.hasNoWarningBorder(cy.get('@theAddressField').parent());
             cy.checkoutSelectShippingMethod(0);
             cy.hasNoWarningBorder(cy.get('@theShippingMethod').parent());
-            cy.get('.submit-button')
-              .click();
+            cy.checkoutSubmitForm();
             cy.hasWarningBorder(cy.get('@thePaymentMethod'));
             cy.hasNoWarningBorder(cy.get('@theShippingMethod'));
             cy.get('@theAddressField')
@@ -1411,8 +1409,7 @@ describe('deviceshop app', () => {
             cy.checkoutFillPaymentFields();
             cy.get('@theAddressField')
               .clear();
-            cy.get('.submit-button')
-              .click();
+            cy.checkoutSubmitForm();
             cy.get('.notification')
               .should('contain.text', 'Please complete all required shipping fields');
             cy.hasWarningBorder(cy.get('@theAddressField').parent());
@@ -1424,8 +1421,7 @@ describe('deviceshop app', () => {
               cy.checkoutFillPaymentFields();
             });
             it('successfully processes a complete form', () => {
-              cy.get('.submit-button')
-                .click();
+              cy.checkoutSubmitForm();
               cy.contains('Your order was placed successfully');
             });
           });
@@ -1584,6 +1580,117 @@ describe('deviceshop app', () => {
             .click({ force: true });
           cy.contains('You logged in successfully');
         });
+      });
+    });
+  });
+  describe('as a user eligible to leave reviews', () => {
+    beforeEach(() => {
+      cy.postLogin('userwhocanwritereviews@deviceshop.com', 'password');
+    });
+    describe('on the first shop product\'s page', () => {
+      beforeEach(() => {
+        cy.visit(`${clientUrl}/shop/samsung-galaxy-256gb-android-11-5g-smartphone-2`);
+      });
+      it('displays a notification indicating the user can leave a review', () => {
+        cy.get('.leave-a-rating.show')
+          .should('exist');
+      });
+      describe('the review modal is open', () => {
+        beforeEach(() => {
+          cy.get('.leave-a-rating')
+            .find('button')
+            .click();
+        });
+        it('handles rating selection properly via the star buttons', () => {
+          cy.reviewGetStar(3)
+            .click({ force: true });
+          cy.reviewGetStar(4)
+            .find('svg')
+            .should('have.class', 'empty-star');
+        });
+        it('handles form submission properly across multiple pages', () => {
+          cy.get('.submit-button')
+            .click();
+          cy.contains('Your rating was submitted');
+          cy.reload()
+          cy.get('.top-info-row')
+            .find('.rating')
+            .contains('5');
+          cy.visit(`${clientUrl}/shop/apple-iphone-256gb-ios-16-5g-smartphone-1`);
+          cy.get('.leave-a-rating')
+            .find('button')
+            .click();
+          cy.reviewGetStar(3)
+            .click({ force: true });
+          cy.get('.submit-button')
+            .click();
+          cy.wait(4000);
+          cy.reload()
+          cy.reviewCheckRating('4.80');
+        });
+        describe('a review has been posted', () => {
+          beforeEach(() => {
+            cy.get('.submit-button')
+              .click();
+          });
+          describe('on account/orders', () => {
+            beforeEach(() => {
+              cy.visit(`${clientUrl}/account/orders`);
+            });
+            it('displays a \"Review\" button for the product which has not been reviewed and a \"Change\" button for the product which was reviewed', () => {
+              let foundReview = false;
+              let foundChange = false;
+              cy.get('.show-review-modal-button')
+                .each((button) => {
+                  const text = button.text();
+                  if (text === 'Review') {
+                    foundReview = true;
+                  }
+                  if (text === 'Change') {
+                    foundChange = true;
+                  }
+                }).then(() => {
+                  expect(foundReview).to.be.true;
+                  expect(foundChange).to.be.true;
+                })
+              // cy.find('.show-review-modal-button')
+              //   .eq(0)
+              //   .find('.show-review-modal-button')
+              //   .contains('Review');
+              // cy.get('.order-item')
+              //   .eq(1)
+              //   .find('.show-review-modal-button')
+              //   .contains('Change');
+            });
+            describe('the edit review modal is opened', () => {
+              beforeEach(() => {
+                cy.get('.show-review-modal-button')
+                  .each((button) => {
+                    const text = button.text();
+                    if (text === 'Change') {
+                      button.trigger('click');
+                  }
+                   })
+              });
+              it('handles updating the rating', () => {
+                cy.reviewGetStar(3)
+                  .click({ force: true });
+                cy.get('.modal.show')
+                  .find('.submit-button')
+                  .click();
+                cy.visit(`${clientUrl}/shop/samsung-galaxy-256gb-android-11-5g-smartphone-2`);
+                cy.reviewCheckRating('4.00');
+              });
+            });
+          });
+        });
+      });
+    });
+    describe('on account/orders', () => {
+      beforeEach(() => {
+        cy.visit(`${clientUrl}/account/orders`);
+        cy.get('#name')
+          .should('contain.value', 'Product name');
       });
     });
   });

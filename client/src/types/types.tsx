@@ -81,12 +81,17 @@ export interface IOrderedProduct {
   price: number;
   typeId: string;
   brandId: string;
+  cartId?: string;
+  orderId?: string;
   shopProductId: string;
   shopproduct: IShopProduct;
   userId: string;
   createdAt: string;
   guestAddedId?: string;
   addons: IOrderedAddon[];
+  order?: IOrder;
+  review?: IReview;
+  updatedAt?: string;
 }
 
 export interface IGuestAddedProduct extends Pick<IOrderedProduct, 'shopproduct' | 'addons' | 'id' | 'price'> {}
@@ -108,10 +113,14 @@ export interface IReview {
   rating: number;
   body: string;
   shopProductId: string;
+  orderedProductId: string;
   shopproduct: IShopProduct;
   orderedproduct: IOrderedProduct;
   user: IUser;
   userId: string;
+  createdAt: string;
+  updatedAt: string;
+  order: IOrder;
 }
 
 export interface ICart {
@@ -130,7 +139,7 @@ export interface IOrder {
   orderItems: IOrderedProduct[];
   total: number;
   orderAddress: IAddress;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface IAddress {
@@ -228,6 +237,10 @@ export type QueryReqCreateAddress = Omit<IAddressInAddressBook, 'id'>;
 export type QueryReqCreateShopProduct = Omit<IShopProduct, 'id' | 'type' | 'brand' | 'reviews' | 'rating' | 'numberSold' | 'discountedPrice' | 'thumbnail' | 'images'> & {
   images: Image[];
   deletedImages: string[];
+};
+
+export type QueryReqCreateReview = Omit<IReview, 'id' | 'shopproduct' | 'orderedproduct' | 'user' | 'createdAt' | 'updatedAt' | 'order'> & {
+  orderId: string;
 };
 
 export type QueryReqPutOrder = Partial<IOrder>;

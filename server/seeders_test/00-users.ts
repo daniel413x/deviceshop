@@ -10,6 +10,7 @@ import {
   secondUserWithAReview,
   thirdUserWithAReview,
   fourthUserWithAReview,
+  userWhoCanWriteReviews,
 } from '../utils/consts';
 
 const hashPassword = async () => {
@@ -25,7 +26,7 @@ export default {
       lastName: 'Maramba',
       username: 'admin',
       password: await hashPassword(),
-      avatar: 'admin.jpg',
+      avatar: 'default-avatar.jpg',
       roles: [USER, ADMIN],
       id: userWithAdmin,
       createdAt: new Date(),
@@ -112,6 +113,18 @@ export default {
       avatar: 'test-user-4.jpg',
       roles: [USER],
       id: fourthUserWithAReview,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      email: 'userwhocanwritereviews@deviceshop.com',
+      firstName: 'Joseline',
+      lastName: 'Lois',
+      username: 'userwhocanwritereviews',
+      password: await hashPassword(),
+      avatar: 'default-avatar.jpg',
+      roles: [USER],
+      id: userWhoCanWriteReviews,
       createdAt: new Date(),
       updatedAt: new Date(),
     },

@@ -527,6 +527,13 @@ Cypress.Commands.add('checkoutFillPaymentFields', (index: number) => {
     .type('146');
 });
 
+Cypress.Commands.add('checkoutSubmitForm', () => {
+  cy.get('#checkout')
+    .find('form')
+    .find('.submit-button')
+    .click();
+});
+
 Cypress.Commands.add('hasWarningBorder', (obj: any) => {
   obj.should('have.class', 'warn');
 });
@@ -864,6 +871,22 @@ Cypress.Commands.add('adminSubmitShopProductEditForm', () => {
   cy.adminSubmitShopProductForm();
   cy.get('.notification')
     .should('contain', 'Shop product was successfully updated');
+});
+
+Cypress.Commands.add('reviewGetStar', (index: number) => {
+  cy.get('.modal.show')
+    .find('.inputs')
+    .find('.rating-stars')
+    .find('button')
+    .eq(index);
+});
+
+Cypress.Commands.add('reviewCheckRating', (expected: string) => {
+  cy.get('.top-info-row')
+    .find('.rating')
+    .then((newRating) => {
+      expect(newRating.text()).to.eq(expected);
+    })
 });
 
 export {};

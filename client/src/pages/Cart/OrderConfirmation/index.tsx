@@ -12,7 +12,6 @@ import ChatNow from '../../../components/ChatNow';
 import { ReactComponent as TrackOrder } from '../../../assets/icons/TrackOrder.svg';
 import { ReactComponent as CheckMark } from '../../../assets/icons/CheckMark.svg';
 import logoLarge from '../../../assets/logos/logo-large.png';
-import OrderItem from '../../../components/OrderItem';
 import { IOrder } from '../../../types/types';
 import { fetchOrder } from '../../../http/orderAPI';
 import ShippingInfo from '../../../components/OrderConfirmation/ShippingInfo';
@@ -81,14 +80,9 @@ function OrderConfirmation() {
             {order && (
             <OrderItems
               items={order.orderItems}
+              orderShippingCost={order.shippingMethod.price}
               showImages
-            >
-              <OrderItem
-                legend="Total"
-                value={order.total}
-                className="total"
-              />
-            </OrderItems>
+            />
             )}
             {order && width <= 1200 && (
             <ShippingInfo

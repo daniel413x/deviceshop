@@ -55,7 +55,6 @@ export interface IShippingMethod extends IBaseShippingMethod {}
 
 export interface IOrderedShippingMethod extends IShippingMethod {
   id: string;
-  price: number;
   name: string;
   orderId: string;
 }
@@ -66,6 +65,12 @@ export interface IOrderedAddon extends Omit<IAddon, 'bulletPoints' | 'descriptio
 
 export interface IGuestAddedAddon extends IOrderedAddon {
   addon: IAddon;
+}
+
+export interface IOrder {
+  id: string;
+  userId: string;
+  status: ('Processing' | 'Shipped' | 'Cancellation requested' | 'Canceled' | 'Delivered' | 'Return requested')[];
 }
 
 export interface IOrderedProduct {
@@ -122,12 +127,6 @@ export interface ICart {
   id: string;
   userId: string;
   cartItems?: IOrderedProduct[];
-}
-
-export interface IOrder {
-  id: string;
-  userId: string;
-  status: ('Processing' | 'Shipped' | 'Cancellation requested' | 'Canceled' | 'Delivered' | 'Return requested')[];
 }
 
 export interface IBaseAddress {

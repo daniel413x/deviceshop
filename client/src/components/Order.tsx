@@ -6,7 +6,6 @@ import Button from './Button';
 import OrderItems from './OrderItems';
 import AngleDownIcon from './AngleDownIcon';
 import Address from './Address';
-import OrderItem from './OrderItem';
 import {
   CANCELED, CANCELLATION_REQUESTED, DELIVERED, PROCESSING, RETURN_REQUESTED, SHIPPED,
 } from '../utils/consts';
@@ -36,7 +35,6 @@ function Order({
     orderAddress,
     id,
     orderItems,
-    total,
     status,
   } = order;
   const orderDate = dateMonthYear(createdAt.toString());
@@ -119,13 +117,9 @@ function Order({
       </div>
       <OrderItems
         items={orderItems}
-      >
-        <OrderItem
-          legend="Total"
-          value={total}
-          className="total"
-        />
-      </OrderItems>
+        orderStatus={order.status}
+        orderShippingCost={order.shippingMethod.price}
+      />
       <div className={`buttons-row ${orderCanceled && 'blocked'}`}>
         {setNewStatusOrder && ( // admin only
           <Button

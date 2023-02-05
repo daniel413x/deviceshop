@@ -7,11 +7,13 @@ import { ReactComponent as GrayStar } from '../assets/icons/GrayStar.svg';
 interface RatingStarsProps {
   rating: number;
   nameForKey: string;
+  setRating?: (num: number) => void;
 }
 
 function RatingStars({
   rating,
   nameForKey,
+  setRating,
 }: RatingStarsProps) {
   const numberRating = Number(rating);
   const stars: JSX.Element[] = [];
@@ -41,9 +43,27 @@ function RatingStars({
   }
   return (
     <div className="rating-stars">
-      {stars.map((star) => star)}
+      {stars.map((star, i) => {
+        if (setRating) {
+          return (
+            <button
+              type="button"
+              // eslint-disable-next-line react/no-array-index-key
+              key={`${nameForKey}${i}`}
+              onClick={() => setRating(i + 1)}
+            >
+              {star}
+            </button>
+          );
+        }
+        return star;
+      })}
     </div>
   );
 }
+
+RatingStars.defaultProps = {
+  setRating: undefined,
+};
 
 export default RatingStars;

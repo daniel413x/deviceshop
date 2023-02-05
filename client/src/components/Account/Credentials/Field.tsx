@@ -13,6 +13,7 @@ function Field({
   value,
   openEditFieldModal,
 }: FieldProps) {
+  const avatarField = field === 'avatar';
   const fieldReadable = unCamelCase(field);
   return (
     <div className="field">
@@ -21,7 +22,14 @@ function Field({
           {fieldReadable}
         </span>
         <span className="value">
-          {value || 'Blank'}
+          {!avatarField && (value || 'Blank')}
+          {avatarField && (
+            <img
+              src={`${process.env.REACT_APP_API_URL}${value}`}
+              alt="Your avatar"
+              className="avatar"
+            />
+          )}
         </span>
       </div>
       <Button

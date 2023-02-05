@@ -24,7 +24,7 @@ function ShippingMethod({
   } = useContext(Context);
   const onClickHandler = () => {
     onClick();
-    cart.setShippingMethod(shippingMethod);
+    cart.setSelectedShippingMethod(shippingMethod);
   };
   const shippingMethodQueryObj: QueryReqCreateShippingMethod = {
     price: shippingMethod.price,

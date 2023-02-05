@@ -2,6 +2,7 @@ import React, { ReactElement, useContext } from 'react';
 import { useNavigate } from 'react-router';
 import Context from '../../context/context';
 import { CHECKOUT_ROUTE, REGISTER_ROUTE } from '../../utils/consts';
+import { getFormattedTotal } from '../../utils/functions';
 import Button from '../Button';
 import NavButton from '../NavButton';
 
@@ -11,7 +12,7 @@ function Checkout() {
     cart,
     user,
   } = useContext(Context);
-  const total = cart.getFormattedTotal();
+  const total = getFormattedTotal(cart.items);
   const requestLogin = () => {
     user.setLoginToCheckout(true);
     navigate(`/${REGISTER_ROUTE}`);

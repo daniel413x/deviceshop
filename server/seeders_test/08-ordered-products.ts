@@ -23,6 +23,8 @@ import {
   cartForFourthUserWithReviews,
   cartForUserWithCartItemsAndSavedAddresses,
   userWithCartItemsAndSavedAddresses,
+  orderForUserWhoCanWriteReviews,
+  userWhoCanWriteReviews,
 } from '../utils/consts';
 import { apple, samsung } from './03-brands';
 import { smartphone } from './04-types';
@@ -144,6 +146,28 @@ export default {
       userId: fourthUserWithAReview,
       shopProductId: smartphonesIds[0],
       id: orderedProductForFourthUser,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      price: 80000,
+      orderId: orderForUserWhoCanWriteReviews,
+      brandId: samsung,
+      typeId: smartphone,
+      userId: userWhoCanWriteReviews,
+      shopProductId: smartphonesIds[0],
+      id: uuid(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      price: 80000,
+      orderId: orderForUserWhoCanWriteReviews,
+      brandId: samsung,
+      typeId: smartphone,
+      userId: userWhoCanWriteReviews,
+      shopProductId: smartphonesIds[1],
+      id: uuid(),
       createdAt: new Date(),
       updatedAt: new Date(),
     },

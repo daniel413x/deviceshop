@@ -3,7 +3,7 @@ import useInputIncomplete from '../hooks/useInputIncomplete';
 import Input, { InputProps } from './Input';
 
 interface LabeledInputProps extends InputProps {
-  label: string;
+  label: string | boolean;
   subscript?: string;
   labelSubscript?: string;
 }
@@ -34,7 +34,7 @@ function LabeledInput({
   });
   return (
     <div className={`labeled-input ${warn && 'warn'} ${className}`}>
-      <label htmlFor={id} className="label">
+      <label htmlFor={id} className="label labeled-input-text">
         {label}
         {' '}
         {labelSubscript && (

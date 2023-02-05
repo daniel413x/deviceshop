@@ -4,6 +4,7 @@ import {
 import { IReview, ModelAttributes } from '../../types/types';
 import sequelize from '../connection';
 import BaseModel, { baseModelAttributes } from './BaseModel';
+import ShopProduct from './ShopProduct';
 
 // eslint-disable-next-line no-use-before-define
 class Review extends BaseModel<Review> implements IReview {
@@ -54,11 +55,40 @@ export const reviewAttributes: ModelAttributes<Review> = {
   ...baseModelAttributes,
 };
 
+const updateProductRating = async (review: Review) => {
+  const { shopProductId } = review;
+  const reviews = await Review.findAndCountAll({
+    where: {
+      shopProductId,
+    },
+  });
+  let newRating = 0;
+  reviews.rows.forEach(({ rating }) => {
+    newRating += rating;
+  });
+  newRating /= reviews.count;
+  await ShopProduct.update({
+    rating: newRating,
+  }, {
+    where: {
+      id: shopProductId,
+    },
+  });
+};
+
 Review.init(
   {
     ...reviewAttributes,
   },
   {
+    hooks: {
+      afterCreate: async (review) => {
+        updateProductRating(review);
+      },
+      afterUpdate: async (review) => {
+        updateProductRating(review);
+      },
+    },
     sequelize,
     modelName: 'Review',
     freezeTableName: true,

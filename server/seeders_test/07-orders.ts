@@ -13,6 +13,8 @@ import {
   thirdUserWithAReview,
   userWithCartItemsAndOrdersAndReviews,
   SHIPPED,
+  userWhoCanWriteReviews,
+  orderForUserWhoCanWriteReviews,
 } from '../utils/consts';
 
 export default {
@@ -64,6 +66,14 @@ export default {
       createdAt: new Date(),
       updatedAt: new Date(),
       total: 80000,
+    },
+    {
+      status: [PROCESSING, SHIPPED, DELIVERED],
+      id: orderForUserWhoCanWriteReviews,
+      userId: userWhoCanWriteReviews,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      total: 165000,
     },
   ]),
   down: (queryInterface) => queryInterface.bulkDelete('Order', null, {}),

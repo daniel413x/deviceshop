@@ -6,6 +6,7 @@ import {
   orderForFourthUserWithAReview,
   orderForThirdUserWithAReview,
   orderForSecondUserWithAReview,
+  orderForUserWhoCanWriteReviews,
 } from '../utils/consts';
 
 export default {
@@ -85,6 +86,18 @@ export default {
       city: 'Washington',
       state: 'DC',
       zip: '20010',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuid(),
+      orderId: orderForUserWhoCanWriteReviews,
+      firstName: 'Joseline',
+      lastName: 'Lois',
+      addressLineOne: '2222 Wisconsin Avenue',
+      city: 'Washington',
+      state: 'DC',
+      zip: '20008',
       createdAt: new Date(),
       updatedAt: new Date(),
     },

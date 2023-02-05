@@ -38,9 +38,15 @@ function Review({
     productName = review.shopproduct.name;
   }
   const {
-    createdAt,
-  } = review.orderedproduct;
-  const date = dateMonthYear(createdAt);
+    createdAt: reviewCreatedAt,
+    updatedAt: reviewUpdatedAt,
+  } = review;
+  const orderCreatedAt = review!.orderedproduct.order!.createdAt!;
+  const orderDate = dateMonthYear(orderCreatedAt!);
+  let updatedDate = null;
+  if (reviewCreatedAt !== reviewUpdatedAt) {
+    updatedDate = dateMonthYear(reviewUpdatedAt!);
+  }
   return (
     <div className="review">
       <div className="user">
@@ -56,6 +62,12 @@ function Review({
           rating={rating}
           nameForKey={id}
         />
+        {updatedDate && (
+        <span>
+          Updated at
+          {updatedDate}
+        </span>
+        )}
       </div>
       <div className="title-row">
         <h4>
@@ -63,7 +75,7 @@ function Review({
         </h4>
         <span className="purchase-verification">
           <CircleCheck />
-          {`Purchased ${date}`}
+          {`Purchased ${orderDate}`}
         </span>
       </div>
       <p className="body">

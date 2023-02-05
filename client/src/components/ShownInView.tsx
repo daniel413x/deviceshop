@@ -25,8 +25,14 @@ const ShownInView = forwardRef(({
     timeout,
     id,
   });
+  const preventPrematureLoad = func && !loaded;
   return (
-    <div className={`${className} shown-in-view ${((func && loaded) || (!func && fixated)) && 'show'}`} id={id} ref={ref}>
+    <div
+      className={`${className} shown-in-view ${((func && loaded) || (!func && fixated)) && 'show'}`}
+      id={id}
+      ref={ref}
+      style={{ height: preventPrematureLoad ? '100vh' : '' }}
+    >
       {children}
     </div>
   );

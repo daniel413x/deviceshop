@@ -9,6 +9,7 @@ import Context from '../../context/context';
 import { createOrder } from '../../http/orderAPI';
 import { PaymentMethod, QueryReqCreateOrder } from '../../types/types';
 import { CONFIRMATION_ROUTE } from '../../utils/consts';
+import { getIntTotal } from '../../utils/functions';
 import Button from '../Button';
 import PaymentFields from './PaymentFields';
 import ShippingFields from './ShippingFields';
@@ -53,7 +54,7 @@ function Form() {
       );
       return;
     }
-    const total = cart.getIntTotal();
+    const total = getIntTotal(cart.items);
     const form: QueryReqCreateOrder = {
       address: {
         firstName,
@@ -76,7 +77,7 @@ function Form() {
     setBlockSubmit(true);
     try {
       const order = await createOrder(form);
-      cart.setShippingMethod(undefined);
+      cart.setSelectedShippingMethod(undefined);
       cart.setItems([]);
       navigate(`${CONFIRMATION_ROUTE}/${order.id}`);
     } catch (error: any) {

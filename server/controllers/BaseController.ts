@@ -159,7 +159,10 @@ export default abstract class BaseController<M extends Model> {
     if (req.files) {
       form = assignBodyAndWriteAndUpdateFiles(req);
     }
-    await this.model.update(form, { where: { id } });
+    await this.model.update(form, {
+      where: { id },
+      individualHooks: true,
+    });
     return res.status(204).end();
   }
 

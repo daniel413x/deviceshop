@@ -2,19 +2,18 @@ import { makeAutoObservable } from 'mobx';
 import {
   ICart, IGuestAddedProduct, IOrderedAddon, IOrderedProduct, IShippingMethod,
 } from '../types/types';
-import { convertIntToPrice, formatPrice } from '../utils/functions';
 
 export default class CartStore {
   items: (IOrderedProduct | IGuestAddedProduct)[];
 
   id: string;
 
-  shippingMethod: IShippingMethod | undefined;
+  selectedShippingMethod: IShippingMethod | undefined;
 
   constructor() {
     this.items = [];
     this.id = 'GUEST';
-    this.shippingMethod = undefined;
+    this.selectedShippingMethod = undefined;
     makeAutoObservable(this);
   }
 
@@ -27,14 +26,14 @@ export default class CartStore {
     this.items = newItems;
   }
 
-  setShippingMethod(shippingMethod: IShippingMethod | undefined) {
-    this.shippingMethod = shippingMethod;
+  setSelectedShippingMethod(shippingMethod: IShippingMethod | undefined) {
+    this.selectedShippingMethod = shippingMethod;
   }
 
   unset() {
     this.items = [];
     this.id = 'guest';
-    this.shippingMethod = undefined;
+    this.selectedShippingMethod = undefined;
   }
 
   addItem(newItem: IOrderedProduct | IGuestAddedProduct) {
@@ -82,36 +81,5 @@ export default class CartStore {
       }
     }
     return false;
-  }
-
-  getTotal() {
-    let total = 0;
-    this.items.forEach((item) => {
-      total += item.price;
-      if (item.addons && item.addons.length > 0) {
-        item.addons.forEach((addon) => {
-          total += addon.price;
-        });
-      }
-    });
-    return total;
-  }
-
-  getTax() {
-    const total = this.getTotal();
-    return total * 0.05;
-  }
-
-  getIntTotal() {
-    let total = this.getTotal();
-    if (this.shippingMethod) {
-      total += this.shippingMethod.price;
-    }
-    const tax = this.getTax();
-    return total + tax;
-  }
-
-  getFormattedTotal() {
-    return formatPrice(convertIntToPrice(this.getIntTotal()));
   }
 }
