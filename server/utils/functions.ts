@@ -9,7 +9,25 @@ export function toFilename(string: string) {
   return splitName[splitName.length - 1];
 }
 
-export function assignBodyAndWriteAndUpdateFiles(req: Request, updatedArr?: string[]) {
+export function assignBodyAndHandleStringImageAttribute(req: Request, attribute: string, updatedObj?: any) {
+  const { body, files } = req;
+  if (!files) {
+    return body;
+  }
+  const file = files[Object.keys(files)[0]] as UploadedFile;
+  const fileName = file.name;
+  const fileExtension = fileName.match(fileExtensionRegex)[0];
+  let create: boolean;
+  if (updatedObj) {
+    create = updatedObj[attribute] === 'default-avatar.jpg';
+  }
+  const savedFileName = create ? `${uuidv4()}.${fileExtension}` : fileName;
+  file.mv(path.resolve(__dirname, '..', 'static', savedFileName));
+  body[attribute] = savedFileName;
+  return body;
+}
+
+export function assignBodyAndHandleImagesArrayAttribute(req: Request, updatedArr?: string[]) {
   const { body, files } = req;
   body.images = updatedArr || []; // default assignment assumes model has string[] attribute to store images
   if (!files) {

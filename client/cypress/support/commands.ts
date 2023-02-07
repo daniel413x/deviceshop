@@ -551,7 +551,8 @@ Cypress.Commands.add('credentialsChangeFieldTo', (index: number, value: string) 
     .get('.input')
     .clear()
     .type(value);
-  cy.get('.submit-button')
+  cy.get('.modal.show')
+    .find('.submit-button')
     .click();
   cy.get('.field')
     .eq(index)
@@ -638,7 +639,8 @@ Cypress.Commands.add('adminChangeOrderStatus', (orderIndex: number, statusIndex:
     .find('.labeled-checkbox-button')
     .eq(statusIndex)
     .click();
-  cy.get('.submit-button')
+  cy.get('.modal.show')
+    .find('.submit-button')
     .click();
 });
 
@@ -808,7 +810,7 @@ Cypress.Commands.add('adminSelectBrandOrType', (dropdownIndex: number, itemIndex
             .find('.items')
             .children()
             .eq(itemIndex)
-            .click({ force: true });
+            .click();
         } else {
           insistClick();
         }
@@ -869,6 +871,7 @@ Cypress.Commands.add('adminSubmitShopProductForm', () => {
 
 Cypress.Commands.add('adminSubmitShopProductEditForm', () => {
   cy.adminSubmitShopProductForm();
+  cy.wait(1000);
   cy.get('.notification')
     .should('contain', 'Shop product was successfully updated');
 });

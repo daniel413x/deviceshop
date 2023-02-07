@@ -26,7 +26,7 @@ class OrderController extends BaseController<Order> {
 
   async get(req: Request, res: Response) {
     const { id } = res.locals.user;
-    const options: any = {
+    const options: FindAndCountOptions<Order> = {
       order: [
         [col('createdAt'), 'DESC'],
       ],
@@ -34,6 +34,7 @@ class OrderController extends BaseController<Order> {
         userId: id,
       },
       include: inclusionsForOrder,
+      distinct: true,
     };
     this.execFindAndCountAll(req, res, options);
   }
@@ -47,6 +48,7 @@ class OrderController extends BaseController<Order> {
         fn('array_positions', col('status'), SHIPPED),
         fn('array_positions', col('status'), PROCESSING),
       ],
+      distinct: true,
     };
     if (req.query.unshipped) {
       options.where = {
@@ -81,8 +83,8 @@ class OrderController extends BaseController<Order> {
         return false;
       });
       return res.json({
-        ...orders,
         rows: filteredOrders,
+        count: filteredOrders.length,
       });
     }
     return this.execFindAndCountAll(req, res, options);

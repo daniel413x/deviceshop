@@ -16,7 +16,7 @@ import {
   FilteredSearchParams, FindAndCountOptions, ISpecification,
 } from '../types/types';
 import Review from '../db/models/Review';
-import { assignBodyAndWriteAndUpdateFiles, calcIntPrices, toFilename } from '../utils/functions';
+import { assignBodyAndHandleImagesArrayAttribute, calcIntPrices, toFilename } from '../utils/functions';
 import ApiError from '../error/ApiError';
 import { DELETED } from '../utils/consts';
 
@@ -210,7 +210,7 @@ class ShopProductController extends BaseController<ShopProduct> {
     if (!req.files) {
       return next(ApiError.badRequest('Attribute "images" missing or empty'));
     }
-    const body = assignBodyAndWriteAndUpdateFiles(req); // create product images
+    const body = await assignBodyAndHandleImagesArrayAttribute(req); // create product images
     const form = {
       ...body,
       specifications: null,
@@ -275,7 +275,7 @@ class ShopProductController extends BaseController<ShopProduct> {
         });
       });
     }
-    const body = assignBodyAndWriteAndUpdateFiles(req, images);
+    const body = await assignBodyAndHandleImagesArrayAttribute(req, images);
     const form = {
       ...body,
       specifications: undefined,

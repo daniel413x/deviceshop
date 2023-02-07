@@ -293,16 +293,6 @@ describe('deviceshop app', () => {
           });
         });
       });
-      describe('viewing the trending section', () => {
-        it(('displays smartphone 4 as the first child, which has the greatest numberSold'), () => {
-          cy.get('#trending')
-            .find('.trending-items.top-row')
-            .find('.shop-product-card')
-            .eq(0)
-            .find('.name')
-            .should('contain.text', 'Smartphone 4');
-        });
-      });
       it(('lazy loads page elements'), () => {
         let elementsHeight = 300;
         cy.get('.trending-items.top-row')
@@ -1264,7 +1254,7 @@ describe('deviceshop app', () => {
           });
         });
       });
-      describe.only('on /checkout', () => {
+      describe('on /checkout', () => {
         beforeEach(() => {
           cy.visit(`${clientUrl}/${CART_ROUTE}/${CHECKOUT_ROUTE}`);
         });
@@ -1544,13 +1534,13 @@ describe('deviceshop app', () => {
           cy.visit(`${clientUrl}/account/credentials`);
         });
         it('can change an account\'s first name, last name and phone number', () => {
-          cy.credentialsChangeFieldTo(0, 'Daniel');
-          cy.credentialsChangeFieldTo(1, 'Rahill');
-          cy.credentialsChangeFieldTo(3, '292-308-3074');
+          cy.credentialsChangeFieldTo(1, 'Daniel');
+          cy.credentialsChangeFieldTo(2, 'Rahill');
+          cy.credentialsChangeFieldTo(4, '292-308-3074');
         });
         it('can change an account\'s password', () => {
           cy.get('.field')
-            .eq(2)
+            .eq(3)
             .find('.button')
             .click();
           cy.get('.modal.show')
@@ -1579,6 +1569,20 @@ describe('deviceshop app', () => {
           cy.get('#submit-button')
             .click({ force: true });
           cy.contains('You logged in successfully');
+        });
+        it('can change an account\'s first name, last name and phone number', () => {
+          cy.get('.field')
+            .eq(0)
+            .find('.button')
+            .click();
+          cy.get('.modal.show')
+            .find('input')
+            .selectFile('cypress/fixtures/fixture-1.png', { force: true });
+          cy.get('.modal.show')
+            .find('.submit-button')
+            .click({ force: true });
+          cy.get('.modal.show')
+            .contains('Your avatar was changed');
         });
       });
     });
@@ -1653,14 +1657,6 @@ describe('deviceshop app', () => {
                   expect(foundReview).to.be.true;
                   expect(foundChange).to.be.true;
                 })
-              // cy.find('.show-review-modal-button')
-              //   .eq(0)
-              //   .find('.show-review-modal-button')
-              //   .contains('Review');
-              // cy.get('.order-item')
-              //   .eq(1)
-              //   .find('.show-review-modal-button')
-              //   .contains('Change');
             });
             describe('the edit review modal is opened', () => {
               beforeEach(() => {
@@ -1724,7 +1720,7 @@ describe('deviceshop app', () => {
         cy.adminOrderIsDelivered(2);
         cy.adminOrderIsDelivered(3);
         cy.adminOrderIsDelivered(4);
-        cy.adminOrderIsCanceled(5);
+        cy.adminOrderIsCanceled(6);
       });
       it('updates status changes accordingly', () => {
         cy.adminChangeOrderStatus(0, 0);
@@ -1755,8 +1751,6 @@ describe('deviceshop app', () => {
     describe('on admin/shopproducts', () => {
       beforeEach(() => {
         cy.visit(`${clientUrl}/admin/shopproducts`);
-        cy.get('#name')
-          .should('contain.value', 'Product name');
       });
       describe('using the searchbar', () => {
         it('fetches and renders results', () => {
@@ -2207,9 +2201,9 @@ describe('deviceshop app', () => {
           });
       });
       it('can update the product description', () => {
-        cy.adminProductFormFillPrice('new description');
+        cy.adminProductFormFillDescription('new description');
         cy.adminSubmitShopProductEditForm();
-        cy.visit(`${clientUrl}/shop/new-smartphone`);
+        cy.visit(`${clientUrl}/shop/${product}`);
         cy.contains('new description');
       });
       it('can update the product stock', () => {

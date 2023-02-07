@@ -1498,6 +1498,20 @@ form.checkout-style .labeled-input input {
   grid-gap: 1rem;
 }
 
+.modal .window .bottom-buttons .submit-button {
+  transition: all 0.15s linear;
+  display: flex;
+  align-items: center;
+}
+
+.modal .window .bottom-buttons .submit-button svg {
+  margin-right: 0.25rem;
+}
+
+.modal .window .bottom-buttons .submit-button svg line {
+  stroke: #fff;
+}
+
 .modal.delete-cart-item .body {
   padding: 1.5rem 1rem;
 }
@@ -1575,6 +1589,17 @@ form.checkout-style .labeled-input input {
 .modal.edit-field .labeled-input .label {
   color: var(--primary-text);
   font-weight: 300;
+}
+
+.modal.edit-avatar img {
+  width: 150px;
+  height: 150px;
+  border: 2px solid var(--primary-accent);
+  border-radius: 50%;
+}
+
+.modal.edit-avatar .bottom-buttons {
+  padding-left: 3rem;
 }
 
 .modal.copy-specification-modal .body {
@@ -1689,12 +1714,6 @@ form.checkout-style .labeled-input input {
   }
 }
 
-.modal.review-modal .upper-info {
-  display: flex;
-  align-items: center;
-  grid-gap: 0.75rem;
-}
-
 .modal.review-modal .upper-info .user {
   display: flex;
   align-items: center;
@@ -1730,20 +1749,6 @@ form.checkout-style .labeled-input input {
 
 .modal.review-modal .bottom-buttons {
   padding: 1.33rem 0 0;
-}
-
-.modal.review-modal.update-form .bottom-buttons .submit-button {
-  transition: all 0.15s linear;
-  display: flex;
-  align-items: center;
-}
-
-.modal.review-modal.update-form .bottom-buttons .submit-button svg {
-  margin-right: 0.25rem;
-}
-
-.modal.review-modal.update-form .bottom-buttons .submit-button svg line {
-  stroke: #fff;
 }
 
 .close-button {
@@ -4149,7 +4154,7 @@ form.checkout-style .labeled-input input {
 }
 
 #create-shop-product .form-submission-overlay .labeled-input, #create-shop-product .form-submission-overlay .dropdown-field {
-  border: 1px solid var(--indigo-light);
+  border-bottom: 2px solid var(--indigo-light);
 }
 
 #create-shop-product .form-submission-overlay .labeled-input .label {

@@ -14,37 +14,7 @@ import { Image } from '../types/types';
 import Context from '../context/context';
 import createProductPlaceholder from '../assets/images/create-product-placeholder.png';
 import { CREATE_SHOPPRODUCT_ROUTE } from '../utils/consts';
-
-interface ReplaceableImageProps {
-  img: Image;
-  replaceImage: (e: ChangeEvent<HTMLInputElement>) => void;
-}
-
-function ReplaceableImage({ img, replaceImage }: ReplaceableImageProps) {
-  const replaceImageRef = useRef<HTMLInputElement>(null);
-  return (
-    <button
-      className="image-wrapper"
-      onClick={() => replaceImageRef.current?.click()}
-      title="Click to replace"
-      key={img.url}
-      type="button"
-    >
-      <img
-        src={img.url}
-        alt="Product in slider"
-        className="slid-image"
-        key={img.url}
-      />
-      <input
-        type="file"
-        className="hidden replace-image-input"
-        onChange={(e) => replaceImage(e)}
-        ref={replaceImageRef}
-      />
-    </button>
-  );
-}
+import UploadedImage from './Account/Credentials/UploadedImage';
 
 interface SliderComponentProps {
   propImages?: (string | Image)[];
@@ -139,16 +109,20 @@ function SliderComponent({
     if (images[index].url && !images[index].file) {
       createProductPage.addDeletedImage(images[index].url);
     }
+    if (images[index].replaces) {
+      createProductPage.addDeletedImage(images[index].replaces!);
+    }
   };
   const replaceImage = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0];
     const nextImages = images.map((image, mappedIndex) => {
+      const imageFileWillBeReplaced = !image.file;
       if (mappedIndex === index) {
         const newImage: Image = {
           file,
           url: URL.createObjectURL(file),
         };
-        if (!image.file) {
+        if (imageFileWillBeReplaced) {
           newImage.replaces = image.url;
         }
         return newImage;
@@ -204,10 +178,12 @@ function SliderComponent({
             />
           )}
           {admin ? images.map((img) => (
-            <ReplaceableImage
-              img={img}
-              replaceImage={replaceImage}
+            <UploadedImage
+              initialImage={img.url}
               key={img.url}
+              name={img.url}
+              onChange={replaceImage}
+              imageClass="slid-image"
             />
           )) : (propImages as string[]).map((img, i) => (
             <img

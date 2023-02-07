@@ -35,7 +35,7 @@ export const stillAuthed = async (): Promise<QueryResUserAuthed> => {
   return { user, cart };
 };
 
-export const editUser = async (obj: QueryReqPutUser): Promise<IUser> => {
+export const editUser = async (obj: QueryReqPutUser | FormData): Promise<IUser> => {
   const { data } = await $authHost.put('api/user', obj);
   const user = handleNewToken(data.token);
   return user;

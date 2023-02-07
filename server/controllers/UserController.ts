@@ -13,7 +13,7 @@ import {
 import { USER } from '../utils/consts';
 import User from '../db/models/User';
 import BaseController from './BaseController';
-import { assignBodyAndWriteAndUpdateFiles } from '../utils/functions';
+import { assignBodyAndHandleStringImageAttribute } from '../utils/functions';
 import Cart from '../db/models/Cart';
 import OrderedProduct from '../db/models/OrderedProduct';
 import { inclusionsForCart } from '../utils/inclusions';
@@ -107,7 +107,7 @@ class UserController extends BaseController<User> {
   async create(req: Request, res: Response, next: NextFunction) {
     let userForm;
     if (req.files) {
-      userForm = assignBodyAndWriteAndUpdateFiles(req);
+      userForm = assignBodyAndHandleStringImageAttribute(req, 'avatar');
     } else {
       userForm = req.body;
     }
@@ -204,8 +204,10 @@ class UserController extends BaseController<User> {
 
   async edit(req: Request, res: Response) {
     let updatedVals;
+    const { id } = res.locals.user;
+    const user = await User.findByPk(id);
     if (req.files) {
-      updatedVals = assignBodyAndWriteAndUpdateFiles(req);
+      updatedVals = assignBodyAndHandleStringImageAttribute(req, 'avatar', user);
     } else {
       updatedVals = req.body;
     }
@@ -213,9 +215,8 @@ class UserController extends BaseController<User> {
       const hashPassword = await bcrypt.hash(updatedVals.password, 5);
       updatedVals.password = hashPassword;
     }
-    const { id } = res.locals.user;
-    const updatedObj = await User.update(updatedVals, { where: { id }, returning: true });
-    const token = generateJwt(updatedObj[1][0], '24h');
+    const updatedUser = await User.update(updatedVals, { where: { id }, returning: true });
+    const token = generateJwt(updatedUser[1][0], '24h');
     return res.json({ token });
   }
 

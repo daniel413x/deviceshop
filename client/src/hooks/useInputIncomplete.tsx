@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 interface UseInputIncompleteProps {
-  value?: string;
+  value?: string | Blob | MediaSource;
   pressedSubmit?: boolean;
   setPressedSubmit?: (boolean: boolean) => void;
   condition?: boolean;
