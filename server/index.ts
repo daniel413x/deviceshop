@@ -9,7 +9,6 @@ import router from './routes/index';
 import errorMiddleware from './middleware/errorMiddleware';
 import requestLogger from './middleware/requestLogger';
 import logger from './middleware/logger';
-import catchNotFound from './middleware/catchNotFound';
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -17,9 +16,12 @@ app.use(cors());
 app.use(express.json());
 app.use(requestLogger);
 app.use(express.static(path.resolve(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'client_dist')));
 app.use(fileUpload({}));
 app.use('/api/', router);
-app.use(catchNotFound);
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client_dist', 'index.html'));
+});
 app.use(errorMiddleware);
 
 const init = async () => {

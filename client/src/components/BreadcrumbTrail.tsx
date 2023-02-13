@@ -5,19 +5,23 @@ interface BreadcrumbTrailProps {
   lastString?: string;
   sliceLastN?: number;
   blockedLinks?: string[];
+  className?: string | boolean;
 }
 
 function BreadcrumbTrail({
   lastString,
   sliceLastN = 0,
   blockedLinks = [],
+  className,
 }: BreadcrumbTrailProps) {
-  const breadcrumbs = useLocation().pathname.split(/\//).filter(Boolean);
+  const { pathname } = useLocation();
+  const breadcrumbs = pathname.split(/\//).filter(Boolean);
+  const isDemo = breadcrumbs[0] === 'demo';
   if (lastString) {
     breadcrumbs[breadcrumbs.length - 1] = lastString;
   }
   return (
-    <ul className="breadcrumb-trail">
+    <ul className={`breadcrumb-trail ${className} ${isDemo && 'blocked'}`}>
       <li key="breadcrumb_main">
         <div className="breadcrumb">
           <NavLink to="/" className="previous">
@@ -63,6 +67,7 @@ function BreadcrumbTrail({
 BreadcrumbTrail.defaultProps = {
   lastString: '',
   sliceLastN: 0,
+  className: '',
   blockedLinks: [],
 };
 

@@ -38,7 +38,13 @@ export const production = {
   dialect: 'postgres',
   username: PROD_DB_USERNAME,
   password: PROD_DB_PASSWORD,
-  database: PROD_DB_NAME,
+  database: PROD_DB_NAME, // <--------------- CHANGE
   host: PROD_DB_HOSTNAME,
   port: Number(PROD_DB_PORT),
+  ssl: true,
+  dialectOptions: {
+    ssl: {
+      require: true,
+    },
+  },
 };

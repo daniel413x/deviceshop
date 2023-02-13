@@ -80,6 +80,10 @@ export const indexAuthRoutes = [
 
 export const indexPublicRoutes = [
   {
+    path: `${routes.DEMO_ROUTE}/${routes.SHOP_PRODUCTS_ROUTE}/${routes.CREATE_ROUTE}`,
+    Component: CreateShopProduct,
+  },
+  {
     path: `${routes.SHOP_ROUTE}/:title`,
     Component: ShopProductPage,
   },

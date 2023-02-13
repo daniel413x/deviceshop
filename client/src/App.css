@@ -1114,9 +1114,8 @@ form.checkout-style .labeled-input input {
 }
 
 .labeled-checkbox-button {
-  all: inherit;
   display: flex;
-  grid-gap: .5rem;
+  grid-gap: 0.5rem;
   position: relative;
   flex-direction: row;
 }
@@ -1159,10 +1158,10 @@ form.checkout-style .labeled-input input {
 }
 
 .labeled-radio-button {
-  all: inherit;
   display: flex;
-  grid-gap: 0.5rem;
+  grid-gap: 0.5rem !important;
   position: relative;
+  max-width: 360px;
 }
 
 .labeled-radio-button:focus-visible {
@@ -3601,7 +3600,7 @@ form.checkout-style .labeled-input input {
   border: 1px solid var(--primary-accent-light);
   border-radius: 0;
   width: 100%;
-  max-width: 360px;
+  max-width: 300px;
   margin: -1px 0;
 }
 

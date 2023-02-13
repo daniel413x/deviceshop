@@ -1,5 +1,6 @@
 node_modules/
-.env
-Postman/
+.env*
 lib/
+Postman/
+build/
 dist/

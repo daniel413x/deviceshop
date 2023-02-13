@@ -2,6 +2,7 @@ import React, {
   FormEvent, useContext, useEffect, useState,
 } from 'react';
 import { observer } from 'mobx-react-lite';
+import { useLocation } from 'react-router';
 import {
   IBrand, IType,
 } from '../../../../types/types';
@@ -28,6 +29,8 @@ function FormSubmissionOverlay() {
   const {
     md,
   } = useBreakpoints();
+  const { pathname } = useLocation();
+  const isDemo = pathname.split('/').filter(Boolean)[0] === 'demo';
   const [pressedSubmit, setPressedSubmit] = useState<boolean>(false);
   const [expanded, setExpanded] = useState<boolean>(true);
   const [selectedType, setSelectedType] = useState<IType | undefined>(undefined);
@@ -212,7 +215,7 @@ function FormSubmissionOverlay() {
             warnCondition={createProductPage.description === '' || createProductPage.description === 'Product description'}
           />
           <Button
-            className="submit-button"
+            className={`submit-button ${isDemo && 'blocked'}`}
             type="submit"
           >
             {submitLabel}

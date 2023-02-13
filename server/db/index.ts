@@ -9,7 +9,7 @@ const db: any = {};
 fs
   .readdirSync(path.join(__dirname, '/models'))
   .filter((file: string) => (
-    file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.ts') && (file.slice(0, 4) !== 'Base'))
+    file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.ts' || file.slice(-3) === '.js') && (file.slice(0, 4) !== 'Base'))
   .forEach((file: any) => {
     // eslint-disable-next-line global-require, import/no-dynamic-require
     const model = require(path.join(__dirname, '/models', file)).default;

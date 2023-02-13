@@ -6,15 +6,23 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon index.ts",
     "test": "cross-env NODE_ENV=test nodemon index.ts",
-    "compileCommon": "babel db --extensions \".ts,.js\" --out-dir ./lib/db && babel ./utils --extensions \".ts,.js\" --out-dir ./lib/utils && babel ./migrations --extensions \".ts,.js\" --out-dir ./lib/migrations",
-    "babel": "npm run compileCommon && babel ./seeders --extensions \".ts,.js\" --out-dir ./lib/seeders",
-    "babel:test": "npm run compileCommon && babel ./seeders_test --extensions \".ts,.js\" --out-dir ./lib/seeders_test",
+    "prod": "node dist/index.js",
+    "beforeCompileMigrations": "rimraf ./lib",
+    "compileMigrations": "npm run beforeCompileMigrations && babel db --extensions \".ts,.js\" --out-dir ./lib/db && babel ./utils --extensions \".ts,.js\" --out-dir ./lib/utils && babel ./migrations --extensions \".ts,.js\" --out-dir ./lib/migrations",
+    "babel": "npm run compileMigrations && babel ./seeders --extensions \".ts,.js\" --out-dir ./lib/seeders",
+    "babel:test": "npm run compileMigrations && babel ./seeders_test --extensions \".ts,.js\" --out-dir ./lib/seeders_test",
     "dev:migrate": "npm run babel && npx cross-env NODE_ENV=development sequelize-cli db:migrate && npx cross-env NODE_ENV=development sequelize-cli db:seed:all",
     "dev:migrate:undo": "npx cross-env NODE_ENV=development sequelize-cli db:migrate:undo",
     "dev:migrate:undo:all": "npx cross-env NODE_ENV=development sequelize-cli db:migrate:undo:all",
     "test:migrate": "npm run babel:test && npx cross-env NODE_ENV=test sequelize-cli db:migrate && npx cross-env NODE_ENV=test sequelize-cli db:seed:all",
     "test:migrate:undo": "npx cross-env NODE_ENV=test sequelize-cli db:migrate:undo",
-    "test:migrate:undo:all": "npx cross-env NODE_ENV=test sequelize-cli db:migrate:undo:all"
+    "test:migrate:undo:all": "npx cross-env NODE_ENV=test sequelize-cli db:migrate:undo:all",
+    "prod:migrate": "npm run babel && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "prod:migrate:undo": "npx sequelize-cli db:migrate:undo",
+    "prod:migrate:undo:all": "npx sequelize-cli db:migrate:undo:all",
+    "copyfiles": "npx copyfiles \"static/**/*\" \"client_dist/**/*\" dist/",
+    "build": "rimraf dist && npx tsc && npm run copyfiles",
+    "deploy": "npm install && npm run build"
   },
   "keywords": [],
   "author": "",
@@ -46,6 +54,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "copyfiles": "^2.4.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
@@ -55,6 +64,7 @@
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
     "reflect-metadata": "^0.1.13",
+    "rimraf": "^3.0.2",
     "sequelize": "^6.21.0",
     "sequelize-typescript": "^2.1.3",
     "uuid": "^8.3.2"

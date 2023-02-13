@@ -2,4 +2,4 @@
 !.gitignore
 !test*
 !seeder*
-default-avatar.jpg
+!default-avatar.jpg

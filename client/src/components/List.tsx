@@ -58,7 +58,7 @@ const List = forwardRef(<C, S, E>({
     <ul className={`${className}`} id={id} ref={ref}>
       {childrenBefore && children}
       {startItems && startItems.map(renderStartItemsAs!)}
-      {items.map(renderAs)}
+      {items?.map(renderAs)}
       {endItems && endItems.map(renderEndItemsAs!)}
       {!childrenBefore && children}
       {useFillers && fillerCount.map((filler: string, i: number) => (
