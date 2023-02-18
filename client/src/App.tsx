@@ -15,6 +15,7 @@ import Notifications from './components/Notifications/Notifications';
 import { GUEST } from './utils/consts';
 import { fetchBrands } from './http/brandAPI';
 import { fetchTypes } from './http/typeAPI';
+import LoadingScreen from './components/LoadingScreen';
 
 function App() {
   const {
@@ -61,7 +62,7 @@ function App() {
           localStorage.removeItem('registeredToken');
         }
       } finally {
-        setLoading(false);
+        setTimeout(() => setLoading(false), 1000);
       }
     })();
     if (user.isGuest) {
@@ -77,7 +78,7 @@ function App() {
       localStorage.removeItem('guestItems');
     }
   }, [user.id]);
-  return loading ? null : (
+  return loading ? <LoadingScreen /> : (
     <Router>
       <ScrollWrapper>
         <Notifications />
