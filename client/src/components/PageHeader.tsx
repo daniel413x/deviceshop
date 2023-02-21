@@ -1,7 +1,7 @@
 import React from 'react';
 import { ReactComponent as Ellipses } from '../assets/icons/Ellipses.svg';
 
-interface PageHeaderProps {
+export interface PageHeaderProps {
   header: string;
   noDiv?: boolean;
   noEllipses?: boolean;

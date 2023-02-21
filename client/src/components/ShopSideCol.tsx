@@ -11,7 +11,7 @@ function ShopSideCol() {
     brands,
   } = useContext(Context);
   return (
-    <div className="side-col">
+    <div className="left-side-col">
       <div className="labeled-col">
         <span className="label">
           Department

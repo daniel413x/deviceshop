@@ -2160,6 +2160,9 @@ describe('deviceshop app', () => {
         cy.adminSelectBrandOrType(1, 0);
       });
       it('can update the product images', () => {
+        cy.get('.top-info-row')
+          .find('.slider')
+          .as('theSlider');
         cy.adminReplaceSliderImage('fixture-2.png');
         cy.adminAddSliderImage('fixture-1.png');
         cy.adminSubmitShopProductEditForm();

@@ -1,13 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import BreadcrumbTrail from '../../../components/BreadcrumbTrail';
-import PageHeader from '../../../components/PageHeader';
-import AccountSideCol from '../../../components/Account/AccountSideCol';
 import EditFieldModal from '../../../components/Account/Credentials/EditFieldModal';
 import Context from '../../../context/context';
 import List from '../../../components/List';
 import Field from '../../../components/Account/Credentials/Field';
 import EditAvatarModal from '../../../components/Account/Credentials/EditAvatarModal';
+import ColumnedPage from '../../../components/ColumnedPage';
+import AccountSideCol from '../../../components/Account/AccountSideCol';
 
 function Credentials() {
   const {
@@ -47,7 +46,12 @@ function Credentials() {
     },
   ];
   return (
-    <div id="credentials">
+    <ColumnedPage
+      id="credentials"
+      header="Your account details"
+      leftSideCol={<AccountSideCol />}
+
+    >
       <EditFieldModal
         field={editedField}
         previous={previous}
@@ -57,30 +61,21 @@ function Credentials() {
         show={showEditAvatar}
         close={() => setShowEditAvatar(false)}
       />
-      <div className="columned-page">
-        <AccountSideCol />
-        <div className="main-col">
-          <BreadcrumbTrail />
-          <PageHeader
-            header="Your account details"
-          />
-          <List
-            childrenBefore
-            className="field-ul"
-            items={boxes}
-            renderAs={((box) => (
-              <li key={box.field}>
-                <Field
-                  field={box.field}
-                  value={box.value}
-                  openEditFieldModal={box.field === 'avatar' ? () => setShowEditAvatar(true) : () => openEditFieldModal(box.field, box.value)}
-                />
-              </li>
-            ))}
-          />
-        </div>
-      </div>
-    </div>
+      <List
+        childrenBefore
+        className="field-ul"
+        items={boxes}
+        renderAs={((box) => (
+          <li key={box.field}>
+            <Field
+              field={box.field}
+              value={box.value}
+              openEditFieldModal={box.field === 'avatar' ? () => setShowEditAvatar(true) : () => openEditFieldModal(box.field, box.value)}
+            />
+          </li>
+        ))}
+      />
+    </ColumnedPage>
   );
 }
 

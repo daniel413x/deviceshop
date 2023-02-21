@@ -8,7 +8,7 @@ function AdminSideCol() {
   const { pathname } = useLocation();
   const showInMobile = pathname === '/admin';
   return (
-    <div className={`side-col ${showInMobile && 'show'}`}>
+    <div className={`left-side-col ${showInMobile && 'show'}`}>
       <div className="labeled-col">
         <span className="label">
           Admin

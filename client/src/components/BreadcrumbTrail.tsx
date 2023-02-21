@@ -1,18 +1,16 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 
-interface BreadcrumbTrailProps {
+export interface BreadcrumbTrailProps {
   lastString?: string;
   sliceLastN?: number;
   blockedLinks?: string[];
-  className?: string | boolean;
 }
 
 function BreadcrumbTrail({
   lastString,
   sliceLastN = 0,
   blockedLinks = [],
-  className,
 }: BreadcrumbTrailProps) {
   const { pathname } = useLocation();
   const breadcrumbs = pathname.split(/\//).filter(Boolean);
@@ -21,7 +19,7 @@ function BreadcrumbTrail({
     breadcrumbs[breadcrumbs.length - 1] = lastString;
   }
   return (
-    <ul className={`breadcrumb-trail ${className} ${isDemo && 'blocked'}`}>
+    <ul className={`breadcrumb-trail ${isDemo && 'blocked'}`}>
       <li key="breadcrumb_main">
         <div className="breadcrumb">
           <NavLink to="/" className="previous">
@@ -67,7 +65,6 @@ function BreadcrumbTrail({
 BreadcrumbTrail.defaultProps = {
   lastString: '',
   sliceLastN: 0,
-  className: '',
   blockedLinks: [],
 };
 

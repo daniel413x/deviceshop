@@ -1,19 +1,25 @@
 import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import BreadcrumbTrail from '../../components/BreadcrumbTrail';
-import PageHeader from '../../components/PageHeader';
-import ShopSideCol from '../../components/ShopSideCol';
 import List from '../../components/List';
 import Context from '../../context/context';
 import CartItem from '../../components/Cart/CartItem';
 import RecentlyViewedProducts from '../../components/RecentlyViewedProducts';
 import AddonModal from '../../components/Cart/AddonModal';
 import { IGuestAddedProduct, IOrderedProduct } from '../../types/types';
-import useBreakpoints from '../../hooks/useBreakpoints';
 import Checkout from '../../components/Cart/Checkout';
 import ChatNow from '../../components/ChatNow';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { deleteOrderedProduct } from '../../http/orderedProductAPI';
+import ColumnedPage from '../../components/ColumnedPage';
+
+function CheckoutCol() {
+  return (
+    <div className="checkout-col">
+      <Checkout />
+      <ChatNow />
+    </div>
+  );
+}
 
 function Cart() {
   const [deletedId, setDeletedId] = useState<string>('');
@@ -23,8 +29,6 @@ function Cart() {
     cart,
     user,
   } = useContext(Context);
-  const { width } = useBreakpoints();
-  const checkoutBreakpoint = width >= 1203;
   const openDeleteModal = (id: string) => {
     setDeletedId(id);
   };
@@ -45,8 +49,12 @@ function Cart() {
     cart.removeItem(id);
   };
   return (
-    <div id="cart">
-      <div className="columned-page">
+    <div>
+      <ColumnedPage
+        id="cart"
+        header="Cart"
+        rightSideCol={<CheckoutCol />}
+      >
         <ConfirmationModal
           show={deletedId}
           close={() => setDeletedId('')}
@@ -67,40 +75,26 @@ function Cart() {
           close={() => setInsuranceCartItem(undefined)}
           category="insurance"
         />
-        <ShopSideCol />
-        <div className="main-col">
-          <BreadcrumbTrail />
-          <PageHeader
-            header="Cart"
-          />
-          {cart.items.length === 0 && (
-            <span className="empty-cart">
-              Your cart is empty
-            </span>
-          )}
-          <List
-            className="cart-items-ul"
-            items={cart.items}
-            renderAs={(orderedProduct) => (
-              <li key={orderedProduct.id}>
-                <CartItem
-                  orderedProduct={orderedProduct}
-                  openDeleteModal={() => openDeleteModal(orderedProduct.id)}
-                  openWarrantyModal={() => openWarrantyModal(orderedProduct)}
-                  openInsuranceModal={() => openInsuranceModal(orderedProduct)}
-                />
-              </li>
-            )}
-          />
-          {!checkoutBreakpoint && <Checkout />}
-        </div>
-        {checkoutBreakpoint && (
-        <div className="checkout-col">
-          <Checkout />
-          <ChatNow />
-        </div>
+        {cart.items.length === 0 && (
+        <span className="empty-cart">
+          Your cart is empty
+        </span>
         )}
-      </div>
+        <List
+          className="cart-items-ul"
+          items={cart.items}
+          renderAs={(orderedProduct) => (
+            <li key={orderedProduct.id}>
+              <CartItem
+                orderedProduct={orderedProduct}
+                openDeleteModal={() => openDeleteModal(orderedProduct.id)}
+                openWarrantyModal={() => openWarrantyModal(orderedProduct)}
+                openInsuranceModal={() => openInsuranceModal(orderedProduct)}
+              />
+            </li>
+          )}
+        />
+      </ColumnedPage>
       <RecentlyViewedProducts />
     </div>
   );

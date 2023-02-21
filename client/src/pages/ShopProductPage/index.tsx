@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import ShopSideCol from '../../components/ShopSideCol';
-import BreadcrumbTrail from '../../components/BreadcrumbTrail';
 import { fetchProduct } from '../../http/shopProductAPI';
 import { IOrderedProduct, IShopProduct } from '../../types/types';
 import TopInfoRow from '../../components/ShopProductPage/TopInfoRow';
@@ -14,6 +12,7 @@ import ReviewModal from '../../components/ReviewModal';
 import { eligibileToReview } from '../../http/orderedProductAPI';
 import Context from '../../context/context';
 import LeaveARating from '../../components/ShopProductPage/LeaveARating';
+import ColumnedPage from '../../components/ColumnedPage';
 
 function ShopProductPage() {
   const { notifications, user } = useContext(Context);
@@ -58,90 +57,86 @@ function ShopProductPage() {
     })();
   }, [title]);
   return (
-    <div id="shop-product-page" className={`shop-product-page ${loading && 'loading'}`}>
-      <ReviewModal
-        show={showReviewModal}
-        orderedProduct={orderedProduct}
-        close={() => setShowReviewModal(false)}
-        productName={product?.name || ''}
-      />
-      <div className="columned-page">
-        <ShopSideCol />
-        <div className="main-col">
-          {orderedProduct && (
-            <LeaveARating
-              setShowReviewModal={setShowReviewModal}
-              orderedProduct={orderedProduct}
-            />
-          )}
-          <BreadcrumbTrail
-            lastString={product?.name}
+    <div id="shop-product-page">
+      {orderedProduct && (
+        <LeaveARating
+          setShowReviewModal={setShowReviewModal}
+          orderedProduct={orderedProduct}
+        />
+      )}
+      <ColumnedPage
+        className={`shop-product-page ${loading && 'loading'}`}
+      >
+        <ReviewModal
+          show={showReviewModal}
+          orderedProduct={orderedProduct}
+          close={() => setShowReviewModal(false)}
+          productName={product?.name || ''}
+        />
+        {product && (
+        <TopInfoRow
+          product={product}
+        />
+        )}
+        {product && (
+        <CollapsibleInfo
+          header="Description"
+        >
+          <span className="description">
+            {product.description}
+          </span>
+        </CollapsibleInfo>
+        )}
+        {product && (
+        <CollapsibleInfo
+          header="Specifications"
+        >
+          <Specifications
+            specifications={product.specifications}
           />
-          {product && (
-          <TopInfoRow
-            product={product}
-          />
-          )}
-          {product && (
-          <CollapsibleInfo
-            header="Description"
-          >
-            <span className="description">
-              {product.description}
-            </span>
-          </CollapsibleInfo>
-          )}
-          {product && (
-          <CollapsibleInfo
-            header="Specifications"
-          >
-            <Specifications
-              specifications={product.specifications}
-            />
-          </CollapsibleInfo>
-          )}
-          {product && (
-          <CollapsibleInfo
-            header="Returns &amp; warranty"
-          >
-            <div className="returns-and-warranty">
-              <div className="thirty-day-return">
-                <span className="label">
-                  30-day return
-                </span>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-              </div>
-              <div className="info warranty">
-                <span className="label">
-                  Warranty
-                </span>
-                <span className="value">
-                  24 months
-                </span>
-              </div>
-              <div className="divider" />
-              <div className="info repairs">
-                <span className="label">
-                  Repairs
-                </span>
-                <span className="value">
-                  Available for a fee
-                </span>
-              </div>
+        </CollapsibleInfo>
+        )}
+        {product && (
+        <CollapsibleInfo
+          header="Returns &amp; warranty"
+        >
+          <div className="returns-and-warranty">
+            <div className="thirty-day-return">
+              <span className="label">
+                30-day return
+              </span>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              </p>
             </div>
-          </CollapsibleInfo>
-          )}
-          <div className="divider wide" />
-        </div>
-      </div>
-      {product && (
+            <div className="info warranty">
+              <span className="label">
+                Warranty
+              </span>
+              <span className="value">
+                24 months
+              </span>
+            </div>
+            <div className="divider" />
+            <div className="info repairs">
+              <span className="label">
+                Repairs
+              </span>
+              <span className="value">
+                Available for a fee
+              </span>
+            </div>
+          </div>
+        </CollapsibleInfo>
+        )}
+        <div className="divider wide" />
+        {product && (
         <Reviews
           shopProductId={product.id}
           rating={product.rating}
         />
-      )}
+        )}
+      </ColumnedPage>
       <RecentlyViewedProducts />
     </div>
   );

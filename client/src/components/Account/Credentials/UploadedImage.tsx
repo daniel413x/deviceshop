@@ -80,7 +80,7 @@ function UploadedImage({
         id={id}
         type="file"
         onChange={handleOnChange}
-        className={`hidden ${warn && 'warn'}`}
+        className={`replace-image-input hidden ${warn && 'warn'}`}
         name={name}
         // multiple={multiple}
         ref={ref}

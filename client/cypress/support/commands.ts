@@ -6,7 +6,7 @@ import {
 } from '../../src/utils/consts';
 import { convertPriceToInt } from '../../src/utils/functions';
 
-export const clientUrl = 'http://localhost:3000';
+export const clientUrl = 'http://localhost:5436';
 export const serverUrl = 'http://localhost:6006';
 
 /*
@@ -60,7 +60,7 @@ Cypress.Commands.add('locationIsClean', () => {
 });
 
 Cypress.Commands.add('sideColDidLoad', () => {
-  cy.get('.side-col')
+  cy.get('.left-side-col')
     .should('not.have.class', 'loading');
 });
 

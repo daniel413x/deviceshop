@@ -56,7 +56,7 @@ function AddonModal({
   };
   const selectAddon = async (selection: IAddon) => {
     if (selectedAddon) {
-      removeAddon();
+      await removeAddon();
     }
     if (user.isGuest) {
       const guestItems: IOrderedProduct[] = JSON.parse(localStorage.getItem('guestItems')!);

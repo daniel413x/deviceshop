@@ -5,9 +5,7 @@ import React, {
 } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import BreadcrumbTrail from '../../../components/BreadcrumbTrail';
 import List from '../../../components/List';
-import PageHeader from '../../../components/PageHeader';
 import Search from '../../../components/Search';
 import {
   deleteProduct,
@@ -35,8 +33,9 @@ import IconNavlink from '../../../components/IconNavlink';
 import ConfirmationModal from '../../../components/ConfirmationModal';
 import Context from '../../../context/context';
 import FilterLink from '../../../components/Admin/ShopProducts/FilterLink';
-import AdminSideCol from '../../../components/Admin/AdminSideCol';
 import FilterLinks from '../../../components/Admin/FilterLinks';
+import ColumnedPage from '../../../components/ColumnedPage';
+import AdminSideCol from '../../../components/Admin/AdminSideCol';
 
 interface SearchResultProps {
   product: IShopProduct;
@@ -160,7 +159,14 @@ function ShopProducts() {
     })();
   }, []);
   return (
-    <div id="shop-products" className="admin-search-page">
+    <ColumnedPage
+      header="Shop products"
+      id="shop-products"
+      className="admin-search-page"
+      leftSideCol={<AdminSideCol />}
+      noDiv
+      noEllipses
+    >
       <ConfirmationModal
         show={deletedProduct}
         close={() => setDeletedProduct(undefined)}
@@ -168,101 +174,90 @@ function ShopProducts() {
         prompt={`${deletedProductsPage ? 'A product\'s data cannot be restored after it has been deleted from the recycling bin.' : 'Product will be moved to the recycling bin.'}`}
         callback={() => deleteAction()}
       />
-      <div className="columned-page">
-        <AdminSideCol />
-        <div className="main-col">
-          <BreadcrumbTrail />
-          <PageHeader
-            header="Products"
-            noDiv
-            noEllipses
+      <div className="upper-row">
+        <Search
+          dontRenderResults
+          setSearchParams={setSearchParams}
+        />
+        <FilterLinks>
+          <FilterLink
+            label={`Public (${publicProductsCount})`}
+            to={`/${ADMIN_ROUTE}/${SHOP_PRODUCTS_ROUTE}`}
           />
-          <div className="upper-row">
-            <Search
-              dontRenderResults
-              setSearchParams={setSearchParams}
-            />
-            <FilterLinks>
-              <FilterLink
-                label={`Public (${publicProductsCount})`}
-                to={`/${ADMIN_ROUTE}/${SHOP_PRODUCTS_ROUTE}`}
-              />
-              <FilterLink
-                label={`Deleted (${deletedProductsCount})`}
-                to={`/${ADMIN_ROUTE}/${SHOP_PRODUCTS_ROUTE}/${DELETED_ROUTE}`}
-              />
-            </FilterLinks>
-          </div>
-          <List
-            className={`search-results-ul ${loading && 'loading'}`}
-            items={products}
-            childrenBefore
-            renderAs={(product) => (
-              <li key={product.id}>
-                <SearchResult
-                  product={product}
-                  setDeletedProduct={setDeletedProduct}
-                />
-              </li>
-            )}
-            fillerElement={<div className="search-result filler" />}
-            fillersNeeded={itemsPerPage - products.length - 1}
-          >
-            {!deletedProductsPage && (
-            <li key="create-link">
-              <NavLink
-                to={CREATE_ROUTE}
-                className="search-result create-product-link"
-              >
-                <div className="info-col">
-                  <div className="img-col">
-                    <AddIcon />
-                  </div>
-                  <div className="text-col">
-                    New product
-                  </div>
-                </div>
-                <div className="icons-col blocked">
-                  <IconButton
-                    onClick={() => null}
-                    Icon={EditIcon}
-                    className="edit-icon"
-                  />
-                  <IconButton
-                    className="trash-icon"
-                    onClick={() => null}
-                    Icon={TrashIcon}
-                    iconStyle="warn"
-                  />
-                </div>
-              </NavLink>
-            </li>
-            )}
-            {!products.length && (
-            <li key="no-results">
-              <div
-                className="search-result no-results"
-              >
-                No results
-              </div>
-            </li>
-            )}
-          </List>
-          <PaginatedItemsCounter
-            page={page}
-            itemsPerPage={itemsPerPage}
-            dbCount={dbCount}
-            descriptor="products"
+          <FilterLink
+            label={`Deleted (${deletedProductsCount})`}
+            to={`/${ADMIN_ROUTE}/${SHOP_PRODUCTS_ROUTE}/${DELETED_ROUTE}`}
           />
-          <PageControl
-            page={page}
-            changePage={changePage}
-            pageLimitReached={pageLimitReached}
-            pageLimit={pageLimit}
-          />
-        </div>
+        </FilterLinks>
       </div>
-    </div>
+      <List
+        className={`search-results-ul ${loading && 'loading'}`}
+        items={products}
+        childrenBefore
+        renderAs={(product) => (
+          <li key={product.id}>
+            <SearchResult
+              product={product}
+              setDeletedProduct={setDeletedProduct}
+            />
+          </li>
+        )}
+        fillerElement={<div className="search-result filler" />}
+        fillersNeeded={itemsPerPage - products.length - 1}
+      >
+        {!deletedProductsPage && (
+        <li key="create-link">
+          <NavLink
+            to={CREATE_ROUTE}
+            className="search-result create-product-link"
+          >
+            <div className="info-col">
+              <div className="img-col">
+                <AddIcon />
+              </div>
+              <div className="text-col">
+                New product
+              </div>
+            </div>
+            <div className="icons-col blocked">
+              <IconButton
+                onClick={() => null}
+                Icon={EditIcon}
+                className="edit-icon"
+              />
+              <IconButton
+                className="trash-icon"
+                onClick={() => null}
+                Icon={TrashIcon}
+                iconStyle="warn"
+              />
+            </div>
+          </NavLink>
+        </li>
+        )}
+        {!products.length && (
+        <li key="no-results">
+          <div
+            className="search-result no-results"
+          >
+            No results
+          </div>
+        </li>
+        )}
+      </List>
+      <PaginatedItemsCounter
+        page={page}
+        itemsPerPage={itemsPerPage}
+        dbCount={dbCount}
+        descriptor="products"
+      />
+      <PageControl
+        page={page}
+        changePage={changePage}
+        pageLimitReached={pageLimitReached}
+        pageLimit={pageLimit}
+      />
+    </ColumnedPage>
   );
 }
 

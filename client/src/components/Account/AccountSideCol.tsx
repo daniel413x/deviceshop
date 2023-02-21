@@ -8,7 +8,7 @@ function AccountSideCol() {
   const { pathname } = useLocation();
   const showInMobile = pathname === '/account';
   return (
-    <div className={`side-col ${showInMobile && 'show'}`}>
+    <div className={`left-side-col ${showInMobile && 'show'}`}>
       <div className="labeled-col">
         <span className="label">
           Your account

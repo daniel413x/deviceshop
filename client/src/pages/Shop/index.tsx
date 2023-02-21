@@ -3,15 +3,12 @@ import React, {
 } from 'react';
 import { observer } from 'mobx-react-lite';
 import { NavLink } from 'react-router-dom';
-import BreadcrumbTrail from '../../components/BreadcrumbTrail';
 import Button from '../../components/Button';
 import List from '../../components/List';
-import PageHeader from '../../components/PageHeader';
 import FilterMenu from '../../components/Shop/FilterMenu';
 import RemoveFilterButton from '../../components/Shop/RemoveFilterButton';
 import SortingButtonsRow from '../../components/Shop/SortingButtonsRow';
 import ShopProductCard from '../../components/ShopProductCard';
-import ShopSideCol from '../../components/ShopSideCol';
 import Context from '../../context/context';
 import { shopFilterButtons } from '../../utils/arrays';
 import { ReactComponent as AngleIcon } from '../../assets/icons/angleup.svg';
@@ -29,6 +26,7 @@ import {
 } from '../../types/types';
 import { fetchProducts } from '../../http/shopProductAPI';
 import { getFiltersFromSearchParamsRecord } from '../../utils/functions';
+import ColumnedPage from '../../components/ColumnedPage';
 
 function Shop() {
   const { width: mainColWidth } = useTrackDimensions('main-col');
@@ -86,102 +84,98 @@ function Shop() {
     fetchPageNumber(newPage);
   };
   return (
-    <div id="shop" className="columned-page">
-      <ShopSideCol />
-      <div className="main-col" id="main-col">
-        <BreadcrumbTrail />
+    <ColumnedPage
+      header="Shop all products"
+      id="shop"
+    >
+      <div
+        style={{ maxWidth }}
+      >
         <div
+          className="product-count-row"
           style={{ maxWidth }}
         >
-          <PageHeader
-            header="Shop all products"
-          />
-          <div
-            className="product-count-row"
-            style={{ maxWidth }}
-          >
-            <span className="product-count">
-              <span className="figure">
-                {dbCount}
-              </span>
-              {' '}
-              products
+          <span className="product-count">
+            <span className="figure">
+              {dbCount}
             </span>
-            <List
-              className="remove-filter-button-ul"
-              items={shopPage.activeFilters}
-              renderAs={((specification) => (
-                <li key={specification.id}>
-                  <RemoveFilterButton
-                    specification={specification}
-                  />
-                </li>
-              ))}
-            />
-          </div>
+            {' '}
+            products
+          </span>
           <List
-            items={shopFilterButtons}
-            className="filter-buttons-ul"
-            renderAs={({ specificationKey, label }) => (
-              <li key={specificationKey}>
-                <FilterMenu
-                  specificationKey={specificationKey}
-                  label={label}
+            className="remove-filter-button-ul"
+            items={shopPage.activeFilters}
+            renderAs={((specification) => (
+              <li key={specification.id}>
+                <RemoveFilterButton
+                  specification={specification}
                 />
               </li>
-            )}
-          />
-          <SortingButtonsRow
-            sorting={sorting}
-            setSorting={fetchAndSort}
+            ))}
           />
         </div>
         <List
-          items={products}
-          className={`shop-products-ul ${listView && 'list-view'} ${loading && 'loading'}`}
-          renderAs={((product) => (
-            <li key={product.id}>
-              <ShopProductCard
-                product={product}
-                expanded
-                listView={listView}
+          items={shopFilterButtons}
+          className="filter-buttons-ul"
+          renderAs={({ specificationKey, label }) => (
+            <li key={specificationKey}>
+              <FilterMenu
+                specificationKey={specificationKey}
+                label={label}
               />
             </li>
-          ))}
+          )}
         />
-        {loading && (
-          <LoadingAnimation />
-        )}
-        <div
-          className="lower-elements"
-          style={{ maxWidth }}
-        >
-          <PaginatedItemsCounter
-            page={page}
-            itemsPerPage={itemsPerPage}
-            dbCount={dbCount}
-            descriptor="products"
-          />
-          <div className="lower-row">
-            <Button
-              onClick={loadMore}
-              className={`next-page-button ${pageLimitReached && 'blocked'}`}
-            >
-              Show more
-            </Button>
-            <NavLink
-              to="#"
-              className="to-top-button"
-              title="Return to top"
-              onClick={() => window.scrollTo(0, 0)}
-            >
-              <AngleIcon />
-              To top
-            </NavLink>
-          </div>
+        <SortingButtonsRow
+          sorting={sorting}
+          setSorting={fetchAndSort}
+        />
+      </div>
+      <List
+        items={products}
+        className={`shop-products-ul ${listView && 'list-view'} ${loading && 'loading'}`}
+        renderAs={((product) => (
+          <li key={product.id}>
+            <ShopProductCard
+              product={product}
+              expanded
+              listView={listView}
+            />
+          </li>
+        ))}
+      />
+      {loading && (
+      <LoadingAnimation />
+      )}
+      <div
+        className="lower-elements"
+        style={{ maxWidth }}
+      >
+        <PaginatedItemsCounter
+          page={page}
+          itemsPerPage={itemsPerPage}
+          dbCount={dbCount}
+          descriptor="products"
+        />
+        <div className="lower-row">
+          <Button
+            onClick={loadMore}
+            className={`next-page-button ${pageLimitReached && 'blocked'}`}
+          >
+            Show more
+          </Button>
+          <NavLink
+            to="#"
+            className="to-top-button"
+            title="Return to top"
+            onClick={() => window.scrollTo(0, 0)}
+          >
+            <AngleIcon />
+            To top
+          </NavLink>
         </div>
       </div>
-    </div>
+    </ColumnedPage>
   );
 }
 

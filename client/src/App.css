@@ -1037,14 +1037,7 @@ form.checkout-style .labeled-input input {
 }
 
 .recently-viewed-products .header {
-  margin: 2rem 0 2rem 2rem;
-}
-
-@media (min-width: 1200px) {
-  .recently-viewed-products .header {
-    margin-left: auto;
-    margin-right: auto;
-  }
+  margin: 3rem auto ;
 }
 
 .recently-viewed-products .products-ul {
@@ -1064,7 +1057,7 @@ form.checkout-style .labeled-input input {
   grid-gap: 0.625rem;
 }
 
-.side-col {
+.left-side-col {
   display: flex;
   flex-direction: column;
   font-size: 0.875rem;
@@ -1073,31 +1066,31 @@ form.checkout-style .labeled-input input {
 }
 
 @media (max-width: 767px) {  
-  .side-col {
+  .left-side-col {
     display: none;
   }
-  .side-col.show {
+  .left-side-col.show {
     display: initial;
   }
 }
 
-.side-col .labeled-col {
+.left-side-col .labeled-col {
   display: flex;
   flex-direction: column;
 }
 
-.side-col .labeled-col .label {
+.left-side-col .labeled-col .label {
   margin: 1rem 0;
   font-weight: 300;
   max-width: 170px;
 }
 
-.side-col .labeled-col .nav-button {
+.left-side-col .labeled-col .nav-button {
   color: var(--primary-accent);
   width: 170px;
 }
 
-.side-col .labeled-col .nav-button:hover, .side-col .labeled-col .nav-button:focus {
+.left-side-col .labeled-col .nav-button:hover, .left-side-col .labeled-col .nav-button:focus {
   color: #fff;
   background-color: var(--primary-accent);
 }
@@ -3051,28 +3044,31 @@ form.checkout-style .labeled-input input {
   font-weight: 600;
 }
 
-.shop-product-page .leave-a-rating {
+#shop-product-page .leave-a-rating {
   background-color: var(--primary-accent);
   font-weight: 500;
   color: #fff;
-  padding: 0.5rem 1rem;
+  padding: 1rem 2.5rem;
   display: flex;
+  justify-content: center;
   align-items: center;
   grid-gap: 0.5rem;
   margin-bottom: 0.5rem;
+  max-width: max-content;
+  margin: auto;
 }
 
-.shop-product-page .leave-a-rating svg path {
+#shop-product-page .leave-a-rating svg path {
   fill: var(--primary-accent-light);
 }
 
-.shop-product-page .leave-a-rating .show-modal-button {
+#shop-product-page .leave-a-rating .show-modal-button {
   margin: 0 0.3rem;
   text-decoration: underline;
   color: rgb(255, 227, 176)
 }
 
-.shop-product-page .leave-a-rating .show-modal-button:hover {
+#shop-product-page .leave-a-rating .show-modal-button:hover {
   filter: brightness(1.1);
 }
 
@@ -3253,17 +3249,9 @@ form.checkout-style .labeled-input input {
 }
 
 .shop-product-page .reviews {
-  padding-left: var(--side-margins-non-widescreen);
-  padding-right: var(--side-margins-non-widescreen);
-  max-width: 1100px;
+  max-width: 800px;
   display: flex;
   flex-direction: column;
-}
-
-@media (min-width: 1400px) {
-  .shop-product-page .reviews {
-    margin-left: 190px;
-  }
 }
 
 @media (min-width: 767px) {
@@ -3401,7 +3389,7 @@ form.checkout-style .labeled-input input {
 }
 
 @media (max-width: 1013px) {
-  .side-col {
+  .left-side-col {
     max-width: unset;
   }
 }
@@ -3566,6 +3554,13 @@ form.checkout-style .labeled-input input {
   height: max-content;
 }
 
+@media (max-width: 1202px) {
+  #cart .checkout-col {
+    align-self: flex-end;
+    margin-top: 1rem;
+  }
+}
+
 #cart .checkout {
   width: 100%;
   max-width: 170px;
@@ -3668,8 +3663,9 @@ form.checkout-style .labeled-input input {
 
 #order-confirmation .main-col {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   grid-gap: 1.5rem;
+  max-width: 645px;
 }
 
 @media (max-width: 1200px) {
@@ -3680,7 +3676,7 @@ form.checkout-style .labeled-input input {
 }
 
 @media (max-width: 767px) {
-  #order-confirmation .side-col {
+  #order-confirmation .left-side-col {
     display: none;
   }
 }
@@ -3723,7 +3719,7 @@ form.checkout-style .labeled-input input {
   grid-gap: 2rem;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1202px) {
   #order-confirmation .shipping-info {
     display: grid;
     justify-content: space-between;
@@ -3780,12 +3776,24 @@ form.checkout-style .labeled-input input {
   margin-top: 1rem;
 }
 
+#admin .main-col {
+  max-width: 645px;
+}
+
+#admin .main-col, #account .main-col {
+  max-width: 645px;
+}
+
 #your-orders .main-col {
   max-width: 645px;
 }
 
 #your-orders .chat-now.mobile {
   margin: 2rem auto;
+}
+
+#credentials .main-col {
+  max-width: 645px;
 }
 
 #credentials .field-ul {
@@ -3854,7 +3862,7 @@ form.checkout-style .labeled-input input {
 }
 
 @media (max-width: 768px) {
-   #admin .side-col {
+   #admin .left-side-col {
      margin-top: 1rem;
   }
 }

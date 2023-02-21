@@ -1,8 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useLocation, useParams } from 'react-router';
 import { observer } from 'mobx-react-lite';
-import ShopSideCol from '../../../../components/ShopSideCol';
-import BreadcrumbTrail from '../../../../components/BreadcrumbTrail';
 import { IShopProduct } from '../../../../types/types';
 import TopInfoRow from '../../../../components/Admin/ShopProducts/Create/TopInfoRow';
 import Specifications from '../../../../components/Admin/ShopProducts/Create/Specifications';
@@ -14,6 +12,7 @@ import { fetchProduct } from '../../../../http/shopProductAPI';
 import {
   CREATE_SHOPPRODUCT_ROUTE, EDIT_ROUTE,
 } from '../../../../utils/consts';
+import ColumnedPage from '../../../../components/ColumnedPage';
 
 const Description = observer(() => {
   const {
@@ -61,54 +60,51 @@ function CreateShopProduct() {
     loading,
   } = createProductPage;
   return (
-    <div id="create-shop-product" className={`shop-product-page ${loading && 'loading'}`}>
-      <div className="columned-page">
-        <ShopSideCol />
-        <div className="main-col">
-          <BreadcrumbTrail
-            blockedLinks={[EDIT_ROUTE]}
-          />
-          <TopInfoRow />
-          <Description />
-          <CollapsibleInfo
-            header="Specifications"
-          >
-            <Specifications />
-          </CollapsibleInfo>
-          <CollapsibleInfo
-            header="Returns &amp; warranty"
-          >
-            <div className="returns-and-warranty">
-              <div className="thirty-day-return">
-                <span className="label">
-                  30-day return
-                </span>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-              </div>
-              <div className="info warranty">
-                <span className="label">
-                  Warranty
-                </span>
-                <span className="value">
-                  24 months
-                </span>
-              </div>
-              <div className="divider" />
-              <div className="info repairs">
-                <span className="label">
-                  Repairs
-                </span>
-                <span className="value">
-                  Available for a fee
-                </span>
-              </div>
+    <div id="create-shop-product">
+      <ColumnedPage
+        className={`shop-product-page ${loading && 'loading'}`}
+        blockedLinks={[EDIT_ROUTE]}
+      >
+        <TopInfoRow />
+        <Description />
+        <CollapsibleInfo
+          header="Specifications"
+        >
+          <Specifications />
+        </CollapsibleInfo>
+        <CollapsibleInfo
+          header="Returns &amp; warranty"
+        >
+          <div className="returns-and-warranty">
+            <div className="thirty-day-return">
+              <span className="label">
+                30-day return
+              </span>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              </p>
             </div>
-          </CollapsibleInfo>
-          <div className="divider wide" />
-        </div>
-      </div>
+            <div className="info warranty">
+              <span className="label">
+                Warranty
+              </span>
+              <span className="value">
+                24 months
+              </span>
+            </div>
+            <div className="divider" />
+            <div className="info repairs">
+              <span className="label">
+                Repairs
+              </span>
+              <span className="value">
+                Available for a fee
+              </span>
+            </div>
+          </div>
+        </CollapsibleInfo>
+        <div className="divider wide" />
+      </ColumnedPage>
       <FormSubmissionOverlay />
     </div>
   );
