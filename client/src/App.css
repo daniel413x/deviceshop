@@ -2793,6 +2793,12 @@ form.checkout-style .labeled-input input {
   }
 }
 
+@media (min-width: 1400px) {  
+  .columned-page {
+    justify-content: center;
+  }
+}
+
 .columned-page .main-col {
   max-width: 1405.11px;
   width: 100%;
