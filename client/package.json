@@ -15,6 +15,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-slick": "^0.23.8",
     "axios": "^0.26.1",
+    "focus-trap-react": "^10.1.0",
     "framer-motion": "^8.5.3",
     "jwt-decode": "^3.1.2",
     "mobx": "^6.5.0",

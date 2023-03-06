@@ -14,6 +14,7 @@ interface UploadedImageProps {
   onChangeWith?: () => void;
   name: string;
   id?: string;
+  tabbable?: number;
 }
 
 function UploadedImage({
@@ -26,6 +27,7 @@ function UploadedImage({
   onChangeWith,
   name,
   id,
+  tabbable,
 }: UploadedImageProps) {
   const [selectedFile, setSelectedFile] = useState<Blob | MediaSource>();
   const [preview, setPreview] = useState<string>('');
@@ -68,8 +70,9 @@ function UploadedImage({
   return (
     <Button
       buttonStyle="blank"
-      className={`preview ${buttonClass}`}
+      className={`button-overlay preview ${buttonClass}`}
       onClick={() => ref.current?.click()}
+      tabIndex={tabbable}
     >
       <img
         src={preview}
@@ -85,6 +88,9 @@ function UploadedImage({
         // multiple={multiple}
         ref={ref}
       />
+      <div className="replace-message">
+        Replace
+      </div>
     </Button>
   );
 }
@@ -98,6 +104,7 @@ UploadedImage.defaultProps = {
   onChangeWith: undefined,
   pressedSubmit: false,
   setPressedSubmit: false,
+  tabbable: undefined,
 };
 
 export default UploadedImage;

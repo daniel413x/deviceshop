@@ -38,6 +38,7 @@ function PageControl({
         className={`arrow-button back ${page === 1 && 'blocked-alt'}`}
         type="button"
         onClick={() => changePage(page - 1)}
+        tabIndex={page === 1 ? -1 : 0}
       >
         <span>
           ←
@@ -54,6 +55,7 @@ function PageControl({
             type="button"
             onClick={() => changePage(p)}
             key={p}
+            tabIndex={p === page ? -1 : 0}
           >
             {p}
           </button>
@@ -63,6 +65,7 @@ function PageControl({
         className={`arrow-button forward ${pageLimitReached && 'blocked-alt'}`}
         type="button"
         onClick={() => changePage(page + 1)}
+        tabIndex={pageLimitReached ? -1 : 0}
       >
         <span>
           Forward

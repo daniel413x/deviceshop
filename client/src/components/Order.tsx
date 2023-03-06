@@ -9,6 +9,7 @@ import Address from './Address';
 import {
   CANCELED, CANCELLATION_REQUESTED, DELIVERED, PROCESSING, RETURN_REQUESTED, SHIPPED,
 } from '../utils/consts';
+import RefocusedElement from './RefocusedElement';
 
 type OrderEitherProps = Either<
 {
@@ -122,6 +123,7 @@ function Order({
       />
       <div className={`buttons-row ${orderCanceled && 'blocked'}`}>
         {setNewStatusOrder && ( // admin only
+        <RefocusedElement>
           <Button
             onClick={() => setNewStatusOrder!(order)}
             buttonStyle="secondary"
@@ -129,23 +131,28 @@ function Order({
           >
             Change status
           </Button>
+        </RefocusedElement>
         )}
         {(setReturnedOrderId && setCanceledOrder) && ( // customer only
           orderDelivered ? (
-            <Button
-              onClick={() => setReturnedOrderId!(id)}
-              buttonStyle="secondary"
-            >
-              Return order
-            </Button>
+            <RefocusedElement>
+              <Button
+                onClick={() => setReturnedOrderId!(id)}
+                buttonStyle="secondary"
+              >
+                Return order
+              </Button>
+            </RefocusedElement>
           ) : (
-            <Button
-              onClick={() => setCanceledOrder!(order)}
-              buttonStyle="secondary"
-              className={`cancel-order-button ${orderCancellationRequested && 'blocked'}`}
-            >
-              Cancel order
-            </Button>
+            <RefocusedElement>
+              <Button
+                onClick={() => setCanceledOrder!(order)}
+                buttonStyle="secondary"
+                className={`cancel-order-button ${orderCancellationRequested && 'blocked'}`}
+              >
+                Cancel order
+              </Button>
+            </RefocusedElement>
           )
         )}
         <Button

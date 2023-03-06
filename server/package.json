@@ -10,7 +10,7 @@
     "beforeCompileMigrations": "rimraf ./lib",
     "compileMigrations": "npm run beforeCompileMigrations && babel db --extensions \".ts,.js\" --out-dir ./lib/db && babel ./utils --extensions \".ts,.js\" --out-dir ./lib/utils && babel ./migrations --extensions \".ts,.js\" --out-dir ./lib/migrations",
     "babel": "npm run compileMigrations && babel ./seeders --extensions \".ts,.js\" --out-dir ./lib/seeders",
-    "babel:test": "npm run compileMigrations && babel ./seeders_test --extensions \".ts,.js\" --out-dir ./lib/seeders_test",
+    "babel:test": "npm run compileMigrations && babel ./seeders --extensions \".ts,.js\" --out-dir ./lib/seeders",
     "dev:migrate": "npm run babel && npx cross-env NODE_ENV=development sequelize-cli db:migrate && npx cross-env NODE_ENV=development sequelize-cli db:seed:all",
     "dev:migrate:undo": "npx cross-env NODE_ENV=development sequelize-cli db:migrate:undo",
     "dev:migrate:undo:all": "npx cross-env NODE_ENV=development sequelize-cli db:migrate:undo:all",

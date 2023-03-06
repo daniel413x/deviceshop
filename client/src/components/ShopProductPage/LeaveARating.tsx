@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ReactComponent as CircleCheck } from '../../assets/icons/CircleCheck.svg';
 import { IOrderedProduct } from '../../types/types';
+import RefocusedElement from '../RefocusedElement';
 
 interface LeaveARatingProps {
   orderedProduct: IOrderedProduct | undefined;
@@ -24,14 +25,16 @@ function LeaveARating({
       />
       <span>
         You are eligible to
-        <button
-          className="show-modal-button"
-          onClick={() => setShowReviewModal(true)}
-          type="button"
-        >
-          leave a rating
-        </button>
-        for your purchased product
+        <RefocusedElement>
+          <button
+            className="show-modal-button"
+            onClick={() => setShowReviewModal(true)}
+            type="button"
+          >
+            leave a rating
+          </button>
+        </RefocusedElement>
+        for your purchased product!
       </span>
     </div>
   );

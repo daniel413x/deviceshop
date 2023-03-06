@@ -36,6 +36,7 @@ import FilterLink from '../../../components/Admin/ShopProducts/FilterLink';
 import FilterLinks from '../../../components/Admin/FilterLinks';
 import ColumnedPage from '../../../components/ColumnedPage';
 import AdminSideCol from '../../../components/Admin/AdminSideCol';
+import RefocusedElement from '../../../components/RefocusedElement';
 
 interface SearchResultProps {
   product: IShopProduct;
@@ -90,12 +91,14 @@ function SearchResult({ product, setDeletedProduct }: SearchResultProps) {
           Icon={EditIcon}
           className="edit-icon"
         />
-        <IconButton
-          className="trash-icon"
-          onClick={() => setDeletedProduct(product)}
-          Icon={TrashIcon}
-          iconStyle="warn"
-        />
+        <RefocusedElement>
+          <IconButton
+            className="trash-icon"
+            onClick={() => setDeletedProduct(product)}
+            Icon={TrashIcon}
+            iconStyle="warn"
+          />
+        </RefocusedElement>
       </div>
     </div>
   );
@@ -224,12 +227,14 @@ function ShopProducts() {
                 onClick={() => null}
                 Icon={EditIcon}
                 className="edit-icon"
+                tabIndex={-1}
               />
               <IconButton
                 className="trash-icon"
                 onClick={() => null}
                 Icon={TrashIcon}
                 iconStyle="warn"
+                tabIndex={-1}
               />
             </div>
           </NavLink>

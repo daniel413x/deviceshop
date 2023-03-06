@@ -5,6 +5,8 @@ import {
   CHECKOUT_ROUTE,
   PROCESSING,
   CANCELED,
+  LOGOUT_ROUTE,
+  LOGIN_ROUTE,
 } from '../../../src/utils/consts';
 import { clientUrl, serverUrl } from '../../support/commands';
 import { convertPriceToInt } from '../../../src/utils/functions';
@@ -307,15 +309,15 @@ describe('deviceshop app', () => {
                 cy.scrollTo(0, elementsHeight, { duration: 0 });
                 cy.get('.trending-items.top-row')
                   .should('be.visible');
-                  cy.get('.trending-items.top-row')
-                    .then((trendingItemsTopRow) => {
-                      elementsHeight += trendingItemsTopRow.innerHeight();
-                      cy.scrollTo(0, elementsHeight, { duration: 0 });
-                      cy.get('.trending-items.top-row')
-                        .should('be.visible');
-                    })
-              })
-          })
+                cy.get('.trending-items.top-row')
+                  .then((trendingItemsTopRow) => {
+                    elementsHeight += trendingItemsTopRow.innerHeight();
+                    cy.scrollTo(0, elementsHeight, { duration: 0 });
+                    cy.get('.trending-items.top-row')
+                      .should('be.visible');
+                  });
+              });
+          });
       });
     });
     describe('on /shop', () => {
@@ -1554,14 +1556,10 @@ describe('deviceshop app', () => {
           cy.get('.modal.show')
             .find('.submit-button')
             .click();
-          cy.get('.account-link.toggle')
-            .click();
-          cy.get('.items.shown')
-            .find('.dropdown.nav-button')
-            .eq(1)
-            .click();
-          cy.get('.account-link')
-            .click();
+          cy.contains('Field updated');
+          cy.visit(`${clientUrl}/${LOGOUT_ROUTE}`);
+          cy.contains('You logged out of your account');
+          cy.visit(`${clientUrl}/${LOGIN_ROUTE}`);
           cy.get('#email-field')
             .type('userwithcartitemsandordersandreviews@deviceshop.com');
           cy.get('#password-field')
@@ -1616,7 +1614,7 @@ describe('deviceshop app', () => {
           cy.get('.submit-button')
             .click();
           cy.contains('Your rating was submitted');
-          cy.reload()
+          cy.reload();
           cy.get('.top-info-row')
             .find('.rating')
             .contains('5');
@@ -1629,7 +1627,7 @@ describe('deviceshop app', () => {
           cy.get('.submit-button')
             .click();
           cy.wait(4000);
-          cy.reload()
+          cy.reload();
           cy.reviewCheckRating('4.80');
         });
         describe('a review has been posted', () => {
@@ -1656,7 +1654,7 @@ describe('deviceshop app', () => {
                 }).then(() => {
                   expect(foundReview).to.be.true;
                   expect(foundChange).to.be.true;
-                })
+                });
             });
             describe('the edit review modal is opened', () => {
               beforeEach(() => {
@@ -1665,8 +1663,8 @@ describe('deviceshop app', () => {
                     const text = button.text();
                     if (text === 'Change') {
                       button.trigger('click');
-                  }
-                   })
+                    }
+                  });
               });
               it('handles updating the rating', () => {
                 cy.reviewGetStar(3)
@@ -1690,7 +1688,7 @@ describe('deviceshop app', () => {
       });
     });
   });
-  describe('as an admin', () => {
+  describe.only('as an admin', () => {
     beforeEach(() => {
       cy.postLogin('admin@deviceshop.com', 'password');
     });

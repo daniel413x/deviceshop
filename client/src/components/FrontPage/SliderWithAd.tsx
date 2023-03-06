@@ -39,9 +39,8 @@ function SliderWithAd() {
   return (
     <ShownInView className={`slider-with-ad ${loading && 'loading'}`} timeout={0}>
       {ad && (
-        <NavLink to={ad.to}>
+        <NavLink className="fg-header" to={ad.to}>
           <img
-            className="fg-header"
             src={`${process.env.REACT_APP_API_URL}${ad?.image}`}
             alt="Promotional"
             ref={imageRef}

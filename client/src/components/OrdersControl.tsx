@@ -19,7 +19,7 @@ function OrdersControl({
   fetchAPI,
 }: OrdersControlProps) {
   const [canceledOrder, setCanceledOrder] = useState<IOrder>();
-  const [returnedOrderId, setReturnedOrderId] = useState<string>('');
+  const [returnedOrderId, setReturnedOrderId] = useState<string | undefined>();
   const itemsPerPage = 2;
   const {
     items: orders,
@@ -58,20 +58,16 @@ function OrdersControl({
   ];
   return (
     <div className="orders-control">
-      {returnedOrderId && (
-        <ReturnOrderModal
-          returnedOrderId={returnedOrderId!}
-          close={() => setReturnedOrderId('')}
-        />
-      )}
-      {canceledOrder && (
-        <RequestCancellationModal
-          canceledOrder={canceledOrder!}
-          orders={orders}
-          setOrders={setOrders}
-          close={() => setCanceledOrder(undefined)}
-        />
-      )}
+      <ReturnOrderModal
+        returnedOrderId={returnedOrderId}
+        close={() => setReturnedOrderId(undefined)}
+      />
+      <RequestCancellationModal
+        canceledOrder={canceledOrder}
+        orders={orders}
+        setOrders={setOrders}
+        close={() => setCanceledOrder(undefined)}
+      />
       <div
         className="sorting-buttons-row"
       >

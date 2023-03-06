@@ -1,6 +1,7 @@
 import React from 'react';
 import { unCamelCase } from '../../../utils/functions';
 import Button from '../../Button';
+import RefocusedElement from '../../RefocusedElement';
 
 interface FieldProps {
   field: string;
@@ -32,11 +33,13 @@ function Field({
           )}
         </span>
       </div>
-      <Button
-        onClick={openEditFieldModal}
-      >
-        Change
-      </Button>
+      <RefocusedElement>
+        <Button
+          onClick={openEditFieldModal}
+        >
+          Change
+        </Button>
+      </RefocusedElement>
     </div>
   );
 }

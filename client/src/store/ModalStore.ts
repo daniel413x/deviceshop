@@ -16,6 +16,10 @@ export default class ModalStore {
     this.modals = this.modals.filter((id) => id !== removedId);
   }
 
+  noModals() {
+    return this.modals.length === 0;
+  }
+
   get all() {
     return this.modals;
   }

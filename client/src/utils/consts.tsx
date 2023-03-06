@@ -79,6 +79,7 @@ export const KEY_SPECIFICATIONS = 'Key specifications';
 export const DELETED = 'Deleted';
 export const FRONT = 'Front';
 export const REAR = 'Rear';
+export const falsy = undefined || false || '' || NaN || null || 0 || -0;
 export const green = 'green';
 export const gray = 'green';
 export const red = 'red';

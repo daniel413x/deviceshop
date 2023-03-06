@@ -1,30 +1,36 @@
-import React from 'react';
+import React, {
+  forwardRef, RefObject, useEffect, useRef,
+} from 'react';
 import { ReactComponent as Close } from '../assets/icons/close.svg';
+import useActiveElement from '../hooks/useActiveElement';
+import useKeyPress from '../hooks/useKeyPress';
 
 interface CloseButtonProps {
-  onMouseDown?: () => void;
-  onClick?: () => void;
+  onMouseDown: () => void;
 }
 
-function CloseButton({
+const CloseButton = forwardRef(({
   onMouseDown,
-  onClick,
-}: CloseButtonProps) {
+}: CloseButtonProps, passedInRef: any) => {
+  const ref = passedInRef || useRef<HTMLButtonElement>();
+  const enterPress = useKeyPress('Enter');
+  const focus = useActiveElement();
+  useEffect(() => {
+    if (focus === ref.current) {
+      onMouseDown();
+    }
+  }, [enterPress]);
   return (
     <button
+      ref={ref}
       className="close-button"
-      onClick={onClick}
+      onClick={onMouseDown}
       onMouseDown={onMouseDown}
       type="button"
     >
       <Close />
     </button>
   );
-}
+});
 
-CloseButton.defaultProps = {
-  onClick: undefined,
-  onMouseDown: undefined,
-};
-
-export default CloseButton;
+export default CloseButton as (props: CloseButtonProps & { ref?: RefObject<any> }) => JSX.Element;

@@ -16,6 +16,7 @@ interface DropdownProps {
   dropdownIcon?: 'angle' | 'triangle' | 'account';
   colorStyle?: 'gray' | 'accent' | 'white' | 'accent-secondary';
   className?: string;
+  tabIndex?: number | undefined;
 }
 
 function Dropdown({
@@ -25,6 +26,7 @@ function Dropdown({
   dropdownIcon,
   colorStyle,
   className,
+  tabIndex,
 }: DropdownProps) {
   if (callback) {
     return (
@@ -33,6 +35,7 @@ function Dropdown({
         onClick={callback}
         key={label}
         type="button"
+        tabIndex={tabIndex}
       >
         {label}
       </button>
@@ -45,6 +48,7 @@ function Dropdown({
         to={to as string}
         key={label}
         className={`dropdown ${className} ${colorStyle}`}
+        tabIndex={tabIndex}
       >
         {label}
       </NavButton>
@@ -140,6 +144,7 @@ function Dropdown({
         className={`toggle ${shown && 'shown'} ${className}`}
         onClick={() => setShown(!shown)}
         type="button"
+        tabIndex={tabIndex}
       >
         {dropdownIcon === 'account' && (
           <AccountIcon
@@ -170,6 +175,7 @@ function Dropdown({
               label={embeddedLabel}
               callback={embeddedCallback}
               className={className}
+              tabIndex={tabIndex}
             />
           </li>
         )}
@@ -184,6 +190,7 @@ Dropdown.defaultProps = {
   dropdownIcon: 'triangle',
   colorStyle: 'accent',
   className: '',
+  tabIndex: undefined,
 };
 
 export default Dropdown;

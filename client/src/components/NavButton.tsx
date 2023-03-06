@@ -9,6 +9,7 @@ interface NavButtonProps {
   children?: Children;
   className?: string;
   buttonStyle?: NavButtonStyles | NavButtonStyles[];
+  tabIndex?: number | undefined;
 }
 
 function NavButton({
@@ -16,9 +17,10 @@ function NavButton({
   children,
   className,
   buttonStyle,
+  tabIndex,
 }: NavButtonProps) {
   return (
-    <NavLink className={`nav-button ${className} ${Array.isArray(buttonStyle) ? buttonStyle.join(' ') : buttonStyle}`} to={to as string}>
+    <NavLink className={`nav-button ${className} ${Array.isArray(buttonStyle) ? buttonStyle.join(' ') : buttonStyle}`} to={to as string} tabIndex={tabIndex}>
       {children}
     </NavLink>
   );
@@ -28,6 +30,7 @@ NavButton.defaultProps = {
   className: '',
   buttonStyle: '',
   children: false,
+  tabIndex: undefined,
 };
 
 export default NavButton;

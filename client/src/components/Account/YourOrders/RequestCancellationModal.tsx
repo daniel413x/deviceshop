@@ -10,7 +10,7 @@ import List from '../../List';
 import Modal from '../../Modal';
 
 interface RequestCancellationModalProps {
-  canceledOrder: IOrder;
+  canceledOrder: IOrder | undefined;
   orders: IOrder[];
   close: () => void;
   setOrders: (items: IOrder[]) => void;
@@ -25,6 +25,9 @@ function RequestCancellationModal({
   const {
     notifications,
   } = useContext(Context);
+  if (!canceledOrder) {
+    return null;
+  }
   const {
     id,
     status,

@@ -19,6 +19,7 @@
   --primary-text: #4D4D4D;
   --bg-light-gray: #EEE;
   --bg-light-bluegray: #e3e4e8;
+  --bg-lighter-bluegray: rgba(227, 228, 232, 0.45);
   --primary-text-light: #999;
   --primary-white: #FFF;
   --navbar-gray-highlighted: #C9C9C9;
@@ -199,11 +200,11 @@ body, html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: var(--bg-light-gray);
+  background-color: var(--bg-light-bluegray);
   width: 100%;
   min-height: 0;
   transform: translateY(-20%);
-  transition: all 0.5s var(--ease-out-anim);
+  transition: all 0.25s linear;
   z-index: 3;
   box-shadow: inset 0 -16px 16px -16px rgba(0, 0, 0, 0.1);
 }
@@ -229,11 +230,11 @@ body, html {
   color: var(--primary-red);
   display: flex;
   font-size: 0.875rem;
-  font-weight: 400;
+  font-weight: 500;
   opacity: 0;
   padding: 0.5rem 1rem;
   margin-bottom: .25rem;
-  transition: all 0.5s var(--ease-out-anim);
+  transition: all 0.25s linear;
   transform:translateY(-20%);
   z-index: 1055;
   height: var(--navbar-height);
@@ -350,12 +351,13 @@ body, html {
   outline: none;
 }
 
-.nav-button.match-button:focus, .button.match-button:focus, .button:focus, button.callback-button:focus {
+.nav-button.match-button:focus, .button.match-button:focus, .button:focus, button.callback-button:focus, a:focus {
   box-shadow: 0 0 0 .25rem var(--primary-accent-light);
   border-radius: unset;
+  outline: none;
 }
 
-.nav-button.dropdown:focus, .dropdown .toggle:focus {
+.nav-button.dropdown:focus, .dropdown .toggle:focus, button:focus {
   box-shadow: 0 0 0 .25rem var(--primary-accent-light);
 }
 
@@ -364,8 +366,12 @@ body, html {
   color: var(--primary-text);
 }
 
-.dropdown.gray .toggle:focus svg path, .dropdown.gray .toggle:hover svg path, .dropdown.gray .toggle.shown svg path {
+.dropdown.gray .toggle:hover svg path, .dropdown.gray .toggle.shown svg path {
   fill: var(--primary-text);
+}
+
+.dropdown.gray .toggle:focus svg path {
+  fill: #fff;
 }
 
 .dropdown.white .toggle {
@@ -389,6 +395,10 @@ body, html {
 
 .dropdown.white .toggle:focus svg path {
   fill: #fff;
+}
+
+.dropdown.white .toggle:focus-visible svg path {
+  fill: var(--primary-text);
 }
 
 .dropdown .items .toggle:focus {
@@ -419,7 +429,7 @@ body, html {
 }
 
 .dropdown.accent-secondary .toggle:focus svg path {
-  fill: #fff;
+  fill: var(--primary-accent);
 }
 
 .dropdown .toggle.shown svg path, .dropdown .toggle:hover svg path, .dropdown .toggle:focus svg path, .dropdown .items li.highlight .dropdown .toggle svg path {
@@ -837,6 +847,10 @@ form.checkout-style .labeled-input input {
   width: var(--navbar-searchbar-width);
 }
 
+.searchbox .results-container .results-item:focus {
+  z-index: 1;
+}
+
 .searchbox .results-container .results-item .name {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -901,11 +915,13 @@ form.checkout-style .labeled-input input {
 
 .shop-product-card .price-tags .undiscounted-price, .shop-product-card .price-tags .discounted-price {
   border: 1px solid var(--primary-text-light);
-  border-bottom: 2px solid var(--primary-text-light);
+  position: relative;
+  max-width: max-content;
 }
 
 .shop-product-card .price-tags.with-discount .undiscounted-price {
   border-bottom: 1px solid var(--primary-text-light);
+  bottom: 2px;
 }
 
 .shop-product-card .lower-col {
@@ -993,16 +1009,12 @@ form.checkout-style .labeled-input input {
 .price-tags .discounted-price {
   color: var(--price-green);
   font-weight: 600;
-  margin-left: 0.25rem;
-  border-bottom: 2px solid var(--primary-text-light);
-  left: 0.5rem;
 }
 
 .price-tags .undiscounted-price {
   color: var(--primary-dark-light);
   font-weight: 400;
   bottom: -10px;
-  border-bottom: 2px solid var(--primary-text-light);
 }
 
 .price-tags.with-discount .undiscounted-price {
@@ -1012,7 +1024,7 @@ form.checkout-style .labeled-input input {
 
 .price-tags.with-discount .undiscounted-price::before {
   content: '';
-  height: 1px;
+  height: 2px;
   width: 75%;
   background-color: var(--warn-red);
   position: absolute;
@@ -1308,6 +1320,7 @@ form.checkout-style .labeled-input input {
   width: max-content;
   display: flex;
   align-items: center;
+  background-color: #fff;
 }
 
 .collapsible-info .collapse-button {
@@ -1344,11 +1357,14 @@ form.checkout-style .labeled-input input {
 .rating-badge {
   margin-top: 2rem;
   display: flex;
+  max-width: max-content;
+  background-color: #fff;
 }
 
 .rating-badge .star-wrapper {
   position: relative;
   width: max-content;
+  z-index: 1;
 }
 
 .rating-badge .star-wrapper.faded::before {
@@ -1444,7 +1460,7 @@ form.checkout-style .labeled-input input {
   background-color: var(--bg-light-gray);
   padding: 0 1.5rem 0 1rem;
   min-height: 60px;
-  box-shadow: inset 0 -16px 12px -16px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 -16px 6px -16px rgba(0, 0, 0, 0.1);
 }
 
 .modal.warn .window-header {
@@ -1484,7 +1500,7 @@ form.checkout-style .labeled-input input {
   z-index: 1000;
   transition: all 0.5s var(--ease-out-anim);
   opacity: 0;
-  border-left: 10px solid var(--primary-accent);
+  border-left: 14px solid var(--primary-accent);
   padding: 0;
   box-shadow: var(--card-box-shadow);
 }
@@ -1790,6 +1806,9 @@ form.checkout-style .labeled-input input {
 .close-button {
   width: 15px;
   height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .close-button svg {
@@ -2062,7 +2081,7 @@ form.checkout-style .labeled-input input {
 }
 
 .border-buttons-row .button:focus {
-  box-shadow: none;
+  box-shadow: inset 0px -8px 0px 0px var(--primary-accent-light);
 }
 
 .border-buttons-row .button.selected {
@@ -2070,7 +2089,7 @@ form.checkout-style .labeled-input input {
 }
 
 .border-buttons-row .button.selected:focus {
-  box-shadow: inset 0px -8px 0px 0px var(--primary-accent-light);
+  box-shadow: inset 0px -8px 0px 0px var(--primary-accent);
 }
 
 .address-form {
@@ -2212,6 +2231,10 @@ form.checkout-style .labeled-input input {
     left: 50%;
     transform: translate(-50%, -50%);
   }
+}
+
+#front-page .slider-with-ad .fg-header:focus-visible {
+  outline: 2px solid var(--primary-accent);
 }
 
 @media (max-width: 767px) {  
@@ -2381,6 +2404,29 @@ form.checkout-style .labeled-input input {
   display: flex;
   align-items: center;
   flex-direction: column;
+}
+
+.slider .button-overlay:focus {
+  box-shadow: 0 0 0 0.25rem var(--primary-accent-light) inset;
+}
+
+.slider .replace-message {
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.1) 100%);
+  width: 100%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--primary-text-light)  ;
+  transition: all 0.1s linear;
+}
+
+.slider .button-overlay:focus .replace-message, .slider:hover .replace-message {
+  opacity: 1;
 }
 
 #front-page .section-header h2 {
@@ -2866,6 +2912,8 @@ form.checkout-style .labeled-input input {
   flex-wrap: wrap;
   grid-gap: 0.625rem 1.25rem;
   padding: 0.75rem 0;
+  position: relative;
+  background-color: var(--bg-lighter-bluegray);
 }
 
 @media (max-width: 767px) {  
@@ -3126,6 +3174,8 @@ form.checkout-style .labeled-input input {
   justify-content: center;
   max-width: 625.91px;
   width: 100%;
+  padding: 1rem;
+  background-color: var(--bg-lighter-bluegray);
 }
 
 .shop-product-page .top-info-row .right-col .price-tags {
@@ -3135,12 +3185,13 @@ form.checkout-style .labeled-input input {
 
 .shop-product-page .top-info-row .right-col .price-tags .undiscounted-price {
   margin-top: 0.75rem;
-  background-color: #fff;
+  background-color: transparent;
   padding-left: 0;
   width: max-content;
   display: flex;
   align-items: center;
   font-size: 1.5rem;
+  font-weight: 500;
 }
 
 .shop-product-page .top-info-row .right-col .price-tags.with-discount .undiscounted-price {
@@ -3148,7 +3199,7 @@ form.checkout-style .labeled-input input {
 }
 
 .shop-product-page .top-info-row .right-col .price-tags .discounted-price {
-  background-color: #fff;
+  background-color: transparent;
   padding-left: 0;
   margin-left: 0;
   width: max-content;
@@ -3156,6 +3207,7 @@ form.checkout-style .labeled-input input {
   color: var(--price-green);
   font-size: 1.5rem;
   left: 0;
+  font-weight: 500;
 }
 
 .shop-product-page .top-info-row .right-col .name {
@@ -3174,9 +3226,9 @@ form.checkout-style .labeled-input input {
   margin-top: 0.5rem;
 }
 
-.shop-product-page .top-info-row .right-col .availability-label .rating {
-  display: flex;
-  grid-gap: 0.25rem;
+.shop-product-page .top-info-row .right-col .rating-badge {
+  padding: 0.5rem 1rem 0;
+  border: 1px solid black;
 }
 
 .shop-product-page .top-info-row .right-col .add-to-cart {
@@ -3185,6 +3237,7 @@ form.checkout-style .labeled-input input {
   align-items: center;
   justify-content: center;
   margin-top: 1.75rem;
+  min-height: 30px;
 }
 
 @media (max-width: 767px) {  
@@ -3193,9 +3246,23 @@ form.checkout-style .labeled-input input {
   }
 }
 
+.shop-product-page .collapsible-info-area {
+  background-color: var(--bg-lighter-bluegray);
+  max-width: max-content;
+  padding-bottom: 1.5rem;
+}
+
 .shop-product-page .collapsible-info {
   width: 100%;
   max-width: 700px;
+}
+
+.shop-product-page .collapsible-info>* {
+  padding: 0 1.5rem;
+}
+
+.shop-product-page .collapsible-info:first-of-type .divider {
+  opacity: 0;
 }
 
 .shop-product-page .specifications .categories-ul {

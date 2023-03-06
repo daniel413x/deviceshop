@@ -4,7 +4,6 @@ import Context from '../../context/context';
 import { IShopProduct } from '../../types/types';
 import { listProductAttributes } from '../../utils/functions';
 import SliderComponent from '../SliderComponent';
-import { ReactComponent as ShoppingCart } from '../../assets/icons/ShoppingCart.svg';
 import Button from '../Button';
 import DiscountTag from '../DiscountTag';
 import RatingBadge from './RatingBadge';
@@ -132,8 +131,8 @@ function TopInfoRow({
         <Button
           className={`add-to-cart ${pressedSubmit && 'blocked'}`}
           onClick={addToCart}
+          buttonStyle="secondary"
         >
-          <ShoppingCart />
           Add to cart
         </Button>
       </div>

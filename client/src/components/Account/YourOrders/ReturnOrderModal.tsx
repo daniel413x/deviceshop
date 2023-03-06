@@ -5,7 +5,7 @@ import Modal from '../../Modal';
 
 interface ReturnOrderModalProps {
   close: () => void;
-  returnedOrderId: string;
+  returnedOrderId: string | undefined;
 }
 
 function ReturnOrderModal({
@@ -25,7 +25,7 @@ function ReturnOrderModal({
       show={returnedOrderId}
       close={close}
       className="return-order"
-      id="return-order"
+      id="return-order-modal"
       size="medium"
     >
       <div className="window-header">

@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 import Context from '../../../../context/context';
 import { listProductAttributes } from '../../../../utils/functions';
 import SliderComponent from '../../../SliderComponent';
-import { ReactComponent as ShoppingCart } from '../../../../assets/icons/ShoppingCart.svg';
 import Button from '../../../Button';
 import DiscountTag from './DiscountTag';
 import PriceTags from './PriceTags';
@@ -54,7 +53,6 @@ function TopInfoRow() {
         <Button
           className="add-to-cart"
         >
-          <ShoppingCart />
           Add to cart
         </Button>
       </div>

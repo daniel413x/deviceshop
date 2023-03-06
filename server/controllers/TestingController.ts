@@ -27,11 +27,11 @@ class TestingController {
       }
       const queryInterface = db.sequelize.getQueryInterface();
       const seeders = fs
-        .readdirSync(path.join(__dirname, '../seeders_test'))
+        .readdirSync(path.join(__dirname, '../seeders'))
         .filter(approriateFiles)
         .map((file: any) => {
           // eslint-disable-next-line global-require, import/no-dynamic-require
-          const seeder = require(path.join(__dirname, '../seeders_test', file)).default;
+          const seeder = require(path.join(__dirname, '../seeders', file)).default;
           return seeder.up;
         });
       for (let i = 0; i < seeders.length; i += 1) {

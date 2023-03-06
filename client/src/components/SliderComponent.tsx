@@ -34,7 +34,7 @@ function SliderComponent({
   } = useContext(Context);
   const { pathname } = useLocation();
   const [images, setImages] = useState<Image[]>([]);
-  const [index, setIndex] = useState<number>(0);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
   const rightPress = useKeyPress('ArrowRight');
   const leftPress = useKeyPress('ArrowLeft');
   const [blockActions, setBlockActions] = useState<boolean>(false);
@@ -51,11 +51,11 @@ function SliderComponent({
     autoplaySpeed: 5000,
     fade: instant,
     afterChange: (newIndex: number) => {
-      setIndex(newIndex);
+      setActiveIndex(newIndex);
     },
   };
-  const firstPageReached = index === 0;
-  const lastPageReached = index === images.length - 1;
+  const firstPageReached = activeIndex === 0;
+  const lastPageReached = activeIndex === images.length - 1;
   const tempBlock = () => {
     setBlockActions(true);
     setTimeout(() => setBlockActions(false), 1100);
@@ -80,7 +80,7 @@ function SliderComponent({
   };
   useEffect(() => {
     tempBlock();
-  }, [index]);
+  }, [activeIndex]);
   useEffect(() => {
     if (leftPress) {
       prev();
@@ -92,8 +92,8 @@ function SliderComponent({
     }
   }, [rightPress]);
   const renderedImages = admin ? images : propImages;
-  const showNextButton = renderedImages.length > 1 && index !== renderedImages.length - 1;
-  const showPrevButton = index !== 0;
+  const showNextButton = renderedImages.length > 1 && activeIndex !== renderedImages.length - 1;
+  const showPrevButton = activeIndex !== 0;
   const addImages = (e: any) => {
     const addedImages: Image[] = [];
     [...e.target.files].forEach((file: any) => addedImages.push({
@@ -106,18 +106,18 @@ function SliderComponent({
     goTo(nextImages.length - 1);
   };
   const shouldCleanupBackend = () => {
-    if (images[index].url && !images[index].file) {
-      createProductPage.addDeletedImage(images[index].url);
+    if (images[activeIndex].url && !images[activeIndex].file) {
+      createProductPage.addDeletedImage(images[activeIndex].url);
     }
-    if (images[index].replaces) {
-      createProductPage.addDeletedImage(images[index].replaces!);
+    if (images[activeIndex].replaces) {
+      createProductPage.addDeletedImage(images[activeIndex].replaces!);
     }
   };
   const replaceImage = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0];
     const nextImages = images.map((image, mappedIndex) => {
       const imageFileWillBeReplaced = !image.file;
-      if (mappedIndex === index) {
+      if (mappedIndex === activeIndex) {
         const newImage: Image = {
           file,
           url: URL.createObjectURL(file),
@@ -133,7 +133,7 @@ function SliderComponent({
     createProductPage.setImages(nextImages);
   };
   const deleteImage = () => {
-    const nextImages = images.filter((image, mappedIndex) => mappedIndex !== index);
+    const nextImages = images.filter((image, mappedIndex) => mappedIndex !== activeIndex);
     setImages(nextImages);
     createProductPage.setImages(nextImages);
     shouldCleanupBackend();
@@ -177,18 +177,19 @@ function SliderComponent({
               alt="Placeholder"
             />
           )}
-          {admin ? images.map((img) => (
+          {admin ? images.map((img, imageIndex) => (
             <UploadedImage
               initialImage={img.url}
               key={img.url}
               name={img.url}
               onChange={replaceImage}
               imageClass="slid-image"
+              tabbable={activeIndex === imageIndex ? 0 : -1}
             />
-          )) : (propImages as string[]).map((img, i) => (
+          )) : (propImages as string[]).map((img, imageIndex) => (
             <img
               // eslint-disable-next-line react/no-array-index-key
-              key={`${img}${i}`}
+              key={`${img}${imageIndex}`}
               src={img}
               alt="Product in slider"
               className="slid-image"
@@ -200,12 +201,14 @@ function SliderComponent({
             <li
               // eslint-disable-next-line react/no-array-index-key
               key={`${img}${mapIndex}_slider_button`}
+
             >
               <button
                 type="button"
                 onClick={() => goTo(mapIndex)}
-                className={`dot ${index === mapIndex ? 'active' : undefined}`}
+                className={`dot ${activeIndex === mapIndex ? 'active' : undefined}`}
                 aria-label="Go to slide"
+                tabIndex={mapIndex === activeIndex ? -1 : 0}
               />
             </li>
           ))}

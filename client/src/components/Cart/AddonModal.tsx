@@ -1,5 +1,7 @@
 import { observer } from 'mobx-react-lite';
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  RefObject, useContext, useEffect, useState,
+} from 'react';
 import Context from '../../context/context';
 import { IAddon, IOrderedAddon, IOrderedProduct } from '../../types/types';
 import List from '../List';
@@ -15,6 +17,7 @@ interface AddonModalProps {
   thumbnail: string;
   close: () => void;
   category: string;
+  passedInRef?: RefObject<any>;
 }
 
 function AddonModal({
@@ -23,6 +26,7 @@ function AddonModal({
   thumbnail,
   close,
   category,
+  passedInRef,
 }: AddonModalProps) {
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedAddon, setSelectedAddon] = useState<IAddon>();
@@ -120,6 +124,7 @@ function AddonModal({
   }, [id]);
   return (
     <Modal
+      ref={passedInRef}
       show={id}
       close={close}
       className={`cartitem-addon ${loading && 'loading'}`}
@@ -165,5 +170,9 @@ function AddonModal({
     </Modal>
   );
 }
+
+AddonModal.defaultProps = {
+  passedInRef: undefined,
+};
 
 export default observer(AddonModal);

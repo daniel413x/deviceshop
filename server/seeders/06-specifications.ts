@@ -1,16 +1,16 @@
 import { v4 as uuid } from 'uuid';
-import { smartphone, laptop } from './04-types';
+import { smartphone, laptop, tablet, accessory } from './04-types';
 import {
   smartphonesIds,
   laptopsIds,
-  // accessoriesIds,
-  // tabletIds,
+  accessoriesIds,
+  tabletsIds,
 } from './05-shop-products';
 
 const smartphoneSpecifications = [];
 const laptopSpecifications = [];
-// const accessoriesSpecifications = [];
-// const tabletSpecifications = [];
+const accessoriesSpecifications = [];
+const tabletSpecifications = [];
 
 for (let laptopId = 0; laptopId < laptopsIds.length; laptopId += 1) {
   const odd = laptopId % 2;
@@ -31,9 +31,51 @@ for (let laptopId = 0; laptopId < laptopsIds.length; laptopId += 1) {
     };
     laptopSpecifications.push(specification);
   }
+  const id = uuid();
+  const typeSpecification = {
+    category: 'Key specifications',
+    value: 'Laptop',
+    key: 'Type',
+    shopProductId: laptopsIds[laptopId],
+    typeId: laptop,
+    id,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+    laptopSpecifications.push(typeSpecification);
 }
 
-for (let smartphoneId = 0; smartphoneId < laptopsIds.length; smartphoneId += 1) {
+for (let accessoryId = 0; accessoryId < accessoriesIds.length; accessoryId += 1) {
+  const id = uuid();
+  const typeSpecification = {
+    category: 'Key specifications',
+    value: 'Accessory',
+    key: 'Type',
+    shopProductId: accessoriesIds[accessoryId],
+    typeId: accessory,
+    id,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+    accessoriesSpecifications.push(typeSpecification);
+}
+
+for (let tabletId = 0; tabletId < tabletsIds.length; tabletId += 1) {
+  const id = uuid();
+  const typeSpecification = {
+    category: 'Key specifications',
+    value: 'Tablet',
+    key: 'Type',
+    shopProductId: tabletsIds[tabletId],
+    typeId: tablet,
+    id,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+    tabletSpecifications.push(typeSpecification);
+}
+
+for (let smartphoneId = 0; smartphoneId < smartphonesIds.length; smartphoneId += 1) {
   const odd = smartphoneId % 2;
   const even = !odd;
   const makeiPhone = even;
@@ -188,6 +230,8 @@ export default {
   up: async (queryInterface) => queryInterface.bulkInsert('Specification', [
     ...smartphoneSpecifications,
     ...laptopSpecifications,
+    ...accessoriesSpecifications,
+    ...tabletSpecifications,
   ]),
   down: (queryInterface) => queryInterface.bulkDelete('Specification', null, {}),
 };

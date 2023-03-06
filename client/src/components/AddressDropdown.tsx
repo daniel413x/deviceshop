@@ -54,6 +54,7 @@ function AddressDropdown({
       label={addresses.all.find((address) => address.id === selectedAddress)?.addressLineOne || 'Saved addresses'}
       dropdownIcon="triangle"
       to={dropdownButtons}
+      tabIndex={addresses.all.length === 0 ? -1 : undefined}
     />
   );
 }

@@ -22,7 +22,7 @@ function CheckoutCol() {
 }
 
 function Cart() {
-  const [deletedId, setDeletedId] = useState<string>('');
+  const [deletedId, setDeletedId] = useState<string | undefined>(undefined);
   const [warrantyCartItem, setWarrantyCartItem] = useState<IOrderedProduct | IGuestAddedProduct>();
   const [insuranceCartItem, setInsuranceCartItem] = useState<IOrderedProduct | IGuestAddedProduct>();
   const {
@@ -57,8 +57,8 @@ function Cart() {
       >
         <ConfirmationModal
           show={deletedId}
-          close={() => setDeletedId('')}
-          callback={() => deleteItem(deletedId)}
+          close={() => setDeletedId(undefined)}
+          callback={() => deleteItem(deletedId as string)}
           prompt="Delete this item from your cart?"
         />
         <AddonModal

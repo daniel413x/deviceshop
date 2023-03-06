@@ -66,43 +66,45 @@ function CreateShopProduct() {
         blockedLinks={[EDIT_ROUTE]}
       >
         <TopInfoRow />
-        <Description />
-        <CollapsibleInfo
-          header="Specifications"
-        >
-          <Specifications />
-        </CollapsibleInfo>
-        <CollapsibleInfo
-          header="Returns &amp; warranty"
-        >
-          <div className="returns-and-warranty">
-            <div className="thirty-day-return">
-              <span className="label">
-                30-day return
-              </span>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </p>
+        <div className="collapsible-info-area">
+          <Description />
+          <CollapsibleInfo
+            header="Specifications"
+          >
+            <Specifications />
+          </CollapsibleInfo>
+          <CollapsibleInfo
+            header="Returns &amp; warranty"
+          >
+            <div className="returns-and-warranty">
+              <div className="thirty-day-return">
+                <span className="label">
+                  30-day return
+                </span>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </p>
+              </div>
+              <div className="info warranty">
+                <span className="label">
+                  Warranty
+                </span>
+                <span className="value">
+                  24 months
+                </span>
+              </div>
+              <div className="divider" />
+              <div className="info repairs">
+                <span className="label">
+                  Repairs
+                </span>
+                <span className="value">
+                  Available for a fee
+                </span>
+              </div>
             </div>
-            <div className="info warranty">
-              <span className="label">
-                Warranty
-              </span>
-              <span className="value">
-                24 months
-              </span>
-            </div>
-            <div className="divider" />
-            <div className="info repairs">
-              <span className="label">
-                Repairs
-              </span>
-              <span className="value">
-                Available for a fee
-              </span>
-            </div>
-          </div>
-        </CollapsibleInfo>
+          </CollapsibleInfo>
+        </div>
         <div className="divider wide" />
       </ColumnedPage>
       <FormSubmissionOverlay />

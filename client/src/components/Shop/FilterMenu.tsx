@@ -13,6 +13,8 @@ import FilterCheckboxButton from './FilterCheckboxButton';
 import useQuery from '../../hooks/useQuery';
 import { makeSlug } from '../../utils/functions';
 import AngleDownIcon from '../AngleDownIcon';
+import useOnOutsideFocus from '../../hooks/useOnOutsideFocus';
+import useKeyPress from '../../hooks/useKeyPress';
 
 interface FilterMenuProps {
   label?: string;
@@ -30,10 +32,15 @@ function FilterMenu({
     setSearchParams,
   } = useQuery();
   const [loading, setLoading] = useState<boolean>(false);
-  const [toggled, setShown] = useState<boolean>(false);
+  const [toggled, setToggled] = useState<boolean>(false);
   const [specifications, setSpecifications] = useState<SpecificationWithDeviceCount[]>([]);
   const divRef = useRef<HTMLDivElement>(null);
-  useOnOutsideClick(divRef, () => setShown(false));
+  useOnOutsideClick(divRef, () => setToggled(false));
+  useOnOutsideFocus(divRef, () => setToggled(false));
+  const pressedEscape = useKeyPress('Escape');
+  useEffect(() => {
+    setToggled(false);
+  }, [pressedEscape]);
   useEffect(() => {
     if (!toggled || specifications.length > 0) {
       return;
@@ -80,7 +87,7 @@ function FilterMenu({
       <button
         className="toggle"
         type="button"
-        onClick={() => setShown(!toggled)}
+        onClick={() => setToggled(!toggled)}
       >
         <span>
           {label || specificationKey}

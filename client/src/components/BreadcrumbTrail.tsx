@@ -36,11 +36,16 @@ function BreadcrumbTrail({
           navBack += `/${breadcrumbs[n]}`;
         }
         const finalIndex = i < breadcrumbs.length - 1 - sliceLastN;
+        const blockLink = blockedLinks.indexOf(str) >= 0;
         if (finalIndex) {
           return (
             <li key={str}>
               <div className="breadcrumb">
-                <NavLink to={navBack} className={`previous ${blockedLinks.indexOf(str) >= 0 && 'blocked'}`}>
+                <NavLink
+                  to={navBack}
+                  className={`previous ${blockLink && 'blocked'}`}
+                  tabIndex={blockLink ? -1 : undefined}
+                >
                   {str}
                 </NavLink>
                 <span className="angle">

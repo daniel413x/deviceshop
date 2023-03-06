@@ -7,6 +7,7 @@ import List from './List';
 import Button from './Button';
 import ReviewModal from './ReviewModal';
 import { ACCOUNT_ROUTE, ORDERS_ROUTE } from '../utils/consts';
+import RefocusedElement from './RefocusedElement';
 
 interface AddonProps {
   addon: IOrderedAddon;
@@ -91,13 +92,15 @@ function OrderItem({
         <div className="dots-divider" />
         <div className="end">
           {showReviewButton && (
-          <Button
-            className="show-review-modal-button button"
-            onClick={() => setShowReviewModal(orderItem)}
-          >
-            <FullStar />
-            {!review ? 'Review' : 'Change'}
-          </Button>
+            <RefocusedElement>
+              <Button
+                className="show-review-modal-button button"
+                onClick={() => setShowReviewModal(orderItem)}
+              >
+                <FullStar />
+                {!review ? 'Review' : 'Change'}
+              </Button>
+            </RefocusedElement>
           )}
           <span className="price">
             {showAPrice ? `$${renderedPrice}` : value}

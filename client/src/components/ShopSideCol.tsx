@@ -24,6 +24,8 @@ function ShopSideCol() {
               <Dropdown
                 to={`${SIDE_COL_SHOP_TYPE_ROUTE}${name.toLowerCase()}`}
                 label={toPlural(name)}
+                className={name === 'Refrigerator' || name === 'Desktop' ? 'blocked' : ''}
+                tabIndex={name !== 'Smartphone' ? -1 : undefined}
               />
             </li>
           )}

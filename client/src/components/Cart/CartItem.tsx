@@ -11,6 +11,7 @@ import CloseButton from '../CloseButton';
 import List from '../List';
 import CartAddon from './CartAddon';
 import { SHOP_ROUTE } from '../../utils/consts';
+import RefocusedElement from '../RefocusedElement';
 
 interface CartItemProps {
   orderedProduct: IOrderedProduct | IGuestAddedProduct;
@@ -77,20 +78,24 @@ function CartItem({
             {listedSpecifications}
           </p>
           <div className="addons-buttons">
-            <Button
-              buttonStyle="secondary"
-              onClick={openWarrantyModal}
-              className="warranty-button"
-            >
-              {showChangeWarrantyButton ? 'Change warranty' : 'Extend warranty'}
-            </Button>
-            <Button
-              onClick={openInsuranceModal}
-              buttonStyle="secondary"
-              className="insurance-button"
-            >
-              Add insurance
-            </Button>
+            <RefocusedElement>
+              <Button
+                buttonStyle="secondary"
+                onClick={openWarrantyModal}
+                className="warranty-button"
+              >
+                {showChangeWarrantyButton ? 'Change warranty' : 'Extend warranty'}
+              </Button>
+            </RefocusedElement>
+            <RefocusedElement>
+              <Button
+                onClick={openInsuranceModal}
+                buttonStyle="secondary"
+                className="insurance-button"
+              >
+                Add insurance
+              </Button>
+            </RefocusedElement>
           </div>
           <div className="price-row">
             <DiscountTag
@@ -115,7 +120,9 @@ function CartItem({
         />
       )}
       <div className="divider" />
-      <CloseButton onClick={openDeleteModal} />
+      <RefocusedElement>
+        <CloseButton onMouseDown={openDeleteModal} />
+      </RefocusedElement>
     </div>
   );
 }

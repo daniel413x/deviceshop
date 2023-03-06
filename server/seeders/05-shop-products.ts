@@ -6,8 +6,8 @@ import {
 } from './03-brands';
 import {
   smartphone as smartphonetypeId,
-  laptop as laptoptypeId,
-  accessory as accessorytypeId,
+  laptop as laptopTypeId,
+  accessory as accessoryTypeId,
   tablet as tablettypeId,
 } from './04-types';
 
@@ -83,7 +83,7 @@ for (let n = 0; n <= 12; n += 1) {
     stock: 10,
     rating: 0,
     brandId: apple,
-    typeId: laptoptypeId,
+    typeId: laptopTypeId,
     createdAt: new Date(),
     updatedAt: new Date(),
     id: laptopId,
@@ -101,7 +101,7 @@ for (let n = 0; n <= 12; n += 1) {
     stock: 10,
     rating: 0,
     brandId: apple,
-    typeId: accessorytypeId,
+    typeId: accessoryTypeId,
     createdAt: new Date(),
     updatedAt: new Date(),
     id: accessoryId,
