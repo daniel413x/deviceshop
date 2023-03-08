@@ -169,6 +169,10 @@ body, html {
   align-items: center;
 }
 
+.loading-screen.router {
+  min-height: calc(100vh - var(--footer-height) - var(--navbar-height));
+}
+
 .loading-screen .wrapper {
   display: flex;
   flex-direction: column;
@@ -904,6 +908,8 @@ form.checkout-style .labeled-input input {
 .shop-product-card .img-wrapper .price-tags {
   position: absolute;
   bottom: 3px;
+  display: flex;
+  gap: 2px;
 }
 
 .shop-product-card .name {
@@ -914,14 +920,13 @@ form.checkout-style .labeled-input input {
 }
 
 .shop-product-card .price-tags .undiscounted-price, .shop-product-card .price-tags .discounted-price {
-  border: 1px solid var(--primary-text-light);
+  border-left: 4px solid var(--bg-light-gray);
   position: relative;
   max-width: max-content;
 }
 
 .shop-product-card .price-tags.with-discount .undiscounted-price {
-  border-bottom: 1px solid var(--primary-text-light);
-  bottom: 2px;
+  bottom: 0px;
 }
 
 .shop-product-card .lower-col {

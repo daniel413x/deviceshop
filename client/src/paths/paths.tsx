@@ -1,20 +1,22 @@
-import ShopProductPage from '../pages/ShopProductPage';
-import FrontPage from '../pages/FrontPage';
-import Shop from '../pages/Shop';
+import { lazy } from 'react';
 import * as routes from '../utils/consts';
-import LoginRegister from '../pages/LoginRegister';
-import Logout from '../pages/Logout';
-import Cart from '../pages/Cart';
-import Checkout from '../pages/Cart/Checkout';
-import OrderConfirmation from '../pages/Cart/OrderConfirmation';
-import YourOrders from '../pages/Account/YourOrders';
-import Credentials from '../pages/Account/Credentials';
-import Addresses from '../pages/Account/Addresses';
-import CreateShopProduct from '../pages/Admin/ShopProducts/Create';
-import ShopProducts from '../pages/Admin/ShopProducts';
-import Admin from '../pages/Admin';
-import Account from '../pages/Account';
-import Orders from '../pages/Admin/Orders';
+
+const ShopProductPage = lazy(() => import('../pages/ShopProductPage'));
+const FrontPage = lazy(() => import('../pages/FrontPage'));
+const Shop = lazy(() => import('../pages/Shop'));
+const LoginRegister = lazy(() => import('../pages/LoginRegister'));
+const Logout = lazy(() => import('../pages/Logout'));
+const Cart = lazy(() => import('../pages/Cart'));
+const Checkout = lazy(() => import('../pages/Cart/Checkout'));
+const OrderConfirmation = lazy(() => import('../pages/Cart/OrderConfirmation'));
+const YourOrders = lazy(() => import('../pages/Account/YourOrders'));
+const Credentials = lazy(() => import('../pages/Account/Credentials'));
+const Addresses = lazy(() => import('../pages/Account/Addresses'));
+const CreateShopProduct = lazy(() => import('../pages/Admin/ShopProducts/Create'));
+const ShopProducts = lazy(() => import('../pages/Admin/ShopProducts'));
+const Admin = lazy(() => import('../pages/Admin'));
+const Account = lazy(() => import('../pages/Account'));
+const Orders = lazy(() => import('../pages/Admin/Orders'));
 
 export const indexAdminRoutes = [
   {

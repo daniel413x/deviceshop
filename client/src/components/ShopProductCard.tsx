@@ -10,6 +10,7 @@ import {
 import List from './List';
 import PriceTags from './PriceTags';
 import RatingStars from './RatingStars';
+import ShownInView from './ShownInView';
 
 interface ShopProductCardProps {
   product: IShopProduct;
@@ -48,16 +49,18 @@ function ShopProductCard({
       to={`/${SHOP_ROUTE}/${slug}`}
       title={productName}
     >
-      <div className="img-wrapper">
-        <img
-          src={`${process.env.REACT_APP_API_URL}${thumbnail}`}
-          alt="Shop now"
-        />
-        <PriceTags
-          price={price}
-          discount={discount}
-        />
-      </div>
+      <ShownInView>
+        <div className="img-wrapper">
+          <img
+            src={`${process.env.REACT_APP_API_URL}${thumbnail}`}
+            alt="Shop now"
+          />
+          <PriceTags
+            price={price}
+            discount={discount}
+          />
+        </div>
+      </ShownInView>
       <div className="lower-col">
         <span className="name">
           {productName}

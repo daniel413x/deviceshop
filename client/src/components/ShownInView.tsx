@@ -33,6 +33,7 @@ const ShownInView = forwardRef(({
       ref={ref}
       style={{ height: preventPrematureLoad ? '100vh' : '' }}
     >
+      {/* should add .loading { height: 100vh } to uppermost components to prevent premature loading of the rest of the components */}
       {children}
     </div>
   );
