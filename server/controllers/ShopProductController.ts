@@ -61,7 +61,7 @@ class ShopProductController extends BaseController<ShopProduct> {
     options.distinct = true;
     if (req.query.search) {
       const search = req.query.search as string;
-      const searchTerms = search.split(' ');
+      const searchTerms = search.split(' '); // search terms can arrive as '256', 'gb', '256gb', etc
       const searchParams = searchTerms.map((value) => ({
         value: { [Op.iRegexp]: value },
       }));
@@ -69,25 +69,25 @@ class ShopProductController extends BaseController<ShopProduct> {
         where: {
           [Op.or]: searchParams,
         },
-      });
-      const tuples = [];
-      fetchedSpecifications.forEach((spec) => {
+      }); // products' specifications will be the basis for searching
+      const tuples: [string, string[]][] = [];
+      fetchedSpecifications.forEach(({ shopProductId, value }) => {
         for (let i = 0; i < tuples.length; i += 1) {
-          if (tuples[i][0] === spec.shopProductId) {
-            return tuples[i][1].push(spec.value);
+          if (tuples[i][0] === shopProductId) {
+            return tuples[i][1].push(value); // built-up second index array will be used to refine results
           }
         }
-        return tuples.push([spec.shopProductId, [spec.value]]);
+        return tuples.push([shopProductId, [value]]);
       });
-      const matchedIds = tuples.filter((tuple) => {
+      const matchedIds = tuples.filter((tuple) => { // create id's to match in query
         const specValues = tuple[1];
-        if (specValues.length < searchTerms.length - 2) {
+        if (specValues.length < searchTerms.length) { // improve relevance
           return false;
         }
         let matchScore = 0;
         for (let i = 0; i < searchTerms.length; i += 1) {
           for (let j = 0; j < specValues.length; j += 1) {
-            if (specValues[j].toLowerCase().includes(searchTerms[i].toLowerCase())) {
+            if (specValues[j].toLowerCase().includes(searchTerms[i].toLowerCase())) { // improve relevance
               matchScore += 1;
               break;
             }
@@ -108,43 +108,32 @@ class ShopProductController extends BaseController<ShopProduct> {
       const search = JSON.parse(req.query.filters as string) as FilteredSearchParams;
       const proceed = search.specifications.length > 0;
       if (proceed) {
+        // when all keys of a particular filtered search are the same, it is a union search. when there are different keys, it is an intersection search
+        // assume the user wants to find products that are a. 256GB ({ key: 'Storage capacity', value: '256GB' }) and b. from either Apple or Samsung ({ key: 'Manufacturer', value: 'Samsung' || 'Apple' })
         const specificationsToFetch = search.specifications.map((spec) => ({
           value: { [Op.iLike]: spec.value },
           key: { [Op.iLike]: spec.key },
-        }));
+        })); // array to find the union of Samsung and Apple as well as all 256gb
         const fetchedSpecifications = await Specification.findAll({
           where: {
             [Op.or]: specificationsToFetch,
           },
         });
-        const uniqueSpecificationKeys = [];
-        fetchedSpecifications.forEach((spec) => {
-          if (uniqueSpecificationKeys.indexOf(spec.key) === -1) {
-            uniqueSpecificationKeys.push(spec.key);
+        // we must now filter down to the intersection of shop products id's of specifications where ('Samsung' || 'Apple') && '256gb'
+        const uniqueSpecificationKeys: string[] = []; // ['Manufacturer', 'Storage capacity']
+        fetchedSpecifications.forEach(({ key }) => {
+          if (uniqueSpecificationKeys.indexOf(key) === -1) {
+            uniqueSpecificationKeys.push(key);
           }
         });
-        const arraysOfUniqueShopProductIds = uniqueSpecificationKeys.map((uniqueKey) => {
-          const uniqueProductIdArr = [];
-          fetchedSpecifications.forEach((fetchedSpecification) => {
-            if (uniqueKey === fetchedSpecification.key && uniqueProductIdArr.indexOf(fetchedSpecification.shopProductId) === -1) { uniqueProductIdArr.push(fetchedSpecification.shopProductId); }
-          });
-          return uniqueProductIdArr;
-        });
-        const allShopProductIds = [];
-        fetchedSpecifications.forEach((spec) => {
-          if (allShopProductIds.indexOf(spec.shopProductId) === -1) {
-            allShopProductIds.push(spec.shopProductId);
-          }
-        });
-        const matchedIds = [];
-        allShopProductIds.forEach((id) => {
-          for (let a = 0; a < arraysOfUniqueShopProductIds.length; a += 1) {
-            if (arraysOfUniqueShopProductIds[a].indexOf(id) === -1) {
-              return;
-            }
-          }
-          matchedIds.push(id);
-        });
+        const uniqueShopProductIdsByKey: string[][] = uniqueSpecificationKeys
+          .map((uniqueKey) => fetchedSpecifications
+            .filter(({ key }) => key === uniqueKey)
+            .map(({ shopProductId }) => shopProductId)); // a single array => union, multiple arrays => intersection
+        const matchedIds = fetchedSpecifications
+          .map(({ shopProductId }) => shopProductId)
+          .filter((shopProductId) => uniqueShopProductIdsByKey
+            .every((arr) => arr.indexOf(shopProductId) >= 0)); // shop product id's must be in every array to match all filters
         options.where = {
           id: matchedIds,
         };
