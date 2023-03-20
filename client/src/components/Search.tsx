@@ -39,7 +39,6 @@ type SearchProps<T> = {
   setSearchParams?: (obj: SearchParamsRecord) => void;
 } & EitherRenderProps<T>;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Search = forwardRef(<T, A>({
   className,
   placeholder,

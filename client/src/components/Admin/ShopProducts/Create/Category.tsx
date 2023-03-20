@@ -5,7 +5,6 @@ import List from '../../../List';
 import Button from '../../../Button';
 import Input from '../../../Input';
 import Context from '../../../../context/context';
-// eslint-disable-next-line import/no-named-as-default
 import Specification from './Specification';
 
 interface CategoryProps {
