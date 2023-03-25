@@ -13,7 +13,7 @@ import {
 import { USER } from '../utils/consts';
 import User from '../db/models/User';
 import BaseController from './BaseController';
-import { assignBodyAndHandleStringImageAttribute } from '../utils/functions';
+import { writeImages } from '../utils/functions';
 import Cart from '../db/models/Cart';
 import OrderedProduct from '../db/models/OrderedProduct';
 import { inclusionsForCart } from '../utils/inclusions';
@@ -105,11 +105,9 @@ class UserController extends BaseController<User> {
   }
 
   async create(req: Request, res: Response, next: NextFunction) {
-    let userForm;
+    const userForm = req.body;
     if (req.files) {
-      userForm = assignBodyAndHandleStringImageAttribute(req, 'avatar');
-    } else {
-      userForm = req.body;
+      writeImages(req);
     }
     const {
       email,
@@ -203,13 +201,10 @@ class UserController extends BaseController<User> {
   }
 
   async edit(req: Request, res: Response) {
-    let updatedVals;
+    const updatedVals = req.body;
     const { id } = res.locals.user;
-    const user = await User.findByPk(id);
     if (req.files) {
-      updatedVals = assignBodyAndHandleStringImageAttribute(req, 'avatar', user);
-    } else {
-      updatedVals = req.body;
+      writeImages(req);
     }
     if ('password' in updatedVals) {
       const hashPassword = await bcrypt.hash(updatedVals.password, 5);
@@ -218,10 +213,6 @@ class UserController extends BaseController<User> {
     const updatedUser = await User.update(updatedVals, { where: { id }, returning: true });
     const token = generateJwt(updatedUser[1][0], '24h');
     return res.json({ token });
-  }
-
-  async delete(req: Request, res: Response) {
-    this.execDestroy(req, res);
   }
 }
 

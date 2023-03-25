@@ -11,8 +11,10 @@ type AllOrNoneProps = RequireAll<{
 type DropdownFieldProps = {
   placeholder?: string;
   label: string;
+  name: string;
   items: string | INavButton[];
   value: string | undefined;
+  shownValue?: string | undefined; // e.g. show a name/logical key instead of an id
   colorStyle?: 'gray' | 'accent' | 'white' | 'accent-secondary';
 } & AllOrNoneProps;
 
@@ -20,6 +22,8 @@ function DropdownField({
   placeholder,
   items,
   value,
+  name,
+  shownValue,
   label,
   colorStyle,
   pressedSubmit,
@@ -41,8 +45,14 @@ function DropdownField({
         colorStyle={colorStyle}
       />
       <span className="value">
-        {value || placeholder}
+        {shownValue || value || placeholder}
       </span>
+      <input
+        id={`${name}_dropdown`}
+        type="hidden"
+        name={name}
+        value={value}
+      />
     </div>
   );
 }

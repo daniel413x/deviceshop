@@ -14,7 +14,7 @@ import {
   FindOptions,
 } from '../types/types';
 import { ADMIN } from '../utils/consts';
-import { assignBodyAndHandleImagesArrayAttribute } from '../utils/functions';
+import { writeImages } from '../utils/functions';
 
 export default abstract class BaseController<M extends Model> {
   model: ModelStatic<Model>;
@@ -113,13 +113,13 @@ export default abstract class BaseController<M extends Model> {
   }
 
   async execCreate(req: Request, res: Response, options?: FindAndCountOptions<M>) {
-    let form = req.body;
-    if (req.files) {
-      form = assignBodyAndHandleImagesArrayAttribute(req);
-    }
+    const form = req.body;
     let data = await this.model.create(form);
     if (options) {
       data = await this.model.findByPk(data.getDataValue('id'), options);
+    }
+    if (req.files) {
+      writeImages(req);
     }
     return res.json(data);
   }
@@ -127,7 +127,7 @@ export default abstract class BaseController<M extends Model> {
   async execCount(req: Request, res: Response, options?: FindAndCountOptions<M>) {
     let form = req.body;
     if (req.files) {
-      form = assignBodyAndHandleImagesArrayAttribute(req);
+      form = writeImages(req);
     }
     let data = await this.model.create(form);
     if (options) {
@@ -155,14 +155,14 @@ export default abstract class BaseController<M extends Model> {
 
   async execUpdate(req: Request, res: Response) {
     const { id } = req.params;
-    let form = req.body;
-    if (req.files) {
-      form = assignBodyAndHandleImagesArrayAttribute(req);
-    }
+    const form = req.body;
     await this.model.update(form, {
       where: { id },
       individualHooks: true,
     });
+    if (req.files) {
+      writeImages(req);
+    }
     return res.status(204).end();
   }
 

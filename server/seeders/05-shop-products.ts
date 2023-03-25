@@ -25,6 +25,7 @@ const tablets = [];
 
 const samsungDesc = 'The Galaxy A53 5G offers you an outstanding multimedia experience with its crystal clear 120 Hz sAMOLED display and versatile cameras. Take beautiful photos with the quad camera, or take full advantage of the performance to play your favorite game.';
 const appleDesc = 'A new, larger 6.7-inch size joins the popular 6.1-inch design, featuring a new dual-camera system, Crash Detection, a smartphone industry-first safety service with Emergency SOS via satellite, and the best battery life on iPhone';
+const images = ['test-product-filler-1.png', 'test-product-filler-2.png', 'test-product-filler-3.png', 'test-product-filler-4.png', 'test-product-filler-5.png'];
 
 for (let n = 0; n <= 12; n += 1) {
   let numberSold = 0;
@@ -48,7 +49,7 @@ for (let n = 0; n <= 12; n += 1) {
   const deviceNumber = n + 1;
   const smartphone = {
     thumbnail: 'test-product-filler-thumbnail.png',
-    images: ['test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png'],
+    images,
     price: 100000,
     discount: 20,
     discountedPrice: 80000,
@@ -73,7 +74,7 @@ for (let n = 0; n <= 12; n += 1) {
   }
   const laptop = {
     thumbnail: 'test-product-filler-thumbnail.png',
-    images: ['test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png'],
+    images,
     price: 100000,
     discount: 20,
     description: `Laptop ${deviceNumber}`,
@@ -91,7 +92,7 @@ for (let n = 0; n <= 12; n += 1) {
   };
   const accessory = {
     thumbnail: 'test-product-filler-thumbnail.png',
-    images: ['test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png'],
+    images,
     price: 1000,
     discount: 20,
     discountedPrice: 800,
@@ -109,7 +110,7 @@ for (let n = 0; n <= 12; n += 1) {
   };
   const tablet = {
     thumbnail: 'test-product-filler-thumbnail.png',
-    images: ['test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png', 'test-product-filler.png'],
+    images,
     price: 10000,
     discount: 20,
     description: `Tablet ${deviceNumber}`,
@@ -137,7 +138,7 @@ for (let n = 0; n <= 12; n += 1) {
 
 const recycleBinProduct = {
   thumbnail: 'test-product-filler-thumbnail.png',
-  images: ['test-product-filler.png'],
+  images,
   price: 10000,
   discount: 20,
   description: 'Deleted product',

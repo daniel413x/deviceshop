@@ -2,7 +2,7 @@ import Router from 'express';
 import UserController from '../controllers/UserController';
 import checkRoleMiddleware from '../middleware/checkRoleMiddleware';
 import authMiddleware from '../middleware/authMiddleware';
-import { ADMIN, USER } from '../utils/consts';
+import { USER } from '../utils/consts';
 
 const router = Router();
 
@@ -23,11 +23,6 @@ router.put(
   '/',
   checkRoleMiddleware(USER),
   (req, res) => UserController.edit(req, res),
-);
-router.delete(
-  '/:id',
-  checkRoleMiddleware(ADMIN),
-  (req, res) => UserController.delete(req, res),
 );
 
 export default router;

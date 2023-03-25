@@ -1,6 +1,12 @@
 import {
   Filter, IGuestAddedProduct, IOrderedProduct, ISpecification, SearchParamsRecord, SpecificationColumn,
 } from '../types/types';
+import { fileExtensionRegex } from './consts';
+
+export function getExtension(string: string = ''): string {
+  const extension = string.match(fileExtensionRegex);
+  return extension ? extension[0] : '';
+}
 
 export function makeSlug(string: string): string {
   const id = string.toLowerCase().split(' ').filter(Boolean).join('-');

@@ -1,7 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import {
   ISpecification,
-  Image,
   IShopProduct,
   IType,
   IBrand,
@@ -9,11 +8,11 @@ import {
 import { convertIntToPrice } from '../utils/functions';
 
 export default class CreateProductPageStore {
-  fetchedImages: string[];
-
   specifications: any[];
 
-  images: Image[];
+  images: string[];
+
+  imagesCount: number;
 
   deletedImages: string[];
 
@@ -42,8 +41,8 @@ export default class CreateProductPageStore {
   constructor() {
     this.specifications = [];
     this.images = [];
+    this.imagesCount = 1;
     this.deletedImages = [];
-    this.fetchedImages = [];
     this.stock = '';
     this.name = '';
     this.rating = 0;
@@ -104,21 +103,12 @@ export default class CreateProductPageStore {
     this.specifications = this.specifications.filter((spec) => spec.category !== removedCategory);
   }
 
-  setImages(newImages: Image[] | string[]) {
-    let truth = true;
-    newImages.forEach((img) => {
-      if (typeof img !== 'string') {
-        truth = false;
-      }
-    });
-    if (truth) {
-      this.images = (newImages as string[]).map((string) => ({ // generate images for admin PUT shop product form
-        url: string,
-        file: null,
-      }));
-    } else {
-      this.images = (newImages as Image[]);
-    }
+  setImages(newImages: string[]) {
+    this.images = newImages as string[];
+  }
+
+  setImagesCount(count: number) {
+    this.imagesCount = count;
   }
 
   addDeletedImage(deletedImageUrl: string) {
@@ -153,10 +143,6 @@ export default class CreateProductPageStore {
     this.discount = value;
   }
 
-  setFetchedImages(fetchedImages: string[]) {
-    this.fetchedImages = fetchedImages;
-  }
-
   setLoading(bool: boolean) {
     this.loading = bool;
   }
@@ -188,5 +174,17 @@ export default class CreateProductPageStore {
     this.setName(product?.name || 'Product name');
     this.setDiscount(product?.discount || 10);
     this.setImages(product?.images || []);
+  }
+
+  missingName() {
+    return this.name === '' || this.name === 'Product name';
+  }
+
+  missingDescription() {
+    return this.description === '' || this.description === 'Product description';
+  }
+
+  missingImages() {
+    return this.imagesCount === 0;
   }
 }

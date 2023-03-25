@@ -28,4 +28,6 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+export { sequelize };
+
 export default db;

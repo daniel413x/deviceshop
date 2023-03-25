@@ -612,6 +612,14 @@ input, textarea, input::placeholder, textarea::placeholder {
   overflow: hidden;
 }
 
+.span-input-wrapper .relative-span span {
+  color: transparent;
+}
+
+.span-input-wrapper .relative-span input {
+  background-color: transparent;
+}
+
 .emulate-span {
   padding: 0;
   margin: 0;
@@ -1647,6 +1655,10 @@ form.checkout-style .labeled-input input {
   font-weight: 300;
 }
 
+.modal.edit-avatar .uploaded-image .replace-message {
+  display: none;
+}
+
 .modal.edit-avatar img {
   width: 150px;
   height: 150px;
@@ -2424,8 +2436,8 @@ form.checkout-style .labeled-input input {
   height: 50%;
   display: flex;
   justify-content: center;
-  font-weight: 600;
-  color: var(--primary-text-light)  ;
+  font-weight: 700;
+  color: var(--primary-text-light);
   transition: all 0.1s linear;
 }
 
@@ -3161,8 +3173,9 @@ form.checkout-style .labeled-input input {
 .shop-product-page .top-info-row .slider .slick-slide .slid-image {
   margin: auto;
   width: 100%;
-  max-height: 445px;
+  min-height: 445px;
   max-width: 445px;
+  object-fit: cover;
 }
 
 .shop-product-page .top-info-row .slider .angle-button-next {
@@ -3234,7 +3247,7 @@ form.checkout-style .labeled-input input {
 
 .shop-product-page .top-info-row .right-col .rating-badge {
   padding: 0.5rem 1rem 0;
-  border: 1px solid black;
+  border: 1px solid var(--navbar-gray-highlighted);
 }
 
 .shop-product-page .top-info-row .right-col .add-to-cart {
@@ -4084,6 +4097,10 @@ form.checkout-style .labeled-input input {
   grid-gap: 3rem;
 }
 
+#create-shop-product .uploaded-image.inactive { /* fixes the last image always being clicked/replaced */
+  display: none;
+}
+
 #create-shop-product .discount-tag-wrapper {
   display: flex;
 }
@@ -4206,7 +4223,7 @@ form.checkout-style .labeled-input input {
   height: 467px;
 }
 
-#create-shop-product .form-submission-overlay form {
+#create-shop-product .form-submission-overlay .form-values {
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -4218,10 +4235,15 @@ form.checkout-style .labeled-input input {
   pointer-events: none;
 }
 
-#create-shop-product .form-submission-overlay.expanded form {
+#create-shop-product .form-submission-overlay.expanded .form-values {
   transform: none;
   filter: none;
   pointer-events: all;
+}
+
+.form-submission-overlay input.warn, .form-submission-overlay textarea.warn, .form-submission-overlay .dropdown-field.warn, .form-submission-overlay .labeled-input.warn {
+  border: 1px solid var(--warn-red) !important;
+  border-bottom: 2px solid var(--warn-red) !important;
 }
 
 #create-shop-product .form-submission-overlay .minimize-button {

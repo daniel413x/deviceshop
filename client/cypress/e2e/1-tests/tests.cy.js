@@ -1022,7 +1022,7 @@ describe('deviceshop app', () => {
       });
       describe('interacting with the slider', () => {
         it('properly navigates back and forth through the slides, showing and hiding the buttons when appropriate', () => {
-          cy.wait(1400);
+          cy.wait(2750);
           cy.get('.angle-button-prev')
             .should('not.exist');
           for (let i = 1; i <= 4; i += 1) {
@@ -1568,13 +1568,13 @@ describe('deviceshop app', () => {
             .click({ force: true });
           cy.contains('You logged in successfully');
         });
-        it('can change an account\'s first name, last name and phone number', () => {
+        it('can change an account\'s avatar', () => {
           cy.get('.field')
             .eq(0)
             .find('.button')
             .click();
           cy.get('.modal.show')
-            .find('input')
+            .find('input[type="file"]')
             .selectFile('cypress/fixtures/fixture-1.png', { force: true });
           cy.get('.modal.show')
             .find('.submit-button')
@@ -1688,7 +1688,7 @@ describe('deviceshop app', () => {
       });
     });
   });
-  describe.only('as an admin', () => {
+  describe('as an admin', () => {
     beforeEach(() => {
       cy.postLogin('admin@deviceshop.com', 'password');
     });
@@ -2214,13 +2214,12 @@ describe('deviceshop app', () => {
         cy.get('.stock')
           .should('contain.text', '4');
       });
-      it('can update the product\'s specifications', () => {
+      it.only('can update the product\'s specifications', () => {
         cy.get('.category')
           .eq(2)
           .find('.header-row')
-          .find('input')
+          .find('.edit-button')
           .click()
-          .clear()
           .type('An updated category');
         cy.get('.category')
           .eq(3)
@@ -2231,9 +2230,8 @@ describe('deviceshop app', () => {
               .find('.specification')
               .eq(0)
               .find('.span-input-wrapper.key')
-              .find('input')
+              .find('.edit-button')
               .click()
-              .clear()
               .type('An updated key');
             cy.get('.category')
               .eq(4)
@@ -2244,9 +2242,8 @@ describe('deviceshop app', () => {
                   .find('.specification')
                   .eq(0)
                   .find('.span-input-wrapper.value')
-                  .find('input')
+                  .find('.edit-button')
                   .click()
-                  .clear()
                   .type('An updated value');
                 cy.adminSubmitShopProductEditForm();
                 cy.visit(`${clientUrl}/shop/${product}`);

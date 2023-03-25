@@ -16,7 +16,9 @@ import {
   FilteredSearchParams, FindAndCountOptions, ISpecification,
 } from '../types/types';
 import Review from '../db/models/Review';
-import { assignBodyAndHandleImagesArrayAttribute, calcIntPrices, toFilename } from '../utils/functions';
+import {
+  calcIntPrices, writeImages, toFilename,
+} from '../utils/functions';
 import ApiError from '../error/ApiError';
 import { DELETED } from '../utils/consts';
 
@@ -199,11 +201,14 @@ class ShopProductController extends BaseController<ShopProduct> {
     if (!req.files) {
       return next(ApiError.badRequest('Attribute "images" missing or empty'));
     }
-    const body = await assignBodyAndHandleImagesArrayAttribute(req); // create product images
+    const { body } = req;
     const form = {
-      ...body,
-      specifications: null,
+      ...req.body,
+      specifications: undefined,
     };
+    if (typeof form.images === 'string') {
+      form.images = [form.images];
+    }
     const thumbnail = form.images[0];
     form.thumbnail = thumbnail;
     const {
@@ -218,61 +223,70 @@ class ShopProductController extends BaseController<ShopProduct> {
     const newProductSpecifications: ISpecification[] = [];
     if (body.specifications) {
       const specifications = JSON.parse(body.specifications);
-      await Promise.all(specifications.map(async (specification) => {
-        const newSpecification = await Specification.create({
-          key: specification.key,
-          value: specification.value,
-          category: specification.category,
-          shopProductId: newProduct.id,
-          typeId: newProduct.typeId,
-        });
-        newProductSpecifications.push(newSpecification);
-      }));
+      if (specifications.length) {
+        await Promise.all(specifications.map(async (specification) => {
+          const newSpecification = await Specification.create({
+            key: specification.key,
+            value: specification.value,
+            category: specification.category,
+            shopProductId: newProduct.id,
+            typeId: newProduct.typeId,
+          });
+          newProductSpecifications.push(newSpecification);
+        }));
+      }
     }
+    writeImages(req);
     return res.json({ newProduct, newProductSpecifications });
   }
 
   async edit(req: Request, res: Response, next: NextFunction) {
+    const form = {
+      ...req.body,
+      specifications: undefined,
+    };
+    if (typeof form.images === 'string') {
+      form.images = [form.images];
+    }
     const { id: productId } = req.params;
     let updatedProduct = await ShopProduct.findByPk(productId);
-    let {
-      images,
-    } = updatedProduct;
-    if (req.body.deletedImages) {
-      const deletedImages = JSON.parse(req.body.deletedImages)
-        .map((deletedImage) => toFilename(deletedImage)); // images may arrive as whole URLs
-      images = updatedProduct.images
-        .filter((image) => deletedImages
-          .indexOf(image) === -1);
-      const imagesEmpty = images.length === 0;
-      if (imagesEmpty) {
-        return next(ApiError.badRequest('Attribute "images" cannot be empty'));
-      }
+    if (form.images) {
+      const {
+        images: currentImages,
+      } = updatedProduct;
+      const {
+        images: newImages,
+      } = form;
+      const deletedImages = [];
+      currentImages.forEach((image) => {
+        if (newImages.indexOf(image) === -1) {
+          deletedImages.push(image);
+        }
+      });
       const directory = path.resolve(__dirname, '..', 'static');
       deletedImages.forEach((image) => {
         const fileName = toFilename(image);
-        fs.readdir(directory, (error, files) => {
-          if (error) throw error;
+        fs.readdir(directory, (readError, files) => {
+          if (readError) {
+            next(ApiError.internal(readError.message));
+          }
           for (let f = 0; f < files.length; f += 1) {
             if (files[f] === fileName) {
-              fs.unlink(path.join(directory, files[f]), (err) => {
-                if (err) throw err;
+              fs.unlink(path.join(directory, files[f]), (unlinkErr) => {
+                if (unlinkErr) {
+                  next(ApiError.internal(unlinkErr.message));
+                }
               });
               break;
             }
           }
         });
       });
-    }
-    const body = await assignBodyAndHandleImagesArrayAttribute(req, images);
-    const form = {
-      ...body,
-      specifications: undefined,
-      deletedImages: undefined,
-    };
-    if (req.files) {
       const thumbnail = form.images[0];
       form.thumbnail = thumbnail;
+    }
+    if (req.files) {
+      writeImages(req);
     }
     if (form.price || form.discount) {
       const {
@@ -284,27 +298,30 @@ class ShopProductController extends BaseController<ShopProduct> {
     }
     updatedProduct = await updatedProduct.update(form);
     if (req.body.specifications) {
-      const specifications = JSON.parse(body.specifications);
+      const specifications = JSON.parse(req.body.specifications);
       Specification.destroy({
         where: {
           id: {
-            [Op.notIn]: specifications.map(({ id }) => id), // all of a product's specifications are sent in an array for PUT reqs. delete filters specificarions from that array. specifications not in the array are deleted
+            [Op.notIn]: specifications.map(({ id }) => id), //  for PUT reqs, all of a product's specifications are sent in an array. any specifications not in the array (removed via interface on the front-end) are deleted from the db
           },
           shopProductId: updatedProduct.id,
         },
       });
       await Promise.all((specifications as ISpecification[]).map(async ({
-        key, value, category, id,
+        key, value, category, id: specificationId,
       }) => {
-        await Specification.update({
+        const specForm = {
           key,
           value,
           category,
-        }, {
-          where: {
-            id,
-          },
-        });
+          shopProductId: productId,
+        };
+        const specification = await Specification.findByPk(specificationId);
+        if (specification) {
+          await specification.update(specForm);
+        } else {
+          await Specification.create(specForm);
+        }
       }));
     }
     return res.json(updatedProduct);

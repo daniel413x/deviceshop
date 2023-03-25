@@ -10,14 +10,15 @@ import { ReactComponent as AddIcon } from '../assets/icons/Add.svg';
 import { ReactComponent as TrashIcon } from '../assets/icons/Trash.svg';
 import Button from './Button';
 import SliderAngleButton from './SliderAngleButton';
-import { Image } from '../types/types';
+import { v4 as uuid } from 'uuid';
 import Context from '../context/context';
 import createProductPlaceholder from '../assets/images/create-product-placeholder.png';
 import { CREATE_SHOPPRODUCT_ROUTE } from '../utils/consts';
 import UploadedImage from './Account/Credentials/UploadedImage';
+import { getExtension } from '../utils/functions';
 
 interface SliderComponentProps {
-  propImages?: (string | Image)[];
+  propImages?: string[];
   autoplay?: boolean;
   instant?: boolean;
   admin?: boolean;
@@ -33,7 +34,7 @@ function SliderComponent({
     createProductPage,
   } = useContext(Context);
   const { pathname } = useLocation();
-  const [images, setImages] = useState<Image[]>([]);
+  const [images, setImages] = useState<(string | File)[]>(propImages || []); // when working on the Create Shop Products page, be aware of the string and File states for the rendered slider images. strings are uuid's from the image name array of fetched ShopProducts. Files are images uploaded during the browser session. UploadedImage handles and renders both types here 
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const rightPress = useKeyPress('ArrowRight');
   const leftPress = useKeyPress('ArrowLeft');
@@ -91,59 +92,31 @@ function SliderComponent({
       next();
     }
   }, [rightPress]);
-  const renderedImages = admin ? images : propImages;
-  const showNextButton = renderedImages.length > 1 && activeIndex !== renderedImages.length - 1;
+  const showNextButton = images.length > 1 && activeIndex !== images.length - 1;
   const showPrevButton = activeIndex !== 0;
-  const addImages = (e: any) => {
-    const addedImages: Image[] = [];
-    [...e.target.files].forEach((file: any) => addedImages.push({
-      url: URL.createObjectURL(file),
-      file,
-    }));
-    const nextImages = [...images, ...addedImages];
+  const addImages = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) {
+      return;
+    }
+    const files = Array.from(e.target.files);
+    const nextImages: (File | string)[] = [...images, ...files];
     setImages(nextImages);
-    createProductPage.setImages(nextImages);
     goTo(nextImages.length - 1);
   };
-  const shouldCleanupBackend = () => {
-    if (images[activeIndex].url && !images[activeIndex].file) {
-      createProductPage.addDeletedImage(images[activeIndex].url);
-    }
-    if (images[activeIndex].replaces) {
-      createProductPage.addDeletedImage(images[activeIndex].replaces!);
-    }
-  };
-  const replaceImage = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files![0];
-    const nextImages = images.map((image, mappedIndex) => {
-      const imageFileWillBeReplaced = !image.file;
-      if (mappedIndex === activeIndex) {
-        const newImage: Image = {
-          file,
-          url: URL.createObjectURL(file),
-        };
-        if (imageFileWillBeReplaced) {
-          newImage.replaces = image.url;
-        }
-        return newImage;
+  const deleteImage = () => {
+    const deletedIndex: any = [];
+    const nextImages = images.filter((image, mappedIndex) => {
+      if (mappedIndex !== activeIndex) {
+        return true;
       }
-      return image;
+      deletedIndex.push(mappedIndex);
+      return mappedIndex !== activeIndex
     });
     setImages(nextImages);
-    createProductPage.setImages(nextImages);
-  };
-  const deleteImage = () => {
-    const nextImages = images.filter((image, mappedIndex) => mappedIndex !== activeIndex);
-    setImages(nextImages);
-    createProductPage.setImages(nextImages);
-    shouldCleanupBackend();
   };
   useEffect(() => {
     if (admin && !createProductPage.loading && createProductPage.images.length > 0) {
-      setImages(createProductPage.images.map((image) => ({
-        url: `${process.env.REACT_APP_API_URL}${image.url}`,
-        file: null,
-      })));
+      setImages(createProductPage.images);
       if (pathname === `/${CREATE_SHOPPRODUCT_ROUTE}`) {
         setImages([]);
       }
@@ -151,6 +124,11 @@ function SliderComponent({
   }, [createProductPage.loading]);
   const addImageRef = useRef<HTMLInputElement>(null);
   const deleteImageRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (admin) {
+      createProductPage.setImagesCount(images.length);
+    }
+  }, [images]);
   return (
     <div className="slider">
       <div className="main-wrapper">
@@ -179,14 +157,15 @@ function SliderComponent({
           )}
           {admin ? images.map((img, imageIndex) => (
             <UploadedImage
-              initialImage={img.url}
-              key={img.url}
-              name={img.url}
-              onChange={replaceImage}
+              initialImage={img}
+              key={img.toString() + imageIndex}
+              name={img === 'test-product-filler.png' ? `${uuid()}.png` : typeof img !== 'string' ? `${uuid()}.${getExtension((img as File).name)}` : img} // handle form image keys easily and allow images to be either uuid's or blobs
               imageClass="slid-image"
+              buttonClass={activeIndex !== imageIndex ? 'inactive' : ''} // inactive class fixes the last image always being clicked/replaced
               tabbable={activeIndex === imageIndex ? 0 : -1}
+              id={img.toString() + imageIndex}
             />
-          )) : (propImages as string[]).map((img, imageIndex) => (
+          )) : (images as string[]).map((img, imageIndex) => (
             <img
               // eslint-disable-next-line react/no-array-index-key
               key={`${img}${imageIndex}`}
@@ -197,11 +176,10 @@ function SliderComponent({
           ))}
         </Slider>
         <ul className="dots">
-          {renderedImages.map((img, mapIndex) => (
+          {images.map((img, mapIndex) => (
             <li
               // eslint-disable-next-line react/no-array-index-key
               key={`${img}${mapIndex}_slider_button`}
-
             >
               <button
                 type="button"
@@ -229,7 +207,7 @@ function SliderComponent({
             ref={addImageRef}
             className="hidden add-image-input"
             onChange={addImages}
-            name="files[]"
+            // name="files[]"
           />
         </Button>
         )}

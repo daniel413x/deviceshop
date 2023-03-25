@@ -10,6 +10,7 @@ export const CANCELLATION_REQUESTED = 'Cancellation requested';
 export const RETURN_REQUESTED = 'Return requested';
 export const CANCELED = 'Canceled';
 export const DELIVERED = 'Delivered';
+export const DEFAULT_AVATAR = 'default-avatar.jpg';
 export const fileExtensionRegex = (/(?<=\.)([a-zA-Z]+)(?:[.]{1}[a-zA-Z]+)*$/);
 
 // for env=test only

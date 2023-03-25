@@ -200,12 +200,6 @@ export type SpecificationColumn = Omit<ISpecification, 'value' | 'key' | 'shopPr
   values: string[];
 };
 
-export type Image = {
-  url: string;
-  file: any;
-  replaces?: string;
-};
-
 export type QueryReqFetchOne<T> = {
   attributes?: T;
 };
@@ -234,10 +228,9 @@ export type QueryReqCreateOrderedAddon = Pick<IOrderedAddon, 'price' | 'orderedP
 
 export type QueryReqCreateAddress = Omit<IAddressInAddressBook, 'id'>;
 
-export type QueryReqCreateShopProduct = Omit<IShopProduct, 'id' | 'type' | 'brand' | 'reviews' | 'rating' | 'numberSold' | 'discountedPrice' | 'thumbnail' | 'images'> & {
-  images: Image[];
-  deletedImages: string[];
-};
+export type QueryReqCreateShopProduct = Omit<IShopProduct, 'id' | 'type' | 'brand' | 'reviews' | 'rating' | 'numberSold' | 'discountedPrice' | 'thumbnail'>;
+
+export type QueryReqUpdateShopProduct = FormData | Partial<IShopProduct>;
 
 export type QueryReqCreateReview = Omit<IReview, 'id' | 'shopproduct' | 'orderedproduct' | 'user' | 'createdAt' | 'updatedAt' | 'order'> & {
   orderId: string;
@@ -245,7 +238,7 @@ export type QueryReqCreateReview = Omit<IReview, 'id' | 'shopproduct' | 'ordered
 
 export type QueryReqPutOrder = Partial<IOrder>;
 
-export type QueryReqPutUser = Partial<IUser>;
+export type QueryReqPutUser = Partial<IUser & FormData>;
 
 export type QueryResPostShopProduct = {
   newProductSpecifications: ISpecification[];

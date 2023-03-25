@@ -7,7 +7,7 @@ import Button from '../../Button';
 interface UploadedImageProps {
   buttonClass?: string;
   imageClass?: string;
-  initialImage?: string;
+  initialImage?: (string | File);
   pressedSubmit?: boolean;
   setPressedSubmit?: (param: boolean) => void;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -41,36 +41,46 @@ function UploadedImage({
   const ref = useRef<HTMLInputElement>(null);
   const selectFile = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) {
+      if (selectedFile) {
+        return;
+      }
       setSelectedFile(undefined);
       return;
     }
     setSelectedFile(e.target.files[0]);
   };
   const handleOnChange = onChange || selectFile;
-  useEffect(() => setPreview(initialImage || ''), [initialImage]);
   useEffect(() => {
-    if (onChangeWith) {
-      onChangeWith();
-    }
-    if (selectedFile && initialImage) {
+    if (selectedFile) {
+      if (onChangeWith) {
+        onChangeWith(); // minor usage in EditAvatarModal to unblock the input
+      }
       const objectUrl = URL.createObjectURL(selectedFile);
       setPreview(objectUrl);
       return () => URL.revokeObjectURL(objectUrl);
     }
-    if (!selectedFile && initialImage) {
-      return setPreview(initialImage);
-    }
-    if (!selectedFile) {
-      return setPreview('');
-    }
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setPreview(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
+  useEffect(() => {
+    if (typeof initialImage === 'string') { // must be existing file from /static
+      setPreview(`${process.env.REACT_APP_API_URL}${initialImage}`);
+    } else if (typeof initialImage === 'object') { // must be generated file
+      const {
+        name: imageName,
+        type,
+      } = (initialImage as File);
+      const image = new File([initialImage], imageName, { type, });
+      const transfer = new DataTransfer();
+      transfer.items.add(image);
+      ref.current!.files = transfer.files;
+      const objectUrl = URL.createObjectURL(initialImage);
+      setPreview(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  }, [initialImage]);
   return (
     <Button
       buttonStyle="blank"
-      className={`button-overlay preview ${buttonClass}`}
+      className={`uploaded-image button-overlay preview ${buttonClass}`}
       onClick={() => ref.current?.click()}
       tabIndex={tabbable}
     >
@@ -87,6 +97,12 @@ function UploadedImage({
         name={name}
         // multiple={multiple}
         ref={ref}
+      />
+      <input
+        id={`${id}_string`}
+        type="hidden"
+        name="images"
+        value={name}
       />
       <div className="replace-message">
         Replace
@@ -105,6 +121,7 @@ UploadedImage.defaultProps = {
   pressedSubmit: false,
   setPressedSubmit: false,
   tabbable: undefined,
+  naming: undefined,
 };
 
 export default UploadedImage;

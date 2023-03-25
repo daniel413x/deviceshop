@@ -4,6 +4,7 @@ import {
   IShopProduct,
   SequelizeFindAndCountAll,
   QueryResPostShopProduct,
+  QueryReqUpdateShopProduct,
 } from '../types/types';
 import { $host, $authHost } from './index';
 
@@ -24,7 +25,7 @@ export const createProduct = async (form: FormData): Promise<QueryResPostShopPro
   return data;
 };
 
-export const updateProduct = async (id: string, form: FormData | Partial<IShopProduct>): Promise<IShopProduct> => {
+export const updateProduct = async (id: string, form: QueryReqUpdateShopProduct): Promise<IShopProduct> => {
   const { data } = await $authHost.put(`api/shopproduct/${id}`, form);
   return data;
 };

@@ -8,25 +8,30 @@ import Button from '../../Button';
 import CloseButton from '../../CloseButton';
 import Modal from '../../Modal';
 import UploadedImage from './UploadedImage';
+import { DEFAULT_AVATAR } from '../../../utils/consts';
+import { v4 as uuid } from 'uuid';
 
-interface EditFieldModalProps {
+interface EditAvatarModalProps {
   show: boolean;
   close: () => void;
 }
 
-function EditFieldModal({
+function EditAvatarModal({
   close,
   show,
-}: EditFieldModalProps) {
+}: EditAvatarModalProps) {
   const { notifications, user } = useContext(Context);
   const [pressedSubmit, setPressedSubmit] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
+  const fileString = user.avatar === DEFAULT_AVATAR ? `${uuid()}.jpg` : user.avatar;
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
       setPressedSubmit(true);
-      const formData = new FormData(e.currentTarget);
-      const { avatar } = await editUser(formData);
+      const form = new FormData(e.currentTarget);
+      form.delete('avatar');
+      form.append('avatar', fileString);
+      const { avatar } = await editUser(form);
       user.setAvatar(avatar);
       setSuccess(true);
     } catch (error: any) {
@@ -62,8 +67,8 @@ function EditFieldModal({
       <form onSubmit={submit}>
         <div className="body">
           <UploadedImage
-            name="avatar"
-            initialImage={user.avatar ? `${process.env.REACT_APP_API_URL}${user.avatar}` : ''}
+            name={fileString}
+            initialImage={user.avatar || ''}
             onChangeWith={() => unblock()}
           />
         </div>
@@ -87,4 +92,4 @@ function EditFieldModal({
   );
 }
 
-export default EditFieldModal;
+export default EditAvatarModal;

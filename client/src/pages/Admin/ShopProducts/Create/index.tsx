@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { FormEvent, useContext, useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router';
 import { observer } from 'mobx-react-lite';
 import { IShopProduct } from '../../../../types/types';
@@ -8,11 +8,13 @@ import CollapsibleInfo from '../../../../components/CollapsibleInfo';
 import EditableField from '../../../../components/EditableField';
 import Context from '../../../../context/context';
 import FormSubmissionOverlay from '../../../../components/Admin/ShopProducts/Create/FormSubmissionOverlay';
-import { fetchProduct } from '../../../../http/shopProductAPI';
+import { createProduct, fetchProduct, updateProduct } from '../../../../http/shopProductAPI';
 import {
   CREATE_SHOPPRODUCT_ROUTE, EDIT_ROUTE,
 } from '../../../../utils/consts';
 import ColumnedPage from '../../../../components/ColumnedPage';
+import { makeSlug } from '../../../../utils/functions';
+import CreationSuccessModal from '../../../../components/Admin/ShopProducts/Create/CreationSuccessModal';
 
 const Description = observer(() => {
   const {
@@ -35,18 +37,59 @@ const Description = observer(() => {
 function CreateShopProduct() {
   const {
     createProductPage,
+    notifications,
   } = useContext(Context);
   const { title } = useParams();
+  const [creationSuccess, setCreationSuccess] = useState<boolean>(false);
   const { pathname } = useLocation();
+  const [pressedSubmit, setPressedSubmit] = useState<boolean>(false);
+  const put = title || createProductPage.id;
+  const {
+    loading,
+  } = createProductPage;
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPressedSubmit(true);
+    const form = new FormData(e.currentTarget);
+    form.append('specifications', JSON.stringify(createProductPage.specifications)); // in PUT requests, specifications not in this array will be deleted
+    if (!form.get('typeId') || !form.get('brandId') || createProductPage.missingName() || createProductPage.missingDescription() || createProductPage.missingImages()) {
+      notifications.error(
+        'Required fields missing',
+      );
+      return;
+    }
+    try {
+      if (put) {
+        const updatedProduct = await updateProduct(createProductPage.id, form);
+        createProductPage.setImages(updatedProduct.images);
+        notifications.message(
+          'Shop product was successfully updated',
+        );
+        window.history.pushState(null, 'Edit product', makeSlug(updatedProduct.name));
+      } else {
+        const { newProduct, newProductSpecifications } = await createProduct(form);
+        createProductPage.setId(newProduct.id);
+        createProductPage.setImages(newProduct.images);
+        createProductPage.setSpecifications(newProductSpecifications);
+        setCreationSuccess(true);
+      }
+    } catch (error: any) {
+      notifications.error(
+        error.response.data.message,
+      );
+    } finally {
+      createProductPage.setLoading(false);
+    }
+  };
   useEffect(() => {
     if (pathname === `/${CREATE_SHOPPRODUCT_ROUTE}` && createProductPage.id) {
       createProductPage.setAllValues(undefined);
     }
-    if (title) { // if title, a PUT form is implied
+    if (put) { // if title, a PUT form
       (async () => {
         try {
           createProductPage.setLoading(true);
-          const fetchedProduct = await fetchProduct(title) as IShopProduct;
+          const fetchedProduct = await fetchProduct(title!) as IShopProduct;
           createProductPage.setAllValues(fetchedProduct);
         } finally {
           createProductPage.setLoading(false);
@@ -54,13 +97,15 @@ function CreateShopProduct() {
       })();
     } else {
       createProductPage.setAllValues(undefined);
+      createProductPage.setLoading(false);
     }
   }, []);
-  const {
-    loading,
-  } = createProductPage;
   return (
-    <div id="create-shop-product">
+    <form id="create-shop-product" onSubmit={submit}>
+      <CreationSuccessModal
+        show={creationSuccess}
+        close={() => setCreationSuccess(false)}
+      />
       <ColumnedPage
         className={`shop-product-page ${loading && 'loading'}`}
         blockedLinks={[EDIT_ROUTE]}
@@ -107,8 +152,11 @@ function CreateShopProduct() {
         </div>
         <div className="divider wide" />
       </ColumnedPage>
-      <FormSubmissionOverlay />
-    </div>
+      <FormSubmissionOverlay
+        pressedSubmit={pressedSubmit}
+        setPressedSubmit={setPressedSubmit}
+      />
+    </form>
   );
 }
 

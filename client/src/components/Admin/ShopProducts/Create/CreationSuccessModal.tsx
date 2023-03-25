@@ -47,7 +47,7 @@ function CreationSuccessModal({
       <div className="body">
         {createProductPage.id && (
           <img
-            src={`${process.env.REACT_APP_API_URL}${createProductPage.images[0].url}`}
+            src={`${process.env.REACT_APP_API_URL}${createProductPage.images[0]}`}
             alt="Newly created product"
           />
         )}

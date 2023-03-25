@@ -13,17 +13,24 @@ import { ReactComponent as AngleUp } from '../../../../assets/icons/angleup.svg'
 import LabeledInput from '../../../LabeledInput';
 import DropdownField from '../../../DropdownField';
 import useBreakpoints from '../../../../hooks/useBreakpoints';
-import { createProduct, updateProduct } from '../../../../http/shopProductAPI';
-import CreationSuccessModal from './CreationSuccessModal';
-import { makeSlug } from '../../../../utils/functions';
 
-function FormSubmissionOverlay() {
+interface FormSubmissionOverlayProps {
+  pressedSubmit: boolean;
+  setPressedSubmit: (bool: boolean) => void;
+}
+
+function FormSubmissionOverlay({
+  pressedSubmit,
+  setPressedSubmit,
+}: FormSubmissionOverlayProps) {
   const {
     createProductPage,
     types,
     brands,
-    notifications,
   } = useContext(Context);
+  const {
+    loading,
+  } = createProductPage;
   const putForm = createProductPage.id;
   const submitLabel = putForm ? 'Update' : 'Create';
   const {
@@ -31,11 +38,9 @@ function FormSubmissionOverlay() {
   } = useBreakpoints();
   const { pathname } = useLocation();
   const isDemo = pathname.split('/').filter(Boolean)[0] === 'demo';
-  const [pressedSubmit, setPressedSubmit] = useState<boolean>(false);
   const [expanded, setExpanded] = useState<boolean>(true);
   const [selectedType, setSelectedType] = useState<IType | undefined>(undefined);
   const [selectedBrand, setSelectedBrand] = useState<IBrand | undefined>(undefined);
-  const [creationSuccess, setCreationSuccess] = useState<boolean>(false);
   const typeButtons = types.all.map((type) => ({
     label: type.name,
     callback: () => setSelectedType(type),
@@ -44,55 +49,6 @@ function FormSubmissionOverlay() {
     label: brand.name,
     callback: () => setSelectedBrand(brand),
   }));
-  const submit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setPressedSubmit(true);
-    const noImages = createProductPage.images.length === 0;
-    if (!selectedBrand || !selectedBrand || !createProductPage.name || !createProductPage.description || noImages) {
-      notifications.error(
-        'Required fields missing',
-      );
-      return;
-    }
-    try {
-      createProductPage.setLoading(true);
-      const form = new FormData();
-      form.append('name', createProductPage.name);
-      form.append('brandId', selectedBrand!.id);
-      form.append('typeId', selectedType!.id);
-      form.append('discount', createProductPage.discount as string);
-      form.append('stock', createProductPage.stock as string);
-      form.append('description', createProductPage.description);
-      form.append('price', createProductPage.price as string);
-      form.append('specifications', JSON.stringify(createProductPage.specifications));
-      createProductPage.images.filter((image) => image.file).forEach((image) => {
-        form.append(image.replaces || image.url, image.file);
-      });
-      if (putForm) {
-        if (createProductPage.deletedImages.length > 0) {
-          form.append('deletedImages', JSON.stringify(createProductPage.deletedImages));
-        }
-        window.history.pushState(null, 'Edit product', makeSlug(createProductPage.name));
-        const updatedProduct = await updateProduct(createProductPage.id, form);
-        createProductPage.setImages(updatedProduct.images);
-        notifications.message(
-          'Shop product was successfully updated',
-        );
-      } else {
-        const { newProduct, newProductSpecifications } = await createProduct(form);
-        createProductPage.setId(newProduct.id);
-        createProductPage.setImages(newProduct.images);
-        createProductPage.setSpecifications(newProductSpecifications);
-        setCreationSuccess(true);
-      }
-    } catch (error: any) {
-      notifications.error(
-        error.response.data.message,
-      );
-    } finally {
-      createProductPage.setLoading(false);
-    }
-  };
   useEffect(() => {
     if (createProductPage.id) {
       if (!selectedType) {
@@ -105,10 +61,6 @@ function FormSubmissionOverlay() {
   }, [createProductPage.id]);
   return (
     <div className={`form-submission-overlay ${expanded && 'expanded'}`}>
-      <CreationSuccessModal
-        show={creationSuccess}
-        close={() => setCreationSuccess(false)}
-      />
       <Button
         type="button"
         className={`minimize-button ${!md && 'mobile'}`}
@@ -124,11 +76,13 @@ function FormSubmissionOverlay() {
           aria-label="Tap to expand"
         />
       )}
-      <form onSubmit={submit}>
+      <div className="form-values">
         <div className="line one">
           <DropdownField
             label="Brand"
-            value={selectedBrand?.name}
+            name="brandId"
+            value={selectedBrand?.id || ''}
+            shownValue={selectedBrand?.name}
             colorStyle="accent-secondary"
             items={brandButtons}
             pressedSubmit={pressedSubmit}
@@ -137,7 +91,9 @@ function FormSubmissionOverlay() {
           />
           <DropdownField
             label="Type"
-            value={selectedType?.name}
+            name="typeId"
+            value={selectedType?.id || ''}
+            shownValue={selectedType?.name}
             colorStyle="accent-secondary"
             items={typeButtons}
             pressedSubmit={pressedSubmit}
@@ -148,13 +104,13 @@ function FormSubmissionOverlay() {
         <div className="line two">
           <LabeledInput
             className="form-field images"
-            input={createProductPage.images.length.toString()}
+            input={createProductPage.imagesCount.toString()}
             setInput={() => null}
             label="Images"
             placeholder="Device images"
             pressedSubmit={pressedSubmit}
             setPressedSubmit={setPressedSubmit}
-            warnCondition={createProductPage.images.length === 0}
+            warnCondition={createProductPage.missingImages()}
             id="images"
           />
           <LabeledInput
@@ -167,7 +123,7 @@ function FormSubmissionOverlay() {
             pressedSubmit={pressedSubmit}
             setPressedSubmit={setPressedSubmit}
             id="name"
-            warnCondition={createProductPage.name === '' || createProductPage.name === 'Product name'}
+            warnCondition={createProductPage.missingName()}
           />
         </div>
         <div className="line three">
@@ -212,16 +168,17 @@ function FormSubmissionOverlay() {
             pressedSubmit={pressedSubmit}
             setPressedSubmit={setPressedSubmit}
             id="description"
-            warnCondition={createProductPage.description === '' || createProductPage.description === 'Product description'}
+            name="description"
+            warnCondition={createProductPage.missingDescription()}
           />
           <Button
-            className={`submit-button ${isDemo && 'blocked'}`}
+            className={`submit-button ${(loading || isDemo) && 'blocked'}`}
             type="submit"
           >
             {submitLabel}
           </Button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

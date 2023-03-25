@@ -18,7 +18,7 @@ function Specifications() {
         items={categorizedSpecifications}
         className={`categories-ul ${createProductPage.specifications.length === 0 && 'empty'}`}
         renderAs={((specs, i) => (
-          <li key={i}>
+          <li key={i} className={`${specs[0].category === 'General information' && 'hidden'}`}>
             <Category
               specifications={specs}
             />
