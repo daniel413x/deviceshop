@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Sequelize } from 'sequelize';
+import { Db } from '../types/types';
 import sequelize from './connection';
 
 const basename = path.basename(__filename);
@@ -30,4 +31,4 @@ db.Sequelize = Sequelize;
 
 export { sequelize };
 
-export default db;
+export default db as Db;

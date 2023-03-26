@@ -5,7 +5,14 @@ import {
   Model,
   FindAndCountOptions as SequelizeFindAndCountOptions,
   DestroyOptions as SequelizeDestroyOptions,
+  Sequelize,
 } from 'sequelize';
+
+export interface Db {
+  [key: string]: Model | Sequelize | typeof Sequelize;
+  sequelize: Sequelize;
+  Sequelize: typeof Sequelize;
+}
 
 export interface IBaseModel {
   id: string;

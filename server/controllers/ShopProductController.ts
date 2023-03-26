@@ -21,6 +21,7 @@ import {
 } from '../utils/functions';
 import ApiError from '../error/ApiError';
 import { DELETED } from '../utils/consts';
+import { sequelize } from '../db';
 
 const includeAll = [
   {
@@ -219,23 +220,26 @@ class ShopProductController extends BaseController<ShopProduct> {
     form.discountedPrice = discountedPrice;
     form.rating = 0;
     form.numberSold = 0;
-    const newProduct = await ShopProduct.create(form);
+    let newProduct: ShopProduct;
     const newProductSpecifications: ISpecification[] = [];
-    if (body.specifications) {
-      const specifications = JSON.parse(body.specifications);
-      if (specifications.length) {
-        await Promise.all(specifications.map(async (specification) => {
-          const newSpecification = await Specification.create({
-            key: specification.key,
-            value: specification.value,
-            category: specification.category,
-            shopProductId: newProduct.id,
-            typeId: newProduct.typeId,
-          });
-          newProductSpecifications.push(newSpecification);
-        }));
+    await sequelize.transaction(async (transaction) => {
+      newProduct = await ShopProduct.create(form, { transaction });
+      if (body.specifications) {
+        const specifications = JSON.parse(body.specifications);
+        if (specifications.length) {
+          await Promise.all(specifications.map(async (specification) => {
+            const newSpecification = await Specification.create({
+              key: specification.key,
+              value: specification.value,
+              category: specification.category,
+              shopProductId: newProduct.id,
+              typeId: newProduct.typeId,
+            }, { transaction });
+            newProductSpecifications.push(newSpecification);
+          }));
+        }
       }
-    }
+    });
     writeImages(req);
     return res.json({ newProduct, newProductSpecifications });
   }
@@ -296,47 +300,53 @@ class ShopProductController extends BaseController<ShopProduct> {
       form.price = price;
       form.discountedPrice = discountedPrice;
     }
-    updatedProduct = await updatedProduct.update(form);
-    if (req.body.specifications) {
-      const specifications = JSON.parse(req.body.specifications);
-      Specification.destroy({
-        where: {
-          id: {
-            [Op.notIn]: specifications.map(({ id }) => id), //  for PUT reqs, all of a product's specifications are sent in an array. any specifications not in the array (removed via interface on the front-end) are deleted from the db
+    await sequelize.transaction(async (transaction) => {
+      updatedProduct = await updatedProduct.update(form, { transaction });
+      if (req.body.specifications) {
+        const specifications = JSON.parse(req.body.specifications);
+        await Specification.destroy({
+          where: {
+            id: {
+              [Op.notIn]: specifications.map(({ id }) => id), // for PUT reqs, all of a product's specifications are sent in an array. any specifications not in the array (removed via interface on the front-end) are deleted from the db
+            },
+            shopProductId: updatedProduct.id,
           },
-          shopProductId: updatedProduct.id,
-        },
-      });
-      await Promise.all((specifications as ISpecification[]).map(async ({
-        key, value, category, id: specificationId,
-      }) => {
-        const specForm = {
-          key,
-          value,
-          category,
-          shopProductId: productId,
-        };
-        const specification = await Specification.findByPk(specificationId);
-        if (specification) {
-          await specification.update(specForm);
-        } else {
-          await Specification.create(specForm);
-        }
-      }));
-    }
-    return res.json(updatedProduct);
+          transaction,
+        });
+        await Promise.all((specifications as ISpecification[]).map(async ({
+          key, value, category, id: specificationId,
+        }) => {
+          const specForm = {
+            key,
+            value,
+            category,
+            shopProductId: productId,
+          };
+          const specification = await Specification.findByPk(specificationId);
+          if (specification) {
+            await specification.update(specForm, { transaction });
+          } else {
+            await Specification.create(specForm, { transaction });
+          }
+        }));
+      }
+      return res.json(updatedProduct);
+    });
   }
 
   async delete(req: Request, res: Response) {
     const {
       id: shopProductId,
     } = req.params;
-    await Specification.destroy({
-      where: {
-        shopProductId,
-      },
+    await sequelize.transaction(async (transaction) => {
+      await Specification.destroy({
+        where: {
+          shopProductId,
+        },
+        transaction,
+      });
+      await this.execDestroy(req, res, { transaction });
     });
-    this.execDestroy(req, res);
   }
 }
 

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { FindAndCountOptions } from 'sequelize';
+import { sequelize } from '../db';
 import OrderedAddon from '../db/models/OrderedAddon';
 import OrderedProduct from '../db/models/OrderedProduct';
 import { inclusionsForOrderedProduct } from '../utils/inclusions';
@@ -26,8 +27,17 @@ class OrderedProductController extends BaseController<OrderedProduct> {
   }
 
   async delete(req: Request, res: Response) {
-    await OrderedAddon.destroy({ where: { orderedProductId: req.params.id } });
-    this.execDestroy(req, res);
+    const { id } = req.params;
+    await sequelize.transaction(async (transaction) => {
+      await OrderedAddon.destroy({
+        where: {
+          orderedProductId: id,
+        },
+        transaction,
+      });
+      await OrderedProduct.destroy({ where: { id }, transaction });
+    });
+    return res.status(204).end();
   }
 }
 

@@ -167,10 +167,10 @@ export default abstract class BaseController<M extends Model> {
   }
 
   async execDestroy(req: Request, res: Response, options?: DestroyOptions<M>) {
+    const { id } = req.params;
     if (options) {
       this.model.destroy({ ...options });
     } else {
-      const { id } = req.params;
       this.model.destroy({ where: { id } });
     }
     return res.status(204).end();

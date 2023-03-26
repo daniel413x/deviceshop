@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { Op } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import ApiError from '../error/ApiError';
 import {
   ICart,
@@ -18,6 +18,7 @@ import Cart from '../db/models/Cart';
 import OrderedProduct from '../db/models/OrderedProduct';
 import { inclusionsForCart } from '../utils/inclusions';
 import OrderedAddon from '../db/models/OrderedAddon';
+import { sequelize } from '../db';
 
 const generateJwt = ({
   id,
@@ -52,7 +53,7 @@ class UserController extends BaseController<User> {
     super(User);
   }
 
-  async convertGuestAddedItems(items: IGuestAddedProduct[], cart: ICart): Promise<void> {
+  async convertGuestAddedItems(items: IGuestAddedProduct[], cart: ICart, transaction?: Transaction): Promise<void> {
     await Promise.all(items.map(async (item) => {
       const {
         shopproduct: {
@@ -73,6 +74,8 @@ class UserController extends BaseController<User> {
         userId: cart.userId,
         brandId,
         typeId,
+      }, {
+        transaction,
       });
       if (item.addons) {
         await Promise.all(addons.map(async (addon) => {
@@ -88,18 +91,19 @@ class UserController extends BaseController<User> {
             category,
             price,
             addonId,
-          });
+          }, { transaction });
         }));
       }
     }));
   }
 
-  async getCart(userId: string): Promise<ICart> {
+  async getCart(userId: string, transaction?: Transaction): Promise<Cart> {
     const cart = await Cart.findOne({
       where: {
         userId,
       },
       include: inclusionsForCart,
+      transaction,
     });
     return cart;
   }
@@ -140,21 +144,25 @@ class UserController extends BaseController<User> {
     if (usernameTaken) {
       return next(ApiError.conflict('Account with that username already exists'));
     }
-    const hashPassword = await bcrypt.hash(password, 5);
-    const user = await User.create({
-      ...userForm,
-      id: uuidv4(),
-      password: hashPassword,
-      roles: [USER],
+    let user: User;
+    let cart: Cart;
+    await sequelize.transaction(async (transaction) => {
+      const hashPassword = await bcrypt.hash(password, 5);
+      user = await User.create({
+        ...userForm,
+        id: uuidv4(),
+        password: hashPassword,
+        roles: [USER],
+      }, { transaction });
+      cart = await Cart.create({
+        userId: user.id,
+      }, { transaction });
+      if (req.body.guestAddedItems) {
+        await this.convertGuestAddedItems(req.body.guestAddedItems, cart, transaction);
+        cart = await this.getCart(user.id, transaction);
+      }
     });
     const token = generateJwt(user, '24h');
-    let cart = await Cart.create({
-      userId: user.id,
-    }) as ICart;
-    if (req.body.guestAddedItems) {
-      await this.convertGuestAddedItems(req.body.guestAddedItems, cart);
-      cart = await this.getCart(user.id);
-    }
     return res.json({ token, cart });
   }
 

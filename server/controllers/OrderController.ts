@@ -18,6 +18,7 @@ import OrderedShippingMethod from '../db/models/OrderedShippingMethod';
 import { inclusionsForOrder } from '../utils/inclusions';
 import { FindAndCountOptions } from '../types/types';
 import ShopProduct from '../db/models/ShopProduct';
+import { sequelize } from '../db';
 
 class OrderController extends BaseController<Order> {
   constructor() {
@@ -110,39 +111,42 @@ class OrderController extends BaseController<Order> {
         orderId: null, // cart item = no order id yet
       },
     });
-    const order = await Order.create({
-      userId,
-      status: [PROCESSING],
-      total,
-    });
-    await Promise.all(orderedProducts.rows.map(async (item) => {
-      await item.update({
+    await sequelize.transaction(async (transaction) => {
+      const order = await Order.create({
+        userId,
+        status: [PROCESSING],
+        total,
+      }, { transaction });
+      await Promise.all(orderedProducts.rows.map(async (item) => {
+        await item.update({
+          orderId: order.id,
+          cartId: null,
+        }, { transaction });
+      }));
+      const shopProducts = await ShopProduct.findAll({
+        where: {
+          id: orderedProducts.rows.map((orderedProduct) => orderedProduct.shopProductId),
+        },
+      });
+      shopProducts.forEach((shopProduct) => {
+        shopProduct.update({
+          stock: shopProduct.stock - 1,
+        });
+      });
+      await AddressForOrder.create({
+        ...address,
         orderId: order.id,
-        cartId: null,
+      }, { transaction });
+      await OrderedShippingMethod.create({
+        ...JSON.parse(shippingMethod),
+        orderId: order.id,
+      }, { transaction });
+      const returnedOrder = await Order.findByPk(order.id, {
+        include: inclusionsForOrder,
+        transaction,
       });
-    }));
-    const shopProducts = await ShopProduct.findAll({
-      where: {
-        id: orderedProducts.rows.map((orderedProduct) => orderedProduct.shopProductId),
-      },
+      return res.json(returnedOrder);
     });
-    shopProducts.forEach((shopProduct) => {
-      shopProduct.update({
-        stock: shopProduct.stock - 1,
-      });
-    });
-    await AddressForOrder.create({
-      ...address,
-      orderId: order.id,
-    });
-    await OrderedShippingMethod.create({
-      ...JSON.parse(shippingMethod),
-      orderId: order.id,
-    });
-    const returnedOrder = await Order.findByPk(order.id, {
-      include: inclusionsForOrder,
-    });
-    return res.json(returnedOrder);
   }
 
   async edit(req: Request, res: Response, next: NextFunction) {

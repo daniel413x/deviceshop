@@ -2214,7 +2214,7 @@ describe('deviceshop app', () => {
         cy.get('.stock')
           .should('contain.text', '4');
       });
-      it.only('can update the product\'s specifications', () => {
+      it('can update the product\'s specifications', () => {
         cy.get('.category')
           .eq(2)
           .find('.header-row')
