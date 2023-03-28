@@ -1,6 +1,7 @@
 import React, {
   useContext, useState, FormEvent,
 } from 'react';
+import { v4 as uuid } from 'uuid';
 import Context from '../../../context/context';
 import { editUser } from '../../../http/userAPI';
 import { ReactComponent as PlainCheck } from '../../../assets/icons/PlainCheck.svg';
@@ -9,7 +10,6 @@ import CloseButton from '../../CloseButton';
 import Modal from '../../Modal';
 import UploadedImage from './UploadedImage';
 import { DEFAULT_AVATAR } from '../../../utils/consts';
-import { v4 as uuid } from 'uuid';
 
 interface EditAvatarModalProps {
   show: boolean;

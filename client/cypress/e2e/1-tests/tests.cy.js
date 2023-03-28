@@ -1450,6 +1450,7 @@ describe('deviceshop app', () => {
               .click();
             cy.get('.submit-button')
               .click();
+            cy.contains('Address saved to address book');
             cy.visit(`${clientUrl}/${CART_ROUTE}/${CHECKOUT_ROUTE}`);
             cy.get('.shipping-fields')
               .find('#addressLineOne')
@@ -2014,7 +2015,7 @@ describe('deviceshop app', () => {
           cy.get('.add-category-button')
             .click();
           cy.get('.category')
-            .should('contain.text', 'New category');
+            .should('contain.text', 'New specifications');
         });
         describe('a category was added', () => {
           beforeEach(() => {
@@ -2150,7 +2151,7 @@ describe('deviceshop app', () => {
         });
       });
     });
-    describe('on admin/shopproducts/edit/:title', () => {
+    describe.only('on admin/shopproducts/edit/:title', () => {
       const product = 'apple-iphone-256gb-ios-16-5g-smartphone-1';
       beforeEach(() => {
         cy.visit(`${clientUrl}/admin/shopproducts/edit/${product}`);

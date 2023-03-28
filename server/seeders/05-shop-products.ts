@@ -5,10 +5,10 @@ import {
   samsung,
 } from './03-brands';
 import {
-  smartphone as smartphonetypeId,
+  smartphone as smartphoneTypeId,
   laptop as laptopTypeId,
   accessory as accessoryTypeId,
-  tablet as tablettypeId,
+  tablet as tabletTypeId,
 } from './04-types';
 
 export const smartphonesIds = [];
@@ -57,7 +57,7 @@ for (let n = 0; n <= 12; n += 1) {
     name: makeSamsung ? `Samsung Galaxy ${n <= 4 ? '256GB' : '128GB'} Android 11 5G Smartphone ${deviceNumber}` : `Apple iPhone ${n <= 4 ? '256GB' : '128GB'} iOS 16 5G Smartphone ${deviceNumber}`,
     // name: `Smartphone ${deviceNumber}`,
     brandId: makeSamsung ? samsung : apple,
-    typeId: smartphonetypeId,
+    typeId: smartphoneTypeId,
     numberSold,
     stock: 10,
     rating: 0,
@@ -120,7 +120,7 @@ for (let n = 0; n <= 12; n += 1) {
     stock: 10,
     rating: 0,
     brandId: apple,
-    typeId: tablettypeId,
+    typeId: tabletTypeId,
     createdAt: new Date(),
     updatedAt: new Date(),
     id: tabletId,
@@ -148,7 +148,7 @@ const recycleBinProduct = {
   stock: 10,
   rating: 0,
   brandId: apple,
-  typeId: smartphonetypeId,
+  typeId: smartphoneTypeId,
   createdAt: new Date(),
   updatedAt: new Date(),
   id: uuid(),

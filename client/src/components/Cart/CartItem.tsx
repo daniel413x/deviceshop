@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import { IGuestAddedProduct, IOrderedProduct } from '../../types/types';
 import { listProductAttributes, makeSlug } from '../../utils/functions';
 import Button from '../Button';
-import { fetchSpecifications } from '../../http/specificationAPI';
 import Context from '../../context/context';
 import DiscountTag from '../DiscountTag';
 import PriceTags from '../PriceTags';
@@ -12,6 +11,7 @@ import List from '../List';
 import CartAddon from './CartAddon';
 import { SHOP_ROUTE } from '../../utils/consts';
 import RefocusedElement from '../RefocusedElement';
+import { fetchSpecificationCategories } from '../../http/specificationCategoryAPI';
 
 interface CartItemProps {
   orderedProduct: IOrderedProduct | IGuestAddedProduct;
@@ -34,7 +34,7 @@ function CartItem({
   const {
     thumbnail,
     name,
-    specifications,
+    specificationsByCategory,
     discount,
     id: shopProductId,
     price,
@@ -45,14 +45,14 @@ function CartItem({
     if (user.isGuest) {
       (async () => {
         try {
-          const fetchedSpecifications = await fetchSpecifications({ where: { shopProductId } });
+          const fetchedSpecifications = await fetchSpecificationCategories({ where: { shopProductId } });
           setListedSpecifications(listProductAttributes(fetchedSpecifications.rows));
         } finally {
           setLoading(false);
         }
       })();
     }
-    setListedSpecifications(listProductAttributes(specifications));
+    setListedSpecifications(listProductAttributes(specificationsByCategory));
   }, []);
   const slug = makeSlug(name);
   let showAddonsUl = false;

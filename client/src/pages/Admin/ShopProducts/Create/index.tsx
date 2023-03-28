@@ -1,4 +1,6 @@
-import React, { FormEvent, useContext, useEffect, useState } from 'react';
+import React, {
+  FormEvent, useContext, useEffect, useState,
+} from 'react';
 import { useLocation, useParams } from 'react-router';
 import { observer } from 'mobx-react-lite';
 import { IShopProduct } from '../../../../types/types';

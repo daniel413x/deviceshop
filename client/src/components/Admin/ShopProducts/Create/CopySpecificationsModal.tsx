@@ -64,7 +64,7 @@ function CopySpecificationsModal({
     limit: 5,
   };
   const generate = () => {
-    createProductPage.setSpecifications(selectedProduct!.specifications);
+    createProductPage.setSpecifications(selectedProduct!.specificationsByCategory);
     notifications.message(
       'Specifications generated for product form',
     );
@@ -108,7 +108,7 @@ function CopySpecificationsModal({
           {selectedProduct?.name}
           {selectedProduct && (
           <Specifications
-            specifications={selectedProduct.specifications}
+            specificationCategories={selectedProduct.specificationsByCategory}
           />
           )}
           {selectedProduct && (

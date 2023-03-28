@@ -9,38 +9,18 @@ import {
 import path from 'path';
 import ShopProduct from '../db/models/ShopProduct';
 import BaseController from './BaseController';
-import Brand from '../db/models/Brand';
-import Type from '../db/models/Type';
 import Specification from '../db/models/Specification';
 import {
-  FilteredSearchParams, FindAndCountOptions, ISpecification,
+  FilteredSearchParams, FindAndCountOptions, ISpecification, ISpecificationCategory,
 } from '../types/types';
-import Review from '../db/models/Review';
 import {
-  calcIntPrices, writeImages, toFilename,
+  calcIntPrices, writeImages, toFilename, flattenSpecifications,
 } from '../utils/functions';
 import ApiError from '../error/ApiError';
 import { DELETED } from '../utils/consts';
 import { sequelize } from '../db';
-
-const includeAll = [
-  {
-    model: Brand,
-    as: 'brand',
-  },
-  {
-    model: Type,
-    as: 'type',
-  },
-  {
-    model: Specification,
-    as: 'specifications',
-  },
-  {
-    model: Review,
-    as: 'reviews',
-  },
-];
+import { inclusionsForShopProduct, inclusionsForSpecificationCategory } from '../utils/inclusions';
+import SpecificationCategory from '../db/models/SpecificationCategory';
 
 const getReviewCounts = [
   literal(`(
@@ -59,7 +39,7 @@ class ShopProductController extends BaseController<ShopProduct> {
 
   async get(req: Request, res: Response) {
     const options: FindAndCountOptions<ShopProduct> = {
-      include: includeAll,
+      include: inclusionsForShopProduct,
     };
     options.distinct = true;
     if (req.query.search) {
@@ -181,7 +161,7 @@ class ShopProductController extends BaseController<ShopProduct> {
 
   getByName(req: Request, res: Response, next: NextFunction) {
     const options: any = {
-      include: includeAll,
+      include: inclusionsForShopProduct,
     };
     let attributes;
     if (req.query.attributes) {
@@ -221,23 +201,38 @@ class ShopProductController extends BaseController<ShopProduct> {
     form.rating = 0;
     form.numberSold = 0;
     let newProduct: ShopProduct;
-    const newProductSpecifications: ISpecification[] = [];
+    let newProductSpecifications: ISpecificationCategory[];
     await sequelize.transaction(async (transaction) => {
       newProduct = await ShopProduct.create(form, { transaction });
+      const {
+        id: shopProductId,
+      } = newProduct;
       if (body.specifications) {
         const specifications = JSON.parse(body.specifications);
         if (specifications.length) {
           await Promise.all(specifications.map(async (specification) => {
-            const newSpecification = await Specification.create({
-              key: specification.key,
-              value: specification.value,
-              category: specification.category,
-              shopProductId: newProduct.id,
-              typeId: newProduct.typeId,
+            const newSpecificationCategory = await SpecificationCategory.create({
+              name: specification.name,
+              shopProductId,
             }, { transaction });
-            newProductSpecifications.push(newSpecification);
+            await Promise.all(specification.specifications.map(async (spec) => {
+              await Specification.create({
+                key: spec.key,
+                value: spec.value,
+                specificationCategoryId: newSpecificationCategory.id,
+                shopProductId,
+                typeId: newProduct.typeId,
+              }, { transaction });
+            }));
           }));
         }
+        newProductSpecifications = await SpecificationCategory.findAll({
+          where: {
+            shopProductId,
+          },
+          include: inclusionsForSpecificationCategory,
+          transaction,
+        });
       }
     });
     writeImages(req);
@@ -303,7 +298,8 @@ class ShopProductController extends BaseController<ShopProduct> {
     await sequelize.transaction(async (transaction) => {
       updatedProduct = await updatedProduct.update(form, { transaction });
       if (req.body.specifications) {
-        const specifications = JSON.parse(req.body.specifications);
+        const specificationsCategories = JSON.parse(req.body.specifications) as ISpecificationCategory[];
+        const specifications = flattenSpecifications(specificationsCategories);
         await Specification.destroy({
           where: {
             id: {
@@ -313,13 +309,37 @@ class ShopProductController extends BaseController<ShopProduct> {
           },
           transaction,
         });
+        await SpecificationCategory.destroy({
+          where: {
+            id: {
+              [Op.notIn]: specificationsCategories.map(({ id }) => id),
+            },
+            shopProductId: updatedProduct.id,
+          },
+          transaction,
+        });
+        await Promise.all((specificationsCategories).map(async ({
+          name, id: specificationCategoryId,
+        }) => {
+          const specForm = {
+            name,
+            specificationCategoryId,
+            shopProductId: productId,
+          };
+          const specificationCategory = await SpecificationCategory.findByPk(specificationCategoryId);
+          if (specificationCategory) {
+            await specificationCategory.update(specForm, { transaction });
+          } else {
+            await SpecificationCategory.create(specForm, { transaction });
+          }
+        }));
         await Promise.all((specifications as ISpecification[]).map(async ({
-          key, value, category, id: specificationId,
+          key, value, specificationCategoryId, id: specificationId,
         }) => {
           const specForm = {
             key,
             value,
-            category,
+            specificationCategoryId,
             shopProductId: productId,
           };
           const specification = await Specification.findByPk(specificationId);

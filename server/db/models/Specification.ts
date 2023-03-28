@@ -7,17 +7,22 @@ import BaseModel, { baseModelAttributes } from './BaseModel';
 
 // eslint-disable-next-line no-use-before-define
 class Specification extends BaseModel<Specification> implements ISpecification {
-  category!: string;
-
   key!: string;
 
   value!: string;
 
   shopProductId!: string;
 
+  specificationCategoryId!: string;
+
   typeId!: string;
 
   static associate(models: any) {
+    Specification.belongsTo(models.SpecificationCategory, {
+      targetKey: 'id',
+      foreignKey: 'shopProductId',
+      as: 'SpecificationCategory',
+    });
     Specification.belongsTo(models.ShopProduct, {
       targetKey: 'id',
       foreignKey: 'shopProductId',
@@ -27,10 +32,6 @@ class Specification extends BaseModel<Specification> implements ISpecification {
 }
 
 export const specificationAttributes: ModelAttributes<Specification> = {
-  category: {
-    allowNull: false,
-    type: DataTypes.STRING,
-  },
   key: {
     allowNull: false,
     type: DataTypes.STRING,
@@ -43,6 +44,13 @@ export const specificationAttributes: ModelAttributes<Specification> = {
     type: DataTypes.UUID,
     references: {
       model: 'ShopProduct',
+      key: 'id',
+    },
+  },
+  specificationCategoryId: {
+    type: DataTypes.UUID,
+    references: {
+      model: 'SpecificationCategory',
       key: 'id',
     },
   },

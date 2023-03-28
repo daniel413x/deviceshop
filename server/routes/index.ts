@@ -14,6 +14,7 @@ import specificationRouter from './specificationRouter';
 import addonRouter from './addonRouter';
 import shippingMethodRouter from './shippingMethodRouter';
 import orderedAddonRouter from './orderedAddonRouter';
+import specificationCategoryRouter from './specificationCategoryRouter';
 
 const router = Router();
 
@@ -28,6 +29,7 @@ router.use('/orderedproduct', orderedProductRouter);
 router.use('/cart', cartRouter);
 router.use('/shopelement', shopElementRouter);
 router.use('/specification', specificationRouter);
+router.use('/specificationcategory', specificationCategoryRouter);
 router.use('/addon', addonRouter);
 router.use('/orderedaddon', orderedAddonRouter);
 router.use('/shippingmethod', shippingMethodRouter);

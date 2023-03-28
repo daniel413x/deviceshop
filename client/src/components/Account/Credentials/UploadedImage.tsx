@@ -68,7 +68,7 @@ function UploadedImage({
         name: imageName,
         type,
       } = (initialImage as File);
-      const image = new File([initialImage], imageName, { type, });
+      const image = new File([initialImage], imageName, { type });
       const transfer = new DataTransfer();
       transfer.items.add(image);
       ref.current!.files = transfer.files;
@@ -121,7 +121,6 @@ UploadedImage.defaultProps = {
   pressedSubmit: false,
   setPressedSubmit: false,
   tabbable: undefined,
-  naming: undefined,
 };
 
 export default UploadedImage;

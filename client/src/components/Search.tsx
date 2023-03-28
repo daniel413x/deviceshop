@@ -21,7 +21,7 @@ import LoadingAnimation from './LoadingAnimation';
 import useQuery from '../hooks/useQuery';
 
 type EitherRenderProps<T> = Either<{
-  dontRenderResults: boolean; // not rendering results via this component assumes outside rendering with help of an outside hook/component/setSearchParams, etc.
+  dontRenderResults: boolean; // implies rendering of a results component in an overlying/parent component
 }, {
   Result: any;
   results: any[];
@@ -39,6 +39,7 @@ type SearchProps<T> = {
   setSearchParams?: (obj: SearchParamsRecord) => void;
 } & EitherRenderProps<T>;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Search = forwardRef(<T, A>({
   className,
   placeholder,

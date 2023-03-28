@@ -1,5 +1,5 @@
 import {
-  Filter, IGuestAddedProduct, IOrderedProduct, ISpecification, SearchParamsRecord, SpecificationColumn,
+  Filter, IGuestAddedProduct, IOrderedProduct, ISpecification, ISpecificationCategory, SearchParamsRecord, SpecificationColumn,
 } from '../types/types';
 import { fileExtensionRegex } from './consts';
 
@@ -17,6 +17,14 @@ export function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+export function flattenSpecifications(specificationCategories: ISpecificationCategory[]): ISpecification[] {
+  const specifications: ISpecification[] = [];
+  specificationCategories.forEach((cat) => {
+    specifications.push(...cat.specifications);
+  });
+  return specifications;
+}
+
 export function findSpecifications(keys: string[], specifications: ISpecification[]): ISpecification[] {
   const returnedArr: ISpecification[] = [];
   keys.forEach((key) => {
@@ -28,11 +36,12 @@ export function findSpecifications(keys: string[], specifications: ISpecificatio
   return returnedArr;
 }
 
-export function listProductAttributes(specifications: ISpecification[]): string {
+export function listProductAttributes(specifications: ISpecificationCategory[]): string { // used in ShopProductCard "Grid view"
+  const flattenedSpecifications: ISpecification[] = flattenSpecifications(specifications as any);
   const attributesToGet: string[] = ['Storage capacity', 'Display size (in)', 'Operating system', 'Standard', 'Memory'];
   const attributes: string[] = [];
   attributesToGet.forEach((attributeKey) => {
-    const attribute = specifications.find((spec) => spec.key === attributeKey);
+    const attribute = flattenedSpecifications.find((spec) => spec.key === attributeKey);
     if (attribute) {
       attributes.push(attribute.value);
     }
@@ -40,14 +49,14 @@ export function listProductAttributes(specifications: ISpecification[]): string 
   return `${attributes.join(', ')}`;
 }
 
-export function listProductAttributeInColumns(specifications: ISpecification[]): SpecificationColumn[] {
+export function listProductAttributeInColumns(specificationCategories: ISpecificationCategory[]): SpecificationColumn[] { // used in ShopProductCard "List view"
   const categoriesToColumnize: string[] = ['Key specifications', 'Display properties', 'Camera'];
   const columnizedAttributes: SpecificationColumn[] = [];
   categoriesToColumnize.forEach((columnizedCategory) => {
     const values: string[] = [];
-    specifications.forEach((spec) => {
-      if (spec.category === columnizedCategory) {
-        values.push(spec.value);
+    specificationCategories.forEach((cat) => {
+      if (cat.name === columnizedCategory) {
+        values.push(...cat.specifications.map(({ value }) => value));
       }
     });
     columnizedAttributes.push({
@@ -124,45 +133,24 @@ export function toPlural(string: string): string {
   return `${string}s`;
 }
 
-export function sortCategories(categories: ISpecification[][]): ISpecification[][] {
+export function sortCategories(categories: ISpecificationCategory[]) {
   return categories
     .slice()
     .sort((a, b) => {
-      if (a[0].category === 'General information') {
+      if (a.name === 'General information') {
         return -1;
       }
-      if (b[0].category === 'General information') {
+      if (b.name === 'General information') {
         return 1;
       }
-      if (a[0].category === 'Key specifications') {
+      if (a.name === 'Key specifications') {
         return -1;
       }
-      if (b[0].category === 'Key specifications') {
+      if (b.name === 'Key specifications') {
         return 1;
       }
       return 0;
     });
-}
-
-export function categorizeSpecifications(specifications: ISpecification[]): ISpecification[][] {
-  const uniqueCategories: string[] = [];
-  specifications.forEach(({ category }) => {
-    if (uniqueCategories.indexOf(category) === -1) {
-      uniqueCategories.push(category);
-    }
-  });
-  return sortCategories(
-    uniqueCategories
-      .map((uniqueCategory) => {
-        const arr: ISpecification[] = [];
-        specifications.forEach((spec) => {
-          if (spec.category === uniqueCategory) {
-            arr.push(spec);
-          }
-        });
-        return arr;
-      }),
-  );
 }
 
 export function dateMonthYear(string: string): string {

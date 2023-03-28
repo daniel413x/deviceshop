@@ -9,7 +9,7 @@ function AddCategoryButton() {
   return (
     <button
       className="categories-control-button add-category-button"
-      onClick={() => createProductPage.addSpecification('New category')}
+      onClick={() => createProductPage.addSpecificationCategory()}
       type="button"
     >
       <AddIcon

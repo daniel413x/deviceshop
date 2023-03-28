@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
-import { categorizeSpecifications } from '../../../../utils/functions';
 import List from '../../../List';
 import Context from '../../../../context/context';
 import CopySpecificationsButton from './CopySpecificationsButton';
@@ -11,16 +10,15 @@ function Specifications() {
   const {
     createProductPage,
   } = useContext(Context);
-  const categorizedSpecifications = categorizeSpecifications(createProductPage.specifications);
   return (
     <div className="specifications">
       <List
-        items={categorizedSpecifications}
+        items={createProductPage.specifications}
         className={`categories-ul ${createProductPage.specifications.length === 0 && 'empty'}`}
-        renderAs={((specs, i) => (
-          <li key={i} className={`${specs[0].category === 'General information' && 'hidden'}`}>
+        renderAs={((cat, i) => (
+          <li key={i}>
             <Category
-              specifications={specs}
+              specificationCategory={cat}
             />
           </li>
         ))}

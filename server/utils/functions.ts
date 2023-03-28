@@ -2,6 +2,7 @@ import { Request } from 'express';
 import path from 'path';
 import { UploadedFile } from 'express-fileupload';
 import { fileExtensionRegex } from './consts';
+import { ISpecification, ISpecificationCategory } from '../types/types';
 
 export function getExtension(string: string) {
   return string.match(fileExtensionRegex)[0];
@@ -35,4 +36,12 @@ export function calcIntPrices(dollarPrice: number | string, discount?: number | 
     price,
     discountedPrice,
   };
+}
+
+export function flattenSpecifications(specificationCategories: ISpecificationCategory[]): ISpecification[] {
+  const specifications: ISpecification[] = [];
+  specificationCategories.forEach((cat) => {
+    specifications.push(...cat.specifications);
+  });
+  return specifications;
 }

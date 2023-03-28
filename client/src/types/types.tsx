@@ -23,11 +23,18 @@ export interface IRouterRoute {
 
 export interface ISpecification {
   id: string;
-  category: string;
+  specificationCategoryId: string;
   key: string;
   value: string;
   shopProductId: string;
   typeId: string;
+}
+
+export interface ISpecificationCategory {
+  id: string;
+  name: string;
+  specifications: ISpecification[];
+  shopProductId: string;
 }
 
 export interface IType {
@@ -53,6 +60,7 @@ export interface IShopProduct {
   brand: IBrand;
   brandId: string;
   specifications: ISpecification[];
+  specificationsByCategory: ISpecificationCategory[];
   reviews: IReview[];
   images: string[];
   rating: string;
@@ -192,12 +200,13 @@ export interface INavButton {
   callback?: () => void;
 }
 
-export type SpecificationWithDeviceCount = Omit<ISpecification, 'category' | 'shopProductId' | 'typeId'> & {
+export type SpecificationWithDeviceCount = Omit<ISpecification, 'specificationCategoryId' | 'shopProductId' | 'typeId'> & {
   count: number;
 };
 
-export type SpecificationColumn = Omit<ISpecification, 'value' | 'key' | 'shopProductId' | 'typeId' | 'id'> & {
+export type SpecificationColumn = Omit<ISpecification, 'value' | 'key' | 'shopProductId' | 'typeId' | 'id' | 'specificationCategoryId'> & {
   values: string[];
+  category: string;
 };
 
 export type QueryReqFetchOne<T> = {
@@ -241,7 +250,7 @@ export type QueryReqPutOrder = Partial<IOrder>;
 export type QueryReqPutUser = Partial<IUser & FormData>;
 
 export type QueryResPostShopProduct = {
-  newProductSpecifications: ISpecification[];
+  newProductSpecifications: ISpecificationCategory[];
   newProduct: IShopProduct;
 };
 
@@ -269,7 +278,7 @@ export type SearchViaSearchbar = {
 };
 
 export type SearchViaFilteredSearch = {
-  specifications: Omit<ISpecification, 'category' | 'id' | 'typeId' | 'shopProductId'>[];
+  specifications: Omit<ISpecification, 'category' | 'id' | 'typeId' | 'shopProductId' | 'specificationCategoryId'>[];
 };
 
 export type AddonChoice = Omit<IAddon, 'orderedProductId' | 'id'> & {

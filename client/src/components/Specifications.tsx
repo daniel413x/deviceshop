@@ -1,21 +1,16 @@
 import React from 'react';
-import { ISpecification } from '../types/types';
-import { categorizeSpecifications } from '../utils/functions';
+import { ISpecificationCategory } from '../types/types';
 import List from './List';
 
-interface SpecificationsRowProps {
-  specifications: ISpecification[];
-}
-
 function Category({
+  name,
   specifications,
-}: SpecificationsRowProps) {
-  const { category } = specifications[0];
+}: Omit<ISpecificationCategory, 'id' | 'shopProductId'>) {
   return (
     <div className="category">
       <div className="header-row">
         <h5 className="name">
-          {category}
+          {name}
         </h5>
       </div>
       <List
@@ -39,22 +34,22 @@ function Category({
 }
 
 interface SpecificationsProps {
-  specifications: ISpecification[];
+  specificationCategories: ISpecificationCategory[];
 }
 
 function Specifications({
-  specifications,
+  specificationCategories,
 }: SpecificationsProps) {
-  const categorizedSpecifications = categorizeSpecifications(specifications);
   return (
     <div className="specifications">
       <List
-        items={categorizedSpecifications}
+        items={specificationCategories}
         className="categories-ul"
-        renderAs={((specs, i) => (
+        renderAs={((cat, i) => (
           <li key={i}>
             <Category
-              specifications={specs}
+              specifications={cat.specifications}
+              name={cat.name}
             />
           </li>
         ))}

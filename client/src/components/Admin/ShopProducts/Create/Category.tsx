@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { ISpecification } from '../../../../types/types';
+import { ISpecificationCategory } from '../../../../types/types';
 import { ReactComponent as CloseIcon } from '../../../../assets/icons/close.svg';
 import List from '../../../List';
 import Button from '../../../Button';
@@ -8,23 +8,28 @@ import Context from '../../../../context/context';
 import Specification from './Specification';
 
 interface CategoryProps {
-  specifications: ISpecification[];
+  specificationCategory: ISpecificationCategory;
 }
 
 function Category({
-  specifications,
+  specificationCategory,
 }: CategoryProps) {
-  const [category, setCategory] = useState<string>(specifications[0].category);
+  const [category, setCategory] = useState<string>(specificationCategory.name);
   const {
     createProductPage,
   } = useContext(Context);
   const handleSetCategory = (e: string) => {
-    createProductPage.updateCategory(category, e);
+    createProductPage.updateCategory(specificationCategory.id, e);
     setCategory(e);
   };
   useEffect(() => {
-    setCategory(specifications[0].category);
-  }, [specifications]);
+    setCategory(specificationCategory.name);
+  }, [specificationCategory]);
+  useEffect(() => {
+    if (specificationCategory.specifications.length === 0) {
+      createProductPage.deleteCategory(specificationCategory.id);
+    }
+  }, [specificationCategory.specifications]);
   return (
     <div className="category">
       <div className="header-row">
@@ -36,14 +41,14 @@ function Category({
         />
         <Button
           buttonStyle={['blank', 'warn']}
-          onClick={() => createProductPage.deleteCategory(category)}
+          onClick={() => createProductPage.deleteCategory(specificationCategory.id)}
           className="delete-category-button delete-button"
         >
           <CloseIcon />
         </Button>
       </div>
       <List
-        items={specifications}
+        items={specificationCategory.specifications}
         className="specifications-ul"
         renderAs={((spec) => (
           <li key={spec.id} className="specification-wrapper">

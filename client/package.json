@@ -26,7 +26,8 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "^5.0.1",
     "react-slick": "^0.29.0",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "start": "set PORT=5436 && react-scripts start",

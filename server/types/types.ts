@@ -22,11 +22,18 @@ export interface IBaseModel {
 
 export interface ISpecification {
   id: string;
-  category: string;
   key: string;
   value: string;
   shopProductId: string;
+  specificationCategoryId: string;
   typeId: string;
+}
+
+export interface ISpecificationCategory {
+  id: string;
+  name: string;
+  shopProductId: string;
+  specifications?: ISpecification[];
 }
 
 export interface IShopProduct {
@@ -165,11 +172,11 @@ export type SpecificationFinder = {
   key: string;
 };
 
-export type UniquePrimarySpecification = Omit<ISpecification, 'category' | 'typeId' | 'shopProductId'> & { // intermediate objects for filtered fetching
+export type UniquePrimarySpecification = Omit<ISpecification, 'category' | 'typeId' | 'shopProductId' | 'specificationCategoryId'> & { // intermediate objects for filtered fetching
   shopProductIds: string[];
 };
 
-export type SpecificationWithDeviceCount = Omit<ISpecification, 'category' | 'typeId' | 'shopProductId'> & { // used in filter system
+export type SpecificationWithDeviceCount = Omit<ISpecification, 'category' | 'typeId' | 'shopProductId' | 'specificationCategoryId'> & { // used in filter system
   count: number;
 };
 

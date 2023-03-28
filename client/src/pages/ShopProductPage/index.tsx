@@ -13,6 +13,7 @@ import { eligibileToReview } from '../../http/orderedProductAPI';
 import Context from '../../context/context';
 import LeaveARating from '../../components/ShopProductPage/LeaveARating';
 import ColumnedPage from '../../components/ColumnedPage';
+import { sortCategories } from '../../utils/functions';
 
 function ShopProductPage() {
   const { notifications, user } = useContext(Context);
@@ -93,7 +94,7 @@ function ShopProductPage() {
             header="Specifications"
           >
             <Specifications
-              specifications={product.specifications}
+              specificationCategories={sortCategories(product.specificationsByCategory)}
             />
           </CollapsibleInfo>
           )}

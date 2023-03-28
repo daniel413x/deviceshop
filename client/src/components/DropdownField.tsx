@@ -60,6 +60,7 @@ function DropdownField({
 DropdownField.defaultProps = {
   placeholder: '',
   colorStyle: '',
+  shownValue: undefined,
 };
 
 export default DropdownField;

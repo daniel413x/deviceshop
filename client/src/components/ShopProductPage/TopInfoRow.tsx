@@ -38,7 +38,7 @@ function TopInfoRow({
       id: typeId,
     },
     reviews,
-    specifications,
+    specificationsByCategory,
     id: shopProductId,
     images,
     rating,
@@ -47,7 +47,7 @@ function TopInfoRow({
     discountedPrice,
   } = product;
   const imageUrls = images.map((string) => `${process.env.REACT_APP_API_URL}${string}`);
-  const specsTeaser = listProductAttributes(specifications);
+  const specsTeaser = listProductAttributes(specificationsByCategory);
   const addToCart = async () => {
     setPressedSubmit(true);
     setTimeout(() => setPressedSubmit(false), 1500);

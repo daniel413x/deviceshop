@@ -5,12 +5,12 @@ import React, {
 import Slider from 'react-slick';
 import { useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import { v4 as uuid } from 'uuid';
 import useKeyPress from '../hooks/useKeyPress';
 import { ReactComponent as AddIcon } from '../assets/icons/Add.svg';
 import { ReactComponent as TrashIcon } from '../assets/icons/Trash.svg';
 import Button from './Button';
 import SliderAngleButton from './SliderAngleButton';
-import { v4 as uuid } from 'uuid';
 import Context from '../context/context';
 import createProductPlaceholder from '../assets/images/create-product-placeholder.png';
 import { CREATE_SHOPPRODUCT_ROUTE } from '../utils/consts';
@@ -34,7 +34,7 @@ function SliderComponent({
     createProductPage,
   } = useContext(Context);
   const { pathname } = useLocation();
-  const [images, setImages] = useState<(string | File)[]>(propImages || []); // when working on the Create Shop Products page, be aware of the string and File states for the rendered slider images. strings are uuid's from the image name array of fetched ShopProducts. Files are images uploaded during the browser session. UploadedImage handles and renders both types here 
+  const [images, setImages] = useState<(string | File)[]>(propImages || []); // when working on the Create Shop Products page, be aware of the string and File states for the rendered slider images. strings are uuid's from the image name array of fetched ShopProducts. Files are images uploaded during the browser session. UploadedImage handles and renders both types here
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const rightPress = useKeyPress('ArrowRight');
   const leftPress = useKeyPress('ArrowLeft');
@@ -110,7 +110,7 @@ function SliderComponent({
         return true;
       }
       deletedIndex.push(mappedIndex);
-      return mappedIndex !== activeIndex
+      return mappedIndex !== activeIndex;
     });
     setImages(nextImages);
   };
@@ -158,7 +158,9 @@ function SliderComponent({
           {admin ? images.map((img, imageIndex) => (
             <UploadedImage
               initialImage={img}
+              // eslint-disable-next-line react/no-array-index-key
               key={img.toString() + imageIndex}
+              // eslint-disable-next-line no-nested-ternary
               name={img === 'test-product-filler.png' ? `${uuid()}.png` : typeof img !== 'string' ? `${uuid()}.${getExtension((img as File).name)}` : img} // handle form image keys easily and allow images to be either uuid's or blobs
               imageClass="slid-image"
               buttonClass={activeIndex !== imageIndex ? 'inactive' : ''} // inactive class fixes the last image always being clicked/replaced

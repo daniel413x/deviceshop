@@ -8,6 +8,7 @@ import { IShopProduct, ISpecification } from '../../types/types';
 import { fetchProducts } from '../../http/shopProductAPI';
 import {
   findSpecifications,
+  flattenSpecifications,
   makeSlug,
   randomInt,
 } from '../../utils/functions';
@@ -77,7 +78,7 @@ function ProductCol({
     FRONT,
     REAR,
     ASPECT_RATIO,
-  ], product.specifications);
+  ], flattenSpecifications(product.specificationsByCategory));
   const slug = makeSlug(name);
   return (
     <div className={`product ${className}`}>

@@ -1004,6 +1004,10 @@ form.checkout-style .labeled-input input {
   font-weight: 400;
 }
 
+.shop-product-card.list-view .attributes-column-ul {
+  background-color: var(--bg-lighter-bluegray);
+}
+
 .price-tags .undiscounted-price, .price-tags .discounted-price {
   background-color: #fff;
   border-radius: 3px;

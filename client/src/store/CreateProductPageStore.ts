@@ -1,20 +1,18 @@
 import { makeAutoObservable } from 'mobx';
 import {
-  ISpecification,
   IShopProduct,
   IType,
   IBrand,
+  ISpecificationCategory,
 } from '../types/types';
-import { convertIntToPrice } from '../utils/functions';
+import { convertIntToPrice, flattenSpecifications } from '../utils/functions';
 
 export default class CreateProductPageStore {
-  specifications: any[];
+  specifications: ISpecificationCategory[];
 
   images: string[];
 
   imagesCount: number;
-
-  deletedImages: string[];
 
   stock: string | number;
 
@@ -42,7 +40,6 @@ export default class CreateProductPageStore {
     this.specifications = [];
     this.images = [];
     this.imagesCount = 1;
-    this.deletedImages = [];
     this.stock = '';
     this.name = '';
     this.rating = 0;
@@ -57,50 +54,78 @@ export default class CreateProductPageStore {
     makeAutoObservable(this);
   }
 
-  setSpecifications(specs: ISpecification[]) {
+  setSpecifications(specs: ISpecificationCategory[]) {
     this.specifications = specs;
   }
 
-  addSpecification(category: string) { // serves either to add a new category or a specification to a category
+  addSpecificationCategory() {
+    const id = new Date().toString();
+    const specificationCategory = {
+      name: 'New specifications',
+      typeId: '',
+      shopProductId: '',
+      id,
+      specifications: [],
+    };
+    this.specifications = [...this.specifications, specificationCategory];
+    this.addSpecification(id);
+  }
+
+  updateCategory(specificationCategoryId: string, value: string) {
+    this.specifications = this.specifications.map((cat) => {
+      if (cat.id === specificationCategoryId) {
+        return {
+          ...cat,
+          name: value,
+        };
+      }
+      return cat;
+    });
+  }
+
+  deleteCategory(removedCategoryId: string) {
+    this.specifications = this.specifications.filter((cat) => cat.id !== removedCategoryId);
+  }
+
+  addSpecification(specificationCategoryId: string) {
     const id = new Date().toString();
     const specification = {
-      category,
+      specificationCategoryId,
       key: 'Key',
       value: 'Value',
+      typeId: '',
+      shopProductId: '',
       id,
     };
-    this.specifications = [...this.specifications, specification];
+    const changedCategory = this.specifications.find((cat) => cat.id === specificationCategoryId);
+    changedCategory!.specifications.push(specification);
+    this.specifications = this.specifications.map((category) => {
+      if (category.id === specificationCategoryId) {
+        return changedCategory!;
+      }
+      return category;
+    });
   }
 
   updateSpec(id: string, field: 'key' | 'value', value: string) {
-    const updatedSpec = this.specifications.find((spec) => spec.id === id);
-    updatedSpec[field] = value;
-    this.specifications = this.specifications.map((spec) => {
-      if (spec.id === id) {
-        return updatedSpec;
+    const updatedSpec = flattenSpecifications(this.specifications).find((spec) => spec.id === id);
+    updatedSpec![field] = value;
+    for (let c = 0; c < this.specifications.length; c += 1) {
+      for (let s = 0; s < this.specifications[c].specifications.length; s += 1) {
+        const spec = this.specifications[c].specifications[s];
+        if (spec.id === id) {
+          spec.value = value;
+          break;
+        }
       }
-      return spec;
-    });
-  }
-
-  updateCategory(category: string, value: string) {
-    this.specifications = this.specifications.map((spec) => {
-      if (spec.category === category) {
-        return {
-          ...spec,
-          category: value,
-        };
-      }
-      return spec;
-    });
+    }
   }
 
   deleteSpec(removedId: string) {
-    this.specifications = this.specifications.filter((spec) => spec.id !== removedId);
-  }
-
-  deleteCategory(removedCategory: string) {
-    this.specifications = this.specifications.filter((spec) => spec.category !== removedCategory);
+    this.specifications = this.specifications.map((cat) => ({
+      ...cat,
+      specifications: cat.specifications.filter(({ id }) => removedId !== id),
+    }));
   }
 
   setImages(newImages: string[]) {
@@ -109,10 +134,6 @@ export default class CreateProductPageStore {
 
   setImagesCount(count: number) {
     this.imagesCount = count;
-  }
-
-  addDeletedImage(deletedImageUrl: string) {
-    this.deletedImages = [...this.deletedImages, deletedImageUrl];
   }
 
   setStock(value: string | number) {
@@ -160,7 +181,7 @@ export default class CreateProductPageStore {
   }
 
   setAllValues(product?: IShopProduct) {
-    this.setSpecifications(product?.specifications || []);
+    this.setSpecifications(product?.specificationsByCategory || []);
     this.setBrand(product?.brand || undefined);
     this.setType(product?.type || undefined);
     this.setId(product?.id || '');

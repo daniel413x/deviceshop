@@ -35,12 +35,12 @@ function ShopProductCard({
     },
     rating,
     reviews,
-    specifications,
+    specificationsByCategory,
     id,
     thumbnail,
   } = product;
   const slug = makeSlug(productName);
-  const attributes = listView ? listProductAttributeInColumns(specifications) : listProductAttributes(specifications);
+  const attributes = listView ? listProductAttributeInColumns(specificationsByCategory) : listProductAttributes(specificationsByCategory);
   const showGridViewAttributes = expanded && !listView;
   const showListViewAttributes = listView;
   return (
@@ -100,8 +100,8 @@ function ShopProductCard({
                     <List
                       items={column.values}
                       className="values-ul"
-                      renderAs={((value) => (
-                        <li key={`${id}${column.category}${value}`}>
+                      renderAs={((value, i) => (
+                        <li key={`${id}${column.category}${value}${i}`}>
                           <span>
                             {value}
                           </span>

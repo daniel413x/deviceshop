@@ -34,6 +34,11 @@ class ShopProduct extends BaseModel<ShopProduct> implements IShopProduct {
   brandId!: string;
 
   static associate(models: any) {
+    ShopProduct.hasMany(models.SpecificationCategory, {
+      sourceKey: 'id',
+      foreignKey: 'shopProductId',
+      as: 'specificationsByCategory',
+    });
     ShopProduct.hasMany(models.Specification, {
       sourceKey: 'id',
       foreignKey: 'shopProductId',
