@@ -25,9 +25,7 @@ function Logout() {
     navigate(FRONT_PAGE_ROUTE);
   }, []);
   return (
-    <div id="logout">
-      You are being logged out
-    </div>
+    <div id="logout" />
   );
 }
 

@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkdeviceshop=self.webpackChunkdeviceshop||[]).push([[5],{4005:function(e,t,o){o.r(t);var u=o(2791),s=o(6871),n=o(3958),r=o(4359),c=o(184);t.default=function(){var e=(0,s.s0)(),t=(0,u.useContext)(n.Z),o=t.user,i=t.notifications,a=t.cart;return(0,u.useEffect)((function(){o.isRegistered&&(o.unset(),a.unset(),localStorage.removeItem("registeredToken"),i.neutral("You logged out of your account")),e(r.Im)}),[]),(0,c.jsx)("div",{id:"logout"})}}}]);
+//# sourceMappingURL=5.70cbd1b4.chunk.js.map

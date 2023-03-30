@@ -33,6 +33,7 @@
   --pageYEdgeMargin: 70px;
   --ease-out-anim: cubic-bezier(0.000, 1.050, 0.305, 0.990);
   color: var(--primary-text);
+  --notification-height: 86px;
 }
 
 @media (max-width: 1399px) {
@@ -204,18 +205,10 @@ body, html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: var(--bg-light-bluegray);
   width: 100%;
   min-height: 0;
-  transform: translateY(-20%);
   transition: all 0.25s linear;
   z-index: 3;
-  box-shadow: inset 0 -16px 16px -16px rgba(0, 0, 0, 0.1);
-}
-
-.notifications-container.show {
-  min-height: calc(var(--navbar-height) - 1px);
-  transform: translateY(0);
 }
 
 .notifications-container .body {
@@ -223,32 +216,40 @@ body, html {
   flex-direction: column;
 }
 
-.notification.device-added .info {
-  display: grid;
-  grid-template-columns: 60px auto;
-}
-
 .notification {
   align-items: center;
   border-radius: 0px;
-  color: var(--primary-red);
+  color: var(--primary-accent);
   display: flex;
-  font-size: 0.875rem;
+  justify-content: center;
+  font-size: 1rem;
   font-weight: 500;
   opacity: 0;
-  padding: 0.5rem 1rem;
-  margin-bottom: .25rem;
   transition: all 0.25s linear;
   transform:translateY(-20%);
   z-index: 1055;
-  height: var(--navbar-height);
+  min-height: var(--notification-height);
   top: 0;
+  border-left: 16px solid var(--primary-accent-light);
+  width: 100%;
+  max-width: 390px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-right: 1px solid var(--bg-lighter-bluegray);
 }
 
 .notification.show {
   transform: none;
   opacity: 1;
   top: 100%;
+}
+
+.notification.device-added .info {
+  display: grid;
+  grid-template-columns: 60px auto;
+}
+
+.notification:last-child {
+  box-shadow: inset 0 -12px 12px -12px rgba(0, 0, 0, 0.1);
 }
 
 .notification img {
@@ -728,23 +729,29 @@ form.checkout-style .labeled-input input {
   fill: var(--primary-text);
 }
 
-.soc-media-icons-ul {
+.soc-media-icons {
   display: flex;
   grid-gap: 0.625rem;
+  align-items: center;
 }
 
-.soc-media-icons-ul svg {
+.soc-media-icons .soc-media-icon {
+  display: flex;
+  align-items: center;
+}
+
+.soc-media-icons .soc-media-icon svg {
   color: #fff;
   padding: 0.45rem;
   background-color: var(--primary-accent);
   border-radius: var(--styled-border-radius);
 }
 
-.soc-media-icons-ul svg:hover {
+.soc-media-icons .soc-media-icon svg:hover {
   background-color: #fff;
 }
 
-.soc-media-icons-ul svg:hover path {
+.soc-media-icons .soc-media-icon svg:hover path {
   fill: var(--primary-accent);
 }
 
@@ -1479,11 +1486,6 @@ form.checkout-style .labeled-input input {
   box-shadow: inset 0 -16px 6px -16px rgba(0, 0, 0, 0.1);
 }
 
-.modal.warn .window-header {
-  background-color: var(--warn-red);
-  color: #fff;
-}
-
 .modal .window-header .left-col {
   display: flex;
   align-items: center;
@@ -1499,6 +1501,14 @@ form.checkout-style .labeled-input input {
 
 .modal .window-header .close-button svg rect {
   fill: var(--indigo-light);
+}
+
+.modal.warn .window-header {
+  background-color: var(--warn-red);
+}
+
+.modal.warn .window-header .left-col {
+  color: #fff;
 }
 
 .modal.warn .window-header .close-button svg rect {
