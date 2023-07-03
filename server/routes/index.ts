@@ -14,6 +14,7 @@ import specificationRouter from './specificationRouter';
 import addonRouter from './addonRouter';
 import shippingMethodRouter from './shippingMethodRouter';
 import orderedAddonRouter from './orderedAddonRouter';
+import utilRouter from './utilRouter';
 import specificationCategoryRouter from './specificationCategoryRouter';
 
 const router = Router();
@@ -33,6 +34,7 @@ router.use('/specificationcategory', specificationCategoryRouter);
 router.use('/addon', addonRouter);
 router.use('/orderedaddon', orderedAddonRouter);
 router.use('/shippingmethod', shippingMethodRouter);
+router.use('/util', utilRouter);
 router.use('/testing', testingRouter);
 
 export default router;
