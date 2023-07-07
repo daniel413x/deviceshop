@@ -905,7 +905,9 @@ form.checkout-style .labeled-input input {
   flex-direction: column;
   align-items: center;
   width: 265px;
-  height: 342px;
+  height: 352px;
+  background-color: #fff;
+  padding: 0 0.5rem;
 }
 
 .shop-product-card .img-wrapper {
@@ -935,7 +937,6 @@ form.checkout-style .labeled-input input {
 }
 
 .shop-product-card .price-tags .undiscounted-price, .shop-product-card .price-tags .discounted-price {
-  border-left: 4px solid var(--bg-light-gray);
   position: relative;
   max-width: max-content;
 }
@@ -1018,14 +1019,13 @@ form.checkout-style .labeled-input input {
 .price-tags .undiscounted-price, .price-tags .discounted-price {
   background-color: #fff;
   border-radius: 3px;
-  padding: 0.25rem 0.625rem;
+  padding: 0.25rem 0rem 0.25rem 0.2rem;
   display: flex;
 }
 
 .price-tags.with-discount .undiscounted-price, .price-tags.with-discount .discounted-price {
   background-color: #fff;
   border-radius: 3px;
-  padding: 0.25rem 0.625rem;
   position: relative;
   display: flex;
 }
@@ -1050,7 +1050,7 @@ form.checkout-style .labeled-input input {
   content: '';
   height: 2px;
   width: 75%;
-  background-color: var(--warn-red);
+  background-color: var(--divider-gray);
   position: absolute;
   left: 50%;
   top: 50%;
@@ -2485,7 +2485,7 @@ form.checkout-style .labeled-input input {
 }
 
 #front-page .beneath-slider {
-  margin: 60px 0;
+  margin: 60px 0 30px;
   grid-gap: 1.25rem;
 }
 
@@ -2504,7 +2504,6 @@ form.checkout-style .labeled-input input {
   flex-direction: column;
   position: relative;
   padding-bottom: 2rem;
-  margin-bottom: 60px;
 }
 
 #front-page .browse-the-shop.loading {
@@ -2552,9 +2551,11 @@ form.checkout-style .labeled-input input {
 }
 
 #front-page .trending {
+  padding: 60px 0px 0px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: rgba(0,0,0,1) url(./assets/images/store.jpg) no-repeat center center/cover;
 }
 
 #front-page .trending .trending-items {
@@ -2563,32 +2564,42 @@ form.checkout-style .labeled-input input {
   min-height: 342px;
 }
 
-#front-page .trending .trending-items .section-header .divider {
-  display: none;
-}
-
-#front-page .trending {
+#front-page .trending .trending-items .items {
   display: flex;
   flex-direction: column;
-  align-items: center;
+}
+
+@media (min-width: 1400px) {  
+  #front-page .trending .trending-items .items {
+    grid-gap: 1.25rem;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+#front-page .trending .trending-items .section-header .divider {
+  display: none;
 }
 
 #front-page .trending .trending-items.top-row {
   display: flex;
   flex-direction: column;
+  background-color: #fff;
 }
 
 #front-page .trending .trending-items.top-row .items {
   display: flex;
   flex-wrap: wrap;
-  grid-gap: 1.25rem;
-  max-height: 342px;
+  grid-gap: 2.5rem;
+  max-height: 372px;
   overflow: hidden;
+  flex-direction: row;
+  padding: 0 2rem;
 }
 
 @media (min-width: 1829px) {
   #front-page .trending .trending-items.top-row .items {
-  max-height: 342px;
+  max-height: 372px;
   overflow: hidden;
   }
 }
@@ -2602,13 +2613,15 @@ form.checkout-style .labeled-input input {
 #front-page .trending .columns {
   display: flex;
   flex-wrap: wrap;
-  grid-gap: 1.25rem;
-  margin-top: 45px;
+  grid-gap: 2.5rem;
+  padding-top: ;
+  background-color: #fff;
+  padding: 45px 2rem;
 }
 
 @media (min-width: 1012px) {
   #front-page .trending .columns {
-    max-height: 1124px;
+    max-height: 1240px;
     overflow: hidden;
   }
 }
@@ -2674,7 +2687,7 @@ form.checkout-style .labeled-input input {
 
 #front-page .in-depth .product .specifications .label {
   color: aqua;
-  font-weight: 200;
+  font-weight: 300;
   margin-bottom: 2rem;
   align-self: center;
 }
@@ -2756,6 +2769,10 @@ form.checkout-style .labeled-input input {
   box-shadow: var(--card-box-shadow);
 }
 
+#front-page .recently-reviewed .review.odd {
+  transform: rotate(5deg);
+}
+
 #front-page .recently-reviewed .review .product-name {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -2789,6 +2806,7 @@ form.checkout-style .labeled-input input {
   -webkit-box-orient: vertical;
   overflow: hidden;
   height: 224px;
+  font-size: 0.75rem;
 }
 
 #front-page .guarantees {
@@ -2958,7 +2976,7 @@ form.checkout-style .labeled-input input {
   color: var(--primary-accent);
   font-size: 0.875rem;
   position: relative;
-  box-shadow: 1px -1px 0px 0px inset var(--footer-gray);
+  box-shadow: 0px -1px 0px 0px inset var(--footer-gray);
 }
 
 #shop .filter-buttons-ul .filter-menu .toggle {
@@ -3261,7 +3279,6 @@ form.checkout-style .labeled-input input {
 
 .shop-product-page .top-info-row .right-col .rating-badge {
   padding: 0.5rem 1rem 0;
-  border: 1px solid var(--navbar-gray-highlighted);
 }
 
 .shop-product-page .top-info-row .right-col .add-to-cart {

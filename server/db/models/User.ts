@@ -2,14 +2,14 @@ import {
   DataTypes,
   CreationOptional,
 } from 'sequelize';
-import { IUser, ModelAttributes } from '../../types/types';
+import { IUser, ModelAttributes, Roles } from '../../types/types';
 import { USER } from '../../utils/consts';
 import sequelize from '../connection';
 import BaseModel, { baseModelAttributes } from './BaseModel';
 
 // eslint-disable-next-line no-use-before-define
 class User extends BaseModel<User> implements IUser {
-  roles!: string[];
+  roles!: Roles[];
 
   firstName!: string;
 

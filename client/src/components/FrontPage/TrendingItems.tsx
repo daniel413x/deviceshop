@@ -30,7 +30,7 @@ function TrendingItems({
     }
   };
   return (
-    <ShownInView className={`trending-items ${className} ${loading}`} func={fetch} id="trending-items">
+    <ShownInView className={`trending-items ${className} ${loading}`} func={fetch}>
       <SectionHeader
         header={header}
       />

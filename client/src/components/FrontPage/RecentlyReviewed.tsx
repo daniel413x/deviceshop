@@ -15,10 +15,12 @@ import ShownInView from '../ShownInView';
 
 interface RecentReviewProps {
   review: IReview;
+  i: number;
 }
 
 function Review({
   review,
+  i,
 }: RecentReviewProps) {
   const {
     body,
@@ -37,7 +39,7 @@ function Review({
   }
   const slug = makeSlug(productName);
   return (
-    <div className="review">
+    <div className={`review ${i % 2 === 0 ? 'even' : 'odd'}`}>
       <RatingStars
         nameForKey={`${productName}_review`}
         rating={rating}
@@ -93,10 +95,11 @@ function RecentlyReviewed() {
       <List
         className="reviews-ul"
         items={reviews}
-        renderAs={((review) => (
+        renderAs={((review, i) => (
           <li key={review.id}>
             <Review
               review={review}
+              i={i!}
             />
           </li>
         ))}

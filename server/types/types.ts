@@ -125,6 +125,8 @@ export interface IReview {
   userId: string;
 }
 
+export type Roles = 'GUEST' | 'USER' | 'ADMIN';
+
 export interface IUser {
   id: string;
   firstName: string;
@@ -133,7 +135,7 @@ export interface IUser {
   username: string;
   password: string;
   phoneNumber?: string;
-  roles: string[];
+  roles: Roles[];
   avatar?: string;
 }
 
