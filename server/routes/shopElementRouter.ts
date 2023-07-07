@@ -15,17 +15,23 @@ router.get(
 );
 router.post(
   '/',
-  checkRoleMiddleware(ADMIN),
+  checkRoleMiddleware({
+    accessRoles: [ADMIN],
+  }),
   (req, res) => ShopElementController.create(req, res),
 );
 router.put(
   '/',
-  checkRoleMiddleware(ADMIN),
+  checkRoleMiddleware({
+    accessRoles: [ADMIN],
+  }),
   (req, res) => ShopElementController.edit(req, res),
 );
 router.delete(
   '/:id',
-  checkRoleMiddleware(ADMIN),
+  checkRoleMiddleware({
+    accessRoles: [ADMIN],
+  }),
   (req, res) => ShopElementController.delete(req, res),
 );
 

@@ -11,17 +11,23 @@ router.get(
 );
 router.post(
   '/',
-  checkRoleMiddleware(ADMIN),
+  checkRoleMiddleware({
+    accessRoles: [ADMIN],
+  }),
   (req, res) => BrandController.create(req, res),
 );
 router.put(
   '/',
-  checkRoleMiddleware(ADMIN),
+  checkRoleMiddleware({
+    accessRoles: [ADMIN],
+  }),
   (req, res) => BrandController.edit(req, res),
 );
 router.delete(
   '/:id',
-  checkRoleMiddleware(ADMIN),
+  checkRoleMiddleware({
+    accessRoles: [ADMIN],
+  }),
   (req, res) => BrandController.delete(req, res),
 );
 

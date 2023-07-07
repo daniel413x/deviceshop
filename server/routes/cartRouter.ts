@@ -7,17 +7,23 @@ const router = Router();
 
 router.get(
   '/',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res, next) => CartController.getOne(req, res, next),
 );
 router.post(
   '/',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res) => CartController.create(req, res),
 );
 router.delete(
   '/:id',
-  checkRoleMiddleware(ADMIN),
+  checkRoleMiddleware({
+    accessRoles: [ADMIN],
+  }),
   (req, res) => CartController.delete(req, res),
 );
 

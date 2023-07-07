@@ -11,12 +11,16 @@ router.get(
 );
 router.post(
   '/',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res) => ShippingMethodController.create(req, res),
 );
 router.delete(
   '/:id',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res) => ShippingMethodController.delete(req, res),
 );
 

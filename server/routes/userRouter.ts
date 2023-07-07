@@ -21,7 +21,9 @@ router.post(
 );
 router.put(
   '/',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res) => UserController.edit(req, res),
 );
 

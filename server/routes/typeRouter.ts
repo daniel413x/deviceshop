@@ -15,17 +15,23 @@ router.get(
 );
 router.post(
   '/',
-  checkRoleMiddleware(ADMIN),
+  checkRoleMiddleware({
+    accessRoles: [ADMIN],
+  }),
   (req, res) => TypeController.create(req, res),
 );
 router.put(
   '/',
-  checkRoleMiddleware(ADMIN),
+  checkRoleMiddleware({
+    accessRoles: [ADMIN],
+  }),
   (req, res) => TypeController.edit(req, res),
 );
 router.delete(
   '/:id',
-  checkRoleMiddleware(ADMIN),
+  checkRoleMiddleware({
+    accessRoles: [ADMIN],
+  }),
   (req, res) => TypeController.delete(req, res),
 );
 

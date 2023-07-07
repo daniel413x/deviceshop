@@ -7,32 +7,44 @@ const router = Router();
 
 router.get(
   '/',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res) => OrderController.get(req, res),
 );
 router.get(
   '/admin',
-  checkRoleMiddleware(ADMIN),
+  checkRoleMiddleware({
+    accessRoles: [ADMIN],
+  }),
   (req, res) => OrderController.admin(req, res),
 );
 router.get(
   '/:id',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res, next) => OrderController.getOne(req, res, next),
 );
 router.post(
   '/',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res) => OrderController.create(req, res),
 );
 router.put(
   '/:id',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res, next) => OrderController.edit(req, res, next),
 );
 router.delete(
   '/:id',
-  checkRoleMiddleware(ADMIN),
+  checkRoleMiddleware({
+    accessRoles: [ADMIN],
+  }),
   (req, res) => OrderController.delete(req, res),
 );
 

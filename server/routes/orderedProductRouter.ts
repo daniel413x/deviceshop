@@ -7,17 +7,23 @@ const router = Router();
 
 router.post(
   '/',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res) => OrderedProductController.create(req, res),
 );
 router.put(
   '/',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res) => OrderedProductController.edit(req, res),
 );
 router.delete(
   '/:id',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res) => OrderedProductController.delete(req, res),
 );
 

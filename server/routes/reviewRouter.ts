@@ -15,22 +15,30 @@ router.get(
 );
 router.get(
   '/eligibility/:id', // shop product
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res) => ReviewController.eligibility(req, res),
 );
 router.post(
   '/',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res, next) => ReviewController.create(req, res, next),
 );
 router.put(
   '/:id',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER],
+  }),
   (req, res, next) => ReviewController.update(req, res, next),
 );
 router.delete(
   '/:id',
-  checkRoleMiddleware(ADMIN),
+  checkRoleMiddleware({
+    accessRoles: [ADMIN],
+  }),
   (req, res) => ReviewController.delete(req, res),
 );
 

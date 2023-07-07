@@ -1,7 +1,7 @@
 import Router from 'express';
 import AddonController from '../controllers/AddonController';
 import checkRoleMiddleware from '../middleware/checkRoleMiddleware';
-import { USER } from '../utils/consts';
+import { GUEST, USER } from '../utils/consts';
 
 const router = Router();
 
@@ -11,12 +11,16 @@ router.get(
 );
 router.post(
   '/',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER, GUEST],
+  }),
   (req, res) => AddonController.create(req, res),
 );
 router.delete(
   '/:id',
-  checkRoleMiddleware(USER),
+  checkRoleMiddleware({
+    accessRoles: [USER, GUEST],
+  }),
   (req, res) => AddonController.delete(req, res),
 );
 
