@@ -763,7 +763,7 @@ Cypress.Commands.add('adminCheckShopProductFormPrices', () => {
 
 Cypress.Commands.add('adminFetchOtherSpecifications', () => {
   cy.get('.copy-specifications-button')
-    .click();
+    .click({ force: true });
   cy.get('.modal.show')
     .find('input')
     .type('ap');
@@ -810,7 +810,7 @@ Cypress.Commands.add('adminSelectBrandOrType', (dropdownIndex: number, itemIndex
             .find('.items')
             .children()
             .eq(itemIndex)
-            .click();
+            .click({ force: true });
         } else {
           insistClick();
         }

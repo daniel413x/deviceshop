@@ -1,6 +1,7 @@
 import jwt_decode from 'jwt-decode';
 import {
   IUser,
+  UserRegistration,
   QueryReqLogin,
   QueryReqPutUser,
   QueryReqRegistration,
@@ -19,6 +20,13 @@ export const registration = async (body: QueryReqRegistration): Promise<QueryRes
   const user = handleNewToken(data.token);
   const { cart } = data;
   return { user, cart };
+};
+
+export const registrationGuest = async (body: UserRegistration): Promise<IUser> => {
+  const { data } = await $authHost.put('api/user/registration/guest', body);
+  localStorage.setItem('registeredToken', data.token);
+  const newUser = jwt_decode(data.token) as IUser;
+  return newUser;
 };
 
 export const login = async (body: QueryReqLogin): Promise<QueryResUserAuthed> => {

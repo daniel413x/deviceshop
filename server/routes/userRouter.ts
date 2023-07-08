@@ -2,7 +2,7 @@ import Router from 'express';
 import UserController from '../controllers/UserController';
 import checkRoleMiddleware from '../middleware/checkRoleMiddleware';
 import authMiddleware from '../middleware/authMiddleware';
-import { USER } from '../utils/consts';
+import { GUEST, USER } from '../utils/consts';
 
 const router = Router();
 
@@ -13,7 +13,12 @@ router.get(
 );
 router.post(
   '/registration',
-  (req, res, next) => UserController.create(req, res, next),
+  (req, res) => UserController.create(req, res),
+);
+router.put(
+  '/registration/guest',
+  checkRoleMiddleware({ accessRoles: [GUEST] }),
+  (req, res) => UserController.createGuest(req, res),
 );
 router.post(
   '/login',

@@ -218,17 +218,22 @@ export type QueryResUserAuthed = {
   cart: ICart;
 };
 
-export type QueryReqRegistration = {
+export type UserRegistration = {
   email: string;
   password: string;
   username: string;
-  guestAddedItems?: IGuestAddedProduct[];
 };
+
+type GuestRegistration = {
+  guest: boolean;
+};
+
+export type QueryReqRegistration = Either<UserRegistration, GuestRegistration>;
 
 export type QueryReqLogin = {
   emailOrUsername: string;
   password: string;
-  guestAddedItems?: IGuestAddedProduct[];
+  guestItems?: IGuestAddedProduct[];
 };
 
 export type QueryReqCreateAddon = Omit<IOrderedAddon, 'id'>;

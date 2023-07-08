@@ -10,7 +10,7 @@ import {
   IGuestAddedProduct,
   IUser,
 } from '../types/types';
-import { USER } from '../utils/consts';
+import { GUEST, USER } from '../utils/consts';
 import User from '../db/models/User';
 import BaseController from './BaseController';
 import { writeImages } from '../utils/functions';
@@ -108,19 +108,14 @@ class UserController extends BaseController<User> {
     return cart;
   }
 
-  async create(req: Request, res: Response, next: NextFunction) {
-    const userForm = req.body;
-    if (req.files) {
-      writeImages(req);
-    }
+  private async validateForm(req: Request): Promise<void> {
     const {
       email,
       password,
-      username,
-    } = userForm;
+    } = req.body;
     const incompleteForm = !email || !password;
     if (incompleteForm) {
-      return next(ApiError.badRequest('Incomplete form'));
+      throw ApiError.badRequest('Incomplete form');
     }
     const formattedEmail = ['', ''];
     email.split('@').forEach((p: string, i: number) => {
@@ -130,40 +125,78 @@ class UserController extends BaseController<User> {
     const expectedLength = formattedEmail.length === 2;
     const validEmail = expectedLength && local && domain;
     if (!validEmail) {
-      return next(ApiError.badRequest('Invalid email format'));
+      throw ApiError.badRequest('Invalid email format');
     }
     const validPassword = /(?=^\S{6,256}$)^.+$/i.test(password);
     if (!validPassword) {
-      return next(ApiError.badRequest('Invalid password'));
+      throw ApiError.badRequest('Invalid password');
     }
     const emailTaken = await User.findOne({ where: { email } });
     if (emailTaken) {
-      return next(ApiError.conflict('Account with that email already exists'));
+      throw ApiError.conflict('Account with that email already exists');
     }
-    const usernameTaken = await User.findOne({ where: { username } });
-    if (usernameTaken) {
-      return next(ApiError.conflict('Account with that username already exists'));
+  }
+
+  async create(req: Request, res: Response) {
+    const userForm = req.body;
+    if (req.files) {
+      writeImages(req);
+    }
+    const {
+      guest,
+      password,
+    } = userForm;
+    let form: IUser;
+    if (guest) {
+      const guestId = uuidv4();
+      form = {
+        firstName: '',
+        lastName: '',
+        id: guestId,
+        email: `${guestId}@devicedeal.com`,
+        username: `guest-${guestId}`,
+        password: await bcrypt.hash(uuidv4(), 5),
+        roles: [GUEST],
+      };
+    } else {
+      await this.validateForm(req);
+      form = {
+        ...userForm,
+        id: uuidv4(),
+        password: await bcrypt.hash(password, 5),
+        roles: [USER],
+      };
     }
     let user: User;
     let cart: Cart;
     await sequelize.transaction(async (transaction) => {
-      const hashPassword = await bcrypt.hash(password, 5);
-      user = await User.create({
-        ...userForm,
-        id: uuidv4(),
-        password: hashPassword,
-        roles: [USER],
-      }, { transaction });
+      user = await User.create(form, { transaction });
       cart = await Cart.create({
         userId: user.id,
       }, { transaction });
-      if (req.body.guestAddedItems) {
-        await this.convertGuestAddedItems(req.body.guestAddedItems, cart, transaction);
-        cart = await this.getCart(user.id, transaction);
-      }
     });
     const token = generateJwt(user, '24h');
     return res.json({ token, cart });
+  }
+
+  async createGuest(req: Request, res: Response) {
+    // occurs for a user whose only role is "GUEST" e.g. one who was registered automatically by adding an item to the cart
+    await this.validateForm(req);
+    const {
+      email,
+      password,
+      username,
+    } = req.body;
+    const hashPassword = await bcrypt.hash(password, 5);
+    const { id } = res.locals.user;
+    const updatedObj = await User.update({
+      username,
+      email,
+      password: hashPassword,
+      roles: [USER],
+    }, { where: { id }, returning: true });
+    const token = generateJwt(updatedObj[1][0], '24h');
+    return res.json({ token });
   }
 
   async login(req: Request, res: Response, next: NextFunction) {
@@ -194,8 +227,8 @@ class UserController extends BaseController<User> {
     }
     const token = generateJwt(user, '24h');
     let cart = await this.getCart(user.id);
-    if (req.body.guestAddedItems) {
-      await this.convertGuestAddedItems(req.body.guestAddedItems, cart);
+    if (req.body.guestItems) {
+      await this.convertGuestAddedItems(req.body.guestItems, cart);
       cart = await this.getCart(user.id);
     }
     return res.json({ token, cart });

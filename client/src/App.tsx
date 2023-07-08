@@ -58,7 +58,7 @@ function App() {
           cart.set(fetchedCart);
         }
       } catch (error: any) {
-        if (error.response.status === 401) {
+        if (error?.response?.status === 401) {
           localStorage.removeItem('registeredToken');
         }
       } finally {

@@ -11,9 +11,9 @@ import Button from '../Button';
 import {
   CART_ROUTE,
   CHECKOUT_ROUTE,
-  FRONT_PAGE_ROUTE, longNotification, red,
+  FRONT_PAGE_ROUTE, GUEST, longNotification, red,
 } from '../../utils/consts';
-import { login, registration } from '../../http/userAPI';
+import { login, registration, registrationGuest } from '../../http/userAPI';
 import { validateEmail, validatePassword } from '../../utils/functions';
 import { QueryReqLogin, QueryReqRegistration } from '../../types/types';
 
@@ -55,8 +55,8 @@ function Form({ isLogin }: FormProps) {
           emailOrUsername: email,
           password,
         };
-        if (localStorage.getItem('guestItems')) {
-          body.guestAddedItems = JSON.parse(localStorage.getItem('guestItems')!);
+        if (user.isGuest && cart.items.length > 0) {
+          body.guestItems = cart.items;
         }
         const { user: fetchedUser, cart: fetchedCart } = await login(body);
         user.set(fetchedUser);
@@ -96,12 +96,15 @@ function Form({ isLogin }: FormProps) {
         password,
         username,
       };
-      if (localStorage.getItem('guestItems')) {
-        body.guestAddedItems = JSON.parse(localStorage.getItem('guestItems')!);
+      const mustFullyRegisterGuest = user.roles.indexOf(GUEST) >= 0 && cart.userId !== '-1';
+      if (mustFullyRegisterGuest) {
+        const newUser = await registrationGuest(body);
+        user.set(newUser);
+      } else {
+        const { user: newUser, cart: newCart } = await registration(body);
+        cart.set(newCart);
+        user.set(newUser);
       }
-      const { user: newUser, cart: newCart } = await registration(body);
-      cart.set(newCart);
-      user.set(newUser);
       notifications.neutral(
         'You registered successfully',
       );

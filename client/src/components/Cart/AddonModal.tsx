@@ -3,7 +3,7 @@ import React, {
   RefObject, useContext, useEffect, useState,
 } from 'react';
 import Context from '../../context/context';
-import { IAddon, IOrderedAddon, IOrderedProduct } from '../../types/types';
+import { IAddon } from '../../types/types';
 import List from '../List';
 import Modal from '../Modal';
 import AddonChoice from './AddonChoice';
@@ -31,24 +31,8 @@ function AddonModal({
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedAddon, setSelectedAddon] = useState<IAddon>();
   const [addons, setAddons] = useState<IAddon[]>([]);
-  const { user, cart } = useContext(Context);
+  const { cart } = useContext(Context);
   const removeAddon = async () => {
-    if (user.isGuest) {
-      const guestItems: IOrderedProduct[] = JSON.parse(localStorage.getItem('guestItems')!);
-      const updatedItem = guestItems.find((orderedProduct) => orderedProduct.id === id);
-      if (updatedItem) {
-        updatedItem.addons = updatedItem.addons.filter((addon) => addon.addonId !== selectedAddon!.id);
-        localStorage.setItem('guestItems', JSON.stringify(guestItems.map((guestItem) => {
-          if (guestItem.id === updatedItem.id) {
-            return updatedItem;
-          }
-          return guestItem;
-        })));
-      }
-      cart.removeAddon(id, selectedAddon!.id);
-      setSelectedAddon(undefined);
-      return;
-    }
     const orderedAddon = cart.findOrderedAddon(selectedAddon!.id);
     if (orderedAddon) {
       setLoading(true);
@@ -61,34 +45,6 @@ function AddonModal({
   const selectAddon = async (selection: IAddon) => {
     if (selectedAddon) {
       await removeAddon();
-    }
-    if (user.isGuest) {
-      const guestItems: IOrderedProduct[] = JSON.parse(localStorage.getItem('guestItems')!);
-      const updatedItem = guestItems.find((orderedProduct) => id === orderedProduct.id);
-      if (updatedItem) {
-        const orderedAddonForGuest: IOrderedAddon = {
-          id: Date.toString(),
-          addonId: selection.id,
-          addon: selection,
-          orderedProductId: id,
-          category,
-          price: selection.price,
-        };
-        if (updatedItem.addons) {
-          updatedItem.addons.push(orderedAddonForGuest);
-        } else {
-          updatedItem.addons = [orderedAddonForGuest];
-        }
-        localStorage.setItem('guestItems', JSON.stringify(guestItems.map((guestItem) => {
-          if (guestItem.id === updatedItem.id) {
-            return updatedItem;
-          }
-          return guestItem;
-        })));
-        cart.addAddon(id, orderedAddonForGuest);
-        setSelectedAddon(selection);
-      }
-      return;
     }
     setLoading(true);
     const newAddon = await createOrderedAddon({

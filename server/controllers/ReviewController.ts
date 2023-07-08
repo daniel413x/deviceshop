@@ -110,7 +110,7 @@ class ReviewController extends BaseController<Review> {
       return res.status(204).end();
     }
     const reviewAlreadyExists = await Review.findOne({ where: { userId, shopProductId } });
-    const orderWasDelivered = (orderedProduct as any).order.status.indexOf(DELIVERED) >= 0;
+    const orderWasDelivered = (orderedProduct as any)?.order?.status?.indexOf(DELIVERED) >= 0;
     const eligible = orderWasDelivered && !reviewAlreadyExists;
     if (eligible) {
       return res.json(orderedProduct);

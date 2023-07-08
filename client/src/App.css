@@ -3223,7 +3223,6 @@ form.checkout-style .labeled-input input {
   flex-direction: column;
   grid-gap: 0.25rem;
   justify-content: center;
-  max-width: 625.91px;
   width: 100%;
   padding: 1rem;
   background-color: var(--bg-lighter-bluegray);
@@ -3288,6 +3287,7 @@ form.checkout-style .labeled-input input {
   justify-content: center;
   margin-top: 1.75rem;
   min-height: 30px;
+  max-width: 625.91px;
 }
 
 @media (max-width: 767px) {  

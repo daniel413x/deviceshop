@@ -27,7 +27,6 @@ function Cart() {
   const [insuranceCartItem, setInsuranceCartItem] = useState<IOrderedProduct | IGuestAddedProduct>();
   const {
     cart,
-    user,
   } = useContext(Context);
   const openDeleteModal = (id: string) => {
     setDeletedId(id);
@@ -39,12 +38,6 @@ function Cart() {
     setInsuranceCartItem(item);
   };
   const deleteItem = async (id: string) => {
-    if (user.isGuest) {
-      const guestItems: IOrderedProduct[] = JSON.parse(localStorage.getItem('guestItems')!);
-      localStorage.setItem('guestItems', JSON.stringify(guestItems.filter((guestItem) => guestItem.id !== id)));
-      cart.removeItem(id);
-      return;
-    }
     await deleteOrderedProduct(id);
     cart.removeItem(id);
   };

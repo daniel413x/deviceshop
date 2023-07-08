@@ -2,17 +2,21 @@ import { makeAutoObservable } from 'mobx';
 import {
   ICart, IGuestAddedProduct, IOrderedAddon, IOrderedProduct, IShippingMethod,
 } from '../types/types';
+import { GUEST } from '../utils/consts';
 
 export default class CartStore {
   items: (IOrderedProduct | IGuestAddedProduct)[];
 
   id: string;
 
+  userId: string;
+
   selectedShippingMethod: IShippingMethod | undefined;
 
   constructor() {
     this.items = [];
     this.id = 'GUEST';
+    this.userId = '-1';
     this.selectedShippingMethod = undefined;
     makeAutoObservable(this);
   }
@@ -20,6 +24,7 @@ export default class CartStore {
   set(cart: ICart) {
     this.items = cart.cartItems || [];
     this.id = cart.id;
+    this.userId = cart.userId;
   }
 
   setItems(newItems: IOrderedProduct[]) {
@@ -32,8 +37,13 @@ export default class CartStore {
 
   unset() {
     this.items = [];
-    this.id = 'guest';
+    this.id = 'GUEST';
+    this.userId = '-1';
     this.selectedShippingMethod = undefined;
+  }
+
+  get isGuest() {
+    return this.userId === GUEST;
   }
 
   addItem(newItem: IOrderedProduct | IGuestAddedProduct) {

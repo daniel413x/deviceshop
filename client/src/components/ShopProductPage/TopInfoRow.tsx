@@ -8,9 +8,10 @@ import Button from '../Button';
 import DiscountTag from '../DiscountTag';
 import RatingBadge from './RatingBadge';
 import { createOrderedProduct } from '../../http/orderedProductAPI';
-import { gray } from '../../utils/consts';
+import { GUEST, gray } from '../../utils/consts';
 import PriceTags from '../PriceTags';
 import AvailabilityLabel from './AvailabilityLabel';
+import { registration } from '../../http/userAPI';
 
 interface TopInfoRowProps {
   product: IShopProduct;
@@ -21,12 +22,6 @@ function TopInfoRow({
 }: TopInfoRowProps) {
   const [pressedSubmit, setPressedSubmit] = useState<boolean>(false);
   const { user, cart, notifications } = useContext(Context);
-  const {
-    id: userId,
-  } = user;
-  const {
-    id: cartId,
-  } = cart;
   const {
     name: productName,
     price,
@@ -51,34 +46,17 @@ function TopInfoRow({
   const addToCart = async () => {
     setPressedSubmit(true);
     setTimeout(() => setPressedSubmit(false), 1500);
-    if (user.isGuest) {
-      const guestAddedItem = {
-        id: new Date().toString(),
-        shopproduct: product,
-        price: discountedPrice,
-        addons: [],
-      };
-      if (!localStorage.getItem('guestItems')) {
-        const guestItems = [guestAddedItem];
-        localStorage.setItem('guestItems', JSON.stringify(guestItems));
-      } else {
-        const guestItems = JSON.parse(localStorage.getItem('guestItems')!);
-        guestItems.push(guestAddedItem);
-        localStorage.setItem('guestItems', JSON.stringify(guestItems));
-      }
-      cart.addItem(guestAddedItem);
-      notifications.message(
-        [`${productName}`, 'was added to your cart'],
-        gray,
-        3000,
-        thumbnail,
-      );
-      return;
-    }
     try {
+      if (cart.id === GUEST) {
+        const { user: guestUser, cart: guestCart } = await registration({
+          guest: true,
+        });
+        user.set(guestUser);
+        cart.set(guestCart);
+      }
       const item = {
-        userId,
-        cartId,
+        userId: user.id,
+        cartId: cart.id,
         price: discountedPrice,
         brandId,
         typeId,

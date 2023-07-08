@@ -2151,7 +2151,7 @@ describe('deviceshop app', () => {
         });
       });
     });
-    describe.only('on admin/shopproducts/edit/:title', () => {
+    describe('on admin/shopproducts/edit/:title', () => {
       const product = 'apple-iphone-256gb-ios-16-5g-smartphone-1';
       beforeEach(() => {
         cy.visit(`${clientUrl}/admin/shopproducts/edit/${product}`);
