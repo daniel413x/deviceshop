@@ -3507,6 +3507,14 @@ form.checkout-style .labeled-input input {
   flex-direction: column;
 }
 
+#login-and-register .subheaders {
+  font-size: 0.875rem;
+}
+
+#login-and-register .subheaders h4 {
+  margin-top: 0;
+}
+
 #login-and-register form button[type='submit'] {
   margin-top: 1rem;
 }

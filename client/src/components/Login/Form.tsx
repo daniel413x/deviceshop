@@ -119,9 +119,6 @@ function Form({ isLogin }: FormProps) {
   if (isLogin) {
     return (
       <form onSubmit={submit}>
-        <button type="button" onClick={() => notifications.message('You logged in successfully', '', 2200)}>
-          NOTIFICATION
-        </button>
         <LabeledInput
           label="Username or Email"
           input={email}
